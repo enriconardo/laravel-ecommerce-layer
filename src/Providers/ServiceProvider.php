@@ -40,9 +40,7 @@ class ServiceProvider extends ParentServiceProvider
             ], 'lang');*/
 
             // Registering package commands.
-            $this->commands([
-                Prova::class
-            ]);
+            // $this->commands([]);
         }
     }
 

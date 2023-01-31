@@ -5,6 +5,7 @@ namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceFactory;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
+use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
 use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Models\Order;
@@ -46,7 +47,7 @@ class OrdersController extends Controller
 
         $order = $builder->end();
 
-        // return $order
+        return OrderResource::make($order);
     }
 
     public function update($id, Request $request)
@@ -81,7 +82,7 @@ class OrdersController extends Controller
 
         $order = $builder->end();
 
-        // return $order
+        return OrderResource::make($order);
     }
 
     public function place($id, Request $request)
@@ -90,7 +91,6 @@ class OrdersController extends Controller
         $order = Order::findOrFail($id);
 
         $request->validate([
-            'status' => OrderStatus::OPEN,
             'currency' => 'string|size:3',
             'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists())],
             'billing_address' => ['array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone', Rule::requiredIf($order->billing_address === null)],
@@ -100,6 +100,7 @@ class OrdersController extends Controller
         ]);
 
         $data = [
+            'status' => OrderStatus::OPEN,
             'currency' => $request->input('currency'),
             'billing_address' => $request->has('billing_address') 
                 ? new Address($request->input('billing_address')) 
@@ -126,6 +127,6 @@ class OrdersController extends Controller
             'gateway_payment_identifier' => $payment->gateway_identifier
         ])->end();
 
-        // return $order
+        return OrderResource::make($order);
     }
 }

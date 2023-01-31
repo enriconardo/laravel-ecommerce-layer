@@ -19,10 +19,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('gateway_id')->nullable();
-            $table->string('status')->default(OrderStatus::DRAFT);
+            $table->string('status')->default(OrderStatus::DRAFT->value);
             $table->string('currency', 3);
             $table->string('gateway_payment_identifier')->nullable();
-            $table->string('payment_status')->default(PaymentStatus::UNPAID);
+            $table->string('payment_status')->default(PaymentStatus::UNPAID->value);
             $table->text('billing_address')->nullable();
             $table->text('payment_method')->nullable();
             $table->text('metadata')->nullable();
