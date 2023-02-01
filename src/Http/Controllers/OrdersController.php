@@ -3,7 +3,6 @@
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
-use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceFactory;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
@@ -12,6 +11,7 @@ use EnricoNardo\EcommerceLayer\Models\Order;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OrdersController extends Controller
 {
@@ -55,6 +55,10 @@ class OrdersController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
+        if ($order->status !== OrderStatus::DRAFT || $order->status !== OrderStatus::OPEN) {
+            throw new BadRequestHttpException("You cannot update an order that has been already closed.");
+        }
+
         $request->validate([
             'currency' => 'string|size:3',
             'gateway_id' => 'string',
@@ -90,6 +94,10 @@ class OrdersController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
+        if ($order->status !== OrderStatus::DRAFT) {
+            throw new BadRequestHttpException("You cannot place an order that has been already placed");
+        }
+
         $request->validate([
             'currency' => 'string|size:3',
             'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists())],
@@ -119,7 +127,7 @@ class OrdersController extends Controller
         $order = $builder->end();
 
         /** @var GatewayServiceInterface $gatewayService */
-        $gatewayService = app(GatewayServiceFactory::class)->make($order->gateway->identifier);
+        $gatewayService = gateway($order->gateway->identifier);
         $payment = $gatewayService->payments()->create($order->total, $order->currency, $order->payment_method, $order->billing_address);
 
         $order = OrderBuilder::init($order)->fill([
