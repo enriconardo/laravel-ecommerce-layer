@@ -7,11 +7,12 @@ use EnricoNardo\EcommerceLayer\Casts\Address as AddressCast;
 use EnricoNardo\EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
+use EnricoNardo\EcommerceLayer\Enums\Currency;
 
 /**
  * @property OrderStatus $status
  * @property PaymentStatus $payment_status
- * @property string $currency
+ * @property Currency $currency
  * @property AddressCast $billing_address
  * @property PaymentMethodCast $payment_method
  * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
@@ -42,6 +43,7 @@ class Order extends Model
     protected $casts = [
         'status' => OrderStatus::class,
         'payment_status' => PaymentStatus::class,
+        'currency' => Currency::class,
         'billing_address' => AddressCast::class,
         'payment_method' => PaymentMethodCast::class,
         'metadata' => 'array',

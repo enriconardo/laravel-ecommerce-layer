@@ -2,6 +2,7 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
+use EnricoNardo\EcommerceLayer\Enums\Currency;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
@@ -12,6 +13,7 @@ use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Illuminate\Validation\Rules\Enum as EnumValidation;
 
 class OrdersController extends Controller
 {
@@ -19,7 +21,7 @@ class OrdersController extends Controller
     {
         $request->validate([
             'customer_id' => 'string|required',
-            'currency' => 'string|required|size:3',
+            'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'gateway_id' => 'string',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'payment_method' => 'array:type,data',
@@ -60,7 +62,7 @@ class OrdersController extends Controller
         }
 
         $request->validate([
-            'currency' => 'string|size:3',
+            'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => 'string',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'payment_method' => 'array:type,data',
@@ -99,7 +101,7 @@ class OrdersController extends Controller
         }
 
         $request->validate([
-            'currency' => 'string|size:3',
+            'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists())],
             'billing_address' => ['array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone', Rule::requiredIf($order->billing_address === null)],
             'payment_method' => ['array:type,data', Rule::requiredIf($order->payment_method === null)],

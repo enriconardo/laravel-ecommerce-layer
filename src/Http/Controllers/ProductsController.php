@@ -2,6 +2,7 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
+use EnricoNardo\EcommerceLayer\Enums\Currency;
 use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
 use EnricoNardo\EcommerceLayer\Http\Resources\ProductResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\PriceBuilder;
@@ -19,7 +20,7 @@ class ProductsController extends Controller
             'active' => 'boolean',
             'shippable' => 'boolean',
             'price' => 'array:currency,description,active,recurring,plan|required',
-            'price.currency' => 'string|required_with:price',
+            'price.currency' => ['string', 'required_with:price', new EnumValidation(Currency::class)],
             'price.description' => 'string|required_with:price',
             'price.active' => 'boolean',
             'price.recurring' => 'boolean',

@@ -4,9 +4,10 @@ namespace EnricoNardo\EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use EnricoNardo\EcommerceLayer\Casts\Plan as PlanCast;
+use EnricoNardo\EcommerceLayer\Enums\Currency;
 
 /**
- * @property string $currency
+ * @property Currency $currency
  * @property string $description A brief description of the price, hidden from customers.
  * @property bool $active Whether the price can be used for new purchases. Default `true`.
  * @property bool $recurring Whether the price is for a subscription plan. Default `false`.
@@ -39,6 +40,7 @@ class Price extends Model
      * @var array
      */
     protected $casts = [
+        'currency' => Currency::class,
         'active' => 'boolean',
         'recurring' => 'boolean',
         'discount' => 'boolean',
