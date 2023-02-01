@@ -26,7 +26,11 @@ return new class extends Migration
             $table->dateTimeTz('end_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

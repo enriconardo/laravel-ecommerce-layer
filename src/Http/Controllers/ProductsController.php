@@ -5,13 +5,33 @@ namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 use EnricoNardo\EcommerceLayer\Enums\Currency;
 use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
 use EnricoNardo\EcommerceLayer\Http\Resources\ProductResource;
-use EnricoNardo\EcommerceLayer\ModelBuilders\PriceBuilder;
 use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
+use EnricoNardo\EcommerceLayer\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductsController extends Controller
 {
+    public function list(Request $request)
+    {
+        $products = QueryBuilder::for(Product::class)
+            ->allowedFilters(['code', 'active', 'shippable'])
+            ->allowedSorts('code', 'name')
+            ->paginate()
+            ->appends($request->query());
+
+        return ProductResource::collection($products);
+    }
+
+    public function find($id)
+    {
+        /** @var Product $product */
+        $product = Product::findOrFail($id);
+
+        return ProductResource::make($product);
+    }
+
     public function create(Request $request)
     {
         $request->validate([
@@ -19,14 +39,15 @@ class ProductsController extends Controller
             'name' => 'required|string',
             'active' => 'boolean',
             'shippable' => 'boolean',
-            'price' => 'array:currency,description,active,recurring,plan|required',
-            'price.currency' => ['string', 'required_with:price', new EnumValidation(Currency::class)],
-            'price.description' => 'string|required_with:price',
-            'price.active' => 'boolean',
-            'price.recurring' => 'boolean',
-            'price.plan' => 'array:interval,interval_count|required_if:price.recurring,true',
-            'price.plan.interval' => ['required_with:price.plan', new EnumValidation(PlanInterval::class)],
-            'price.plan.interval_count' => 'required_with:price.plan|integer'
+            'metadata' => 'array',
+            'prices' => 'array|required',
+            'prices.*.currency' => ['string', 'required_with:prices', new EnumValidation(Currency::class)],
+            'prices.*.description' => 'string|required_with:prices',
+            'prices.*.active' => 'boolean',
+            'prices.*.recurring' => 'boolean',
+            'prices.*.plan' => 'array:interval,interval_count|required_if:prices.*.recurring,true',
+            'prices.*.plan.interval' => ['required_with:prices.*.plan', new EnumValidation(PlanInterval::class)],
+            'prices.*.plan.interval_count' => 'required_with:prices.*.plan|integer'
         ]);
 
         $data = [
@@ -34,12 +55,59 @@ class ProductsController extends Controller
             'name' => $request->input('name'),
             'active' => $request->input('active'),
             'shippable' => $request->input('shippable'),
+            'metadata' => $request->input('metadata'),
         ];
 
-        $price = PriceBuilder::init(null, false)->fill($request->input('price'))->getModel();
-
-        $product = ProductBuilder::init()->fill($data)->withPrice($price)->end();
+        $product = ProductBuilder::init()
+            ->fill($data)
+            ->withPrices($request->input('prices', []))
+            ->end();
 
         return ProductResource::make($product);
+    }
+
+    public function update($id, Request $request)
+    {
+        /** @var Product $product */
+        $product = Product::findOrFail($id);
+
+        $request->validate([
+            'name' => 'string',
+            'active' => 'boolean',
+            'shippable' => 'boolean',
+            'metadata' => 'array',
+            'prices' => 'array',
+            'prices.*.currency' => ['string', new EnumValidation(Currency::class)],
+            'prices.*.description' => 'string',
+            'prices.*.active' => 'boolean',
+            'prices.*.recurring' => 'boolean',
+            'prices.*.plan' => 'array:interval,interval_count|required_if:prices.*.recurring,true',
+            'prices.*.plan.interval' => ['required_with:prices.*.plan', new EnumValidation(PlanInterval::class)],
+            'prices.*.plan.interval_count' => 'required_with:prices.*.plan|integer'
+        ]);
+
+        $data = [
+            'name' => $request->input('name'),
+            'active' => $request->input('active'),
+            'shippable' => $request->input('shippable'),
+            'metadata' => $request->input('metadata'),
+        ];
+
+        $product = ProductBuilder::init($product)
+            ->fill($data)
+            ->withPrices($request->input('prices', []))
+            ->end();
+
+        return ProductResource::make($product);
+    }
+
+    public function delete($id)
+    {
+        /** @var Product $product */
+        $product = Product::findOrFail($id);
+
+        $product->delete();
+
+        return response()->json([], 204);
     }
 }

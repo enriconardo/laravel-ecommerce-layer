@@ -28,8 +28,17 @@ return new class extends Migration
             $table->text('metadata')->nullable();
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('gateway_id')->references('id')->on('gateways')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('customer_id')
+                ->references('id')
+                ->on('customers')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('gateway_id')
+                ->references('id')
+                ->on('gateways')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
         });
     }
 

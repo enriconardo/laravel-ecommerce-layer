@@ -13,22 +13,52 @@ class ProductBuilder extends BaseBuilder
     }
 
     /**
-     * @param Price|string|int $customer
+     * @param Price|array $price
      * @return $this
      */
-    public function withPrice(Price|string|int $price)
+    public function withPrice(Price|array $price)
     {
         /** @var Product $model */
         $model = $this->model;
-
-        if (is_string($price) || is_int($price)) {
-            $price = Price::find($price);
-        }
-
         $model->save();
+
+        if (is_array($price)) {
+            $price = PriceBuilder::init(null, false)->fill($price)->getModel();
+        }
 
         if ($price instanceof Price) {
             $model->prices()->save($price);
+        }
+
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @param array $prices
+     * @return $this
+     */
+    public function withPrices(array $prices)
+    {
+        /** @var Product $model */
+        $model = $this->model;
+        $model->save();
+
+        $pricesToSave = [];
+
+        foreach ($prices as $price) {
+            if (is_array($price)) {
+                $price = PriceBuilder::init(null, false)->fill($price)->getModel();
+            }
+    
+            if ($price instanceof Price) {
+                $pricesToSave[] = $price;
+            }
+        }
+
+        if (count($pricesToSave)) {
+            $model->prices()->saveMany($pricesToSave);
         }
 
         $this->model = $model;

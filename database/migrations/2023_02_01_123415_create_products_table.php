@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('active')->default(true);
             $table->boolean('shippable')->default(false);
+            $table->text('metadata')->nullable();
+            $table->softDeletesTz();
             $table->timestamps();
         });
     }

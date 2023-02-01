@@ -14,9 +14,30 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class OrdersController extends Controller
 {
+    public function list(Request $request)
+    {
+        $orders = QueryBuilder::for(Order::class)
+            ->allowedFilters(['status', 'payment_status', 'currency', AllowedFilter::exact('customer.id')])
+            ->allowedSorts('status', 'payment_status')
+            ->paginate()
+            ->appends($request->query());
+
+            return OrderResource::collection($orders);
+    }
+
+    public function find($id)
+    {
+        /** @var Order $order */
+        $order = Order::findOrFail($id);
+
+        return OrderResource::make($order);
+    }
+
     public function create(Request $request)
     {
         $request->validate([
@@ -138,5 +159,19 @@ class OrdersController extends Controller
         ])->end();
 
         return OrderResource::make($order);
+    }
+
+    public function delete($id)
+    {
+        /** @var Order $order */
+        $order = Order::findOrFail($id);
+
+        if ($order->status !== OrderStatus::DRAFT) {
+            throw new BadRequestHttpException("You cannot delete an open, completed or canceled order.");
+        }
+
+        $order->delete();
+
+        return response()->json([], 204);
     }
 }
