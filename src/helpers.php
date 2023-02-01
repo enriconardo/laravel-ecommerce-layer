@@ -13,3 +13,15 @@ if (!function_exists('attributes_filter')) {
         });
     }
 }
+
+/**
+ * Get the instance of the gateway based on the identifier
+ * 
+ * @return \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface
+ */
+if (!function_exists('gateway')) {
+    function gateway(string $identifier)
+    {
+        return app(\EnricoNardo\EcommerceLayer\Gateways\GatewayServiceFactory::class)->make($identifier);
+    }
+}
