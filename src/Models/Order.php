@@ -8,6 +8,15 @@ use EnricoNardo\EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 
+/**
+ * @property OrderStatus $status
+ * @property PaymentStatus $payment_status
+ * @property string $currency
+ * @property AddressCast $billing_address
+ * @property PaymentMethodCast $payment_method
+ * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
+ * @property string|null $gateway_payment_identifier The id of the payment related object returned by the payment gateway API.
+ */
 class Order extends Model
 {
     /**
@@ -22,7 +31,7 @@ class Order extends Model
         'billing_address',
         'payment_method',
         'metadata',
-        'gateway_payment_identifier' // An identifier of the gateway payment object
+        'gateway_payment_identifier'
     ];
 
     /**

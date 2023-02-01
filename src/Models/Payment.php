@@ -4,6 +4,10 @@ namespace EnricoNardo\EcommerceLayer\Models;
 
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 
+/**
+ * @property string|null $gateway_identifier The id of the payment related object returned by the payment gateway API.
+ * @property PaymentStatus $status
+ */
 class Payment
 {
     public string|null $gateway_identifier;

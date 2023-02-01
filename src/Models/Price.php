@@ -3,7 +3,18 @@
 namespace EnricoNardo\EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use EnricoNardo\EcommerceLayer\Casts\Plan as PlanCast;
 
+/**
+ * @property string $currency
+ * @property string $description A brief description of the price, hidden from customers.
+ * @property bool $active Whether the price can be used for new purchases. Default `true`.
+ * @property bool $recurring Whether the price is for a subscription plan. Default `false`.
+ * @property bool $discount Whether the price is a discounted price. Default `false`.
+ * @property PlanCast|null $plan The recurring components of a price. Set only if $recurring is `true`.
+ * @property mixed|null $start_at If the price is time limited, this is the starting datetime.
+ * @property mixed|null $end_at If the price is time limited, this is the ending datetime. Leave `null` if it is endless.
+ */
 class Price extends Model
 {
     /**
@@ -13,8 +24,27 @@ class Price extends Model
      */
     protected $fillable = [
         'currency',
-        
-        // TODO
+        'description',
+        'active',
+        'recurring',
+        'discount',
+        'plan',
+        'start_at',
+        'end_at'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'recurring' => 'boolean',
+        'discount' => 'boolean',
+        'plan' => PlanCast::class,
+        'start_at' => 'datetime',
+        'end_at' => 'datetime'
     ];
 
     public function product()

@@ -8,7 +8,7 @@ use EnricoNardo\EcommerceLayer\Models\Customer;
 
 class OrderBuilder extends BaseBuilder
 {
-    public static function getModelClass()
+    public static function getModelClass(): string
     {
         return Order::class;
     }

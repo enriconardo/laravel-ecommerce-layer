@@ -4,6 +4,10 @@ namespace EnricoNardo\EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $name
+ * @property string $identifier A human readable and unique identifier for the gateway (e.g: stripe, paypal, some-slugified-name...)
+ */
 class Gateway extends Model
 {
     /**
@@ -12,8 +16,8 @@ class Gateway extends Model
      * @var array
      */
     protected $fillable = [
-        'name', // Stripe, Paypal...
-        'identifier' // stripe, paypal, some-slugified-name...
+        'name',
+        'identifier'
     ];
 
     public function orders()

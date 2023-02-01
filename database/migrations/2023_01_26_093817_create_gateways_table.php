@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('gateways', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('identifier');
+            $table->string('identifier')->unique();
             $table->timestamps();
         });
     }

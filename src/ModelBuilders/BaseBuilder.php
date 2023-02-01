@@ -8,24 +8,47 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseBuilder
 {
-    protected $model;
+    protected Model $model;
 
-    public static function getModelClass() {}
+    private bool $transaction;
+
+    abstract public static function getModelClass(): string;
 
     /**
      * @param Model|null $model
      * @return static
      */
-    public static function init($model = null)
+    public static function init($model = null, $transaction = true)
     {
         $class = static::getModelClass();
 
-        DB::beginTransaction();
-
         $instance = new static;
+        $instance->transaction = $transaction;
         $instance->model = is_null($model) ? new $class() : $model;
 
+        if ($instance->transaction) {
+            DB::beginTransaction();
+        }
+
         return $instance;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * Return whether the transaction is enabled for the current builder.
+     * 
+     * @return bool
+     */
+    public function getTransaction()
+    {
+        return $this->transaction;
     }
 
     /**
@@ -58,13 +81,17 @@ abstract class BaseBuilder
             throw $e;
         }
 
-        DB::commit();
+        if ($this->transaction) {
+            DB::commit();
+        }
 
         return $this->model;
     }
 
     public function abort()
     {
-        DB::rollBack();
+        if ($this->transaction) {
+            DB::rollBack();
+        }
     }
 }
