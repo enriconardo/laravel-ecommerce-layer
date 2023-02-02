@@ -20,7 +20,7 @@ if (!function_exists('attributes_filter')) {
  * @return \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface
  */
 if (!function_exists('gateway')) {
-    function gateway(string $identifier)
+    function gateway(string $identifier): \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface
     {
         return app(\EnricoNardo\EcommerceLayer\Gateways\GatewayServiceFactory::class)->make($identifier);
     }

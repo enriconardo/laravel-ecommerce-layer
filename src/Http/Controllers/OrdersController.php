@@ -2,7 +2,6 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Enums\Currency;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
@@ -16,6 +15,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
+use PrinsFrank\Standards\Country\ISO3166_1_Alpha_2 as Country;
+use PrinsFrank\Standards\Http\HttpStatusCode;
 
 class OrdersController extends Controller
 {
@@ -45,6 +47,7 @@ class OrdersController extends Controller
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'gateway_id' => 'string',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
+            'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method',
@@ -86,6 +89,7 @@ class OrdersController extends Controller
             'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => 'string',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
+            'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method',
@@ -125,6 +129,7 @@ class OrdersController extends Controller
             'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists())],
             'billing_address' => ['array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone', Rule::requiredIf($order->billing_address === null)],
+            'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => ['array:type,data', Rule::requiredIf($order->payment_method === null)],
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method'
@@ -151,11 +156,13 @@ class OrdersController extends Controller
 
         /** @var GatewayServiceInterface $gatewayService */
         $gatewayService = gateway($order->gateway->identifier);
+
+        /** @var \EnricoNardo\EcommerceLayer\Gateways\Models\Payment $payment */
         $payment = $gatewayService->payments()->create($order->total, $order->currency, $order->payment_method, $order->billing_address);
 
         $order = OrderBuilder::init($order)->fill([
             'payment_status' => $payment->status,
-            'gateway_payment_identifier' => $payment->gateway_identifier
+            'gateway_payment_identifier' => $payment->identifier
         ])->end();
 
         return OrderResource::make($order);
@@ -172,6 +179,6 @@ class OrdersController extends Controller
 
         $order->delete();
 
-        return response()->json([], 204);
+        return response()->json([], HttpStatusCode::No_Content);
     }
 }

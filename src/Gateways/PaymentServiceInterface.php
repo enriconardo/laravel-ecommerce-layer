@@ -3,7 +3,7 @@
 namespace EnricoNardo\EcommerceLayer\Gateways;
 
 use EnricoNardo\EcommerceLayer\Models\Address;
-use EnricoNardo\EcommerceLayer\Models\Payment;
+use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 
 interface PaymentServiceInterface

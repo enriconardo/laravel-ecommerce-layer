@@ -4,7 +4,7 @@ namespace EnricoNardo\EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use EnricoNardo\EcommerceLayer\Casts\Plan as PlanCast;
-use EnricoNardo\EcommerceLayer\Enums\Currency;
+use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
  * @property Currency $currency

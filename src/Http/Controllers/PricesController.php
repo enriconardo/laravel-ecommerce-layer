@@ -5,6 +5,7 @@ namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 use EnricoNardo\EcommerceLayer\Models\Price;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use PrinsFrank\Standards\Http\HttpStatusCode;
 
 class PricesController extends Controller
 {
@@ -35,6 +36,6 @@ class PricesController extends Controller
 
         $price->delete();
 
-        return response()->json([], 204);
+        return response()->json([], HttpStatusCode::No_Content);
     }
 }

@@ -7,7 +7,7 @@ use EnricoNardo\EcommerceLayer\Casts\Address as AddressCast;
 use EnricoNardo\EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
-use EnricoNardo\EcommerceLayer\Enums\Currency;
+use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
  * @property OrderStatus $status

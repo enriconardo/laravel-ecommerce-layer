@@ -44,6 +44,15 @@ public function register()
 
 `YourMainClass` is your actual *Main class* described before.
 
+## ISO standards
+
+ISO standards for currencies, countries, languages and HTTP status codes are handled by PHP enums of the `prinsfrank/standards` package. Check it on [Github](https://github.com/PrinsFrank/standards).
+
+In the *Laravel Ecommerce Layer*, the ISO standards used are:
+
+- **ISO4217_Alpha_3** for currencies (three letters)
+- **ISO3166_1_Alpha_2** for countries (two letters)
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

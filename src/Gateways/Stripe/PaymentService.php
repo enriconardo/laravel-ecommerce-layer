@@ -5,7 +5,7 @@ namespace EnricoNardo\EcommerceLayer\Gateways\Stripe;
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 use EnricoNardo\EcommerceLayer\Gateways\PaymentServiceInterface;
 use EnricoNardo\EcommerceLayer\Models\Address;
-use EnricoNardo\EcommerceLayer\Models\Payment;
+use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Stripe\StripeClient;
 
@@ -35,7 +35,7 @@ class PaymentService implements PaymentServiceInterface
 
         $status = $stripePymentIntent->status === 'requires_payment_method' ? PaymentStatus::REFUSED : PaymentStatus::AUTHORIZED;
 
-        return new Payment($status, $stripePymentIntent->id);
+        return new Payment($stripePymentIntent->id, $status);
     }
 
     public function capture()

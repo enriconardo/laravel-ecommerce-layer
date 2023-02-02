@@ -2,7 +2,8 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Enums\Currency;
+use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
+use PrinsFrank\Standards\Http\HttpStatusCode;
 use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
 use EnricoNardo\EcommerceLayer\Http\Resources\ProductResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
@@ -108,6 +109,6 @@ class ProductsController extends Controller
 
         $product->delete();
 
-        return response()->json([], 204);
+        return response()->json([], HttpStatusCode::No_Content);
     }
 }

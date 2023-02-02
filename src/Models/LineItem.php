@@ -20,8 +20,8 @@ class LineItem extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function product()
+    public function price()
     {
-        return $this->hasOne(Product::class);
+        return $this->hasOne(Price::class);
     }
 }
