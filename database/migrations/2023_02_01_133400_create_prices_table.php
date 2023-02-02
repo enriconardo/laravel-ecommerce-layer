@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('description');
             $table->boolean('active')->default(true);
             $table->boolean('recurring')->default(false);
-            $table->boolean('discount')->default(false);
+            $table->boolean('default')->default(false);
             $table->text('plan')->nullable();
             $table->dateTimeTz('start_at')->nullable();
             $table->dateTimeTz('end_at')->nullable();

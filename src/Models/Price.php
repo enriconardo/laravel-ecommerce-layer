@@ -11,7 +11,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property string $description A brief description of the price, hidden from customers.
  * @property bool $active Whether the price can be used for new purchases. Default `true`.
  * @property bool $recurring Whether the price is for a subscription plan. Default `false`.
- * @property bool $discount Whether the price is a discounted price. Default `false`.
+ * @property bool $default Whether the price is displayed by default to the user. Default to `false`.
  * @property PlanCast|null $plan The recurring components of a price. Set only if $recurring is `true`.
  * @property mixed|null $start_at If the price is time limited, this is the starting datetime.
  * @property mixed|null $end_at If the price is time limited, this is the ending datetime. Leave `null` if it is endless.
@@ -28,7 +28,7 @@ class Price extends Model
         'description',
         'active',
         'recurring',
-        'discount',
+        'default',
         'plan',
         'start_at',
         'end_at'
@@ -43,7 +43,7 @@ class Price extends Model
         'currency' => Currency::class,
         'active' => 'boolean',
         'recurring' => 'boolean',
-        'discount' => 'boolean',
+        'default' => 'boolean',
         'plan' => PlanCast::class,
         'start_at' => 'datetime',
         'end_at' => 'datetime'
