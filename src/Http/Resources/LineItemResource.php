@@ -4,7 +4,7 @@ namespace EnricoNardo\EcommerceLayer\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class LineItemResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,6 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        $array = parent::toArray($request);
-
-        $array['prices'] = PriceResource::collection($this->whenLoaded('prices'));
-
-        return $array;
+        return parent::toArray($request);
     }
 }

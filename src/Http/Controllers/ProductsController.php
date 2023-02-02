@@ -19,6 +19,7 @@ class ProductsController extends Controller
         $products = QueryBuilder::for(Product::class)
             ->allowedFilters(['code', 'active', 'shippable'])
             ->allowedSorts('code', 'name')
+            ->allowedIncludes('prices')
             ->paginate()
             ->appends($request->query());
 
@@ -29,6 +30,9 @@ class ProductsController extends Controller
     {
         /** @var Product $product */
         $product = Product::findOrFail($id);
+
+        // Load the necessary relationships to return
+        $product->load('prices');
 
         return ProductResource::make($product);
     }
@@ -65,6 +69,9 @@ class ProductsController extends Controller
             ->withPrices($request->input('prices', []))
             ->end();
 
+        // Load the necessary relationships to return
+        $product->load('prices');
+
         return ProductResource::make($product);
     }
 
@@ -100,6 +107,9 @@ class ProductsController extends Controller
             ->fill($data)
             ->withPrices($request->input('prices', []))
             ->end();
+
+        // Load the necessary relationships to return
+        $product->load('prices');
 
         return ProductResource::make($product);
     }

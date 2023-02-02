@@ -29,7 +29,7 @@ class OrdersController extends Controller
             ->paginate()
             ->appends($request->query());
 
-            return OrderResource::collection($orders);
+        return OrderResource::collection($orders);
     }
 
     public function find($id)
@@ -56,11 +56,11 @@ class OrdersController extends Controller
         $data = [
             'status' => OrderStatus::DRAFT,
             'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address') 
-                ? new Address($request->input('billing_address')) 
+            'billing_address' => $request->has('billing_address')
+                ? new Address($request->input('billing_address'))
                 : null,
-            'payment_method' => $request->has('payment_method') 
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', [])) 
+            'payment_method' => $request->has('payment_method')
+                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
                 : null,
         ];
 
@@ -97,11 +97,11 @@ class OrdersController extends Controller
 
         $data = [
             'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address') 
-                ? new Address($request->input('billing_address')) 
+            'billing_address' => $request->has('billing_address')
+                ? new Address($request->input('billing_address'))
                 : null,
-            'payment_method' => $request->has('payment_method') 
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', [])) 
+            'payment_method' => $request->has('payment_method')
+                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
                 : null,
         ];
 
@@ -138,14 +138,14 @@ class OrdersController extends Controller
         $data = [
             'status' => OrderStatus::OPEN,
             'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address') 
-                ? new Address($request->input('billing_address')) 
+            'billing_address' => $request->has('billing_address')
+                ? new Address($request->input('billing_address'))
                 : null,
-            'payment_method' => $request->has('payment_method') 
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', [])) 
+            'payment_method' => $request->has('payment_method')
+                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
                 : null,
         ];
- 
+
         $builder = OrderBuilder::init($order)->fill($data);
 
         if ($request->has('gateway_id')) {

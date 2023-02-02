@@ -1,5 +1,7 @@
 # Laravel Ecommerce Layer
 
+This is a work in progress project.
+
 ## Installation
 
 You can install the package via composer:
