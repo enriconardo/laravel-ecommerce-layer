@@ -17,6 +17,11 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property PaymentMethodCast $payment_method
  * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
  * @property string|null $gateway_payment_identifier The id of the payment related object returned by the payment gateway API.
+ * @property int $subtotal The sum of the subtotals of all the line items in the order, in cents. No tax, discounts or other options are considered.
+ * @property int $total Total amount of the order, which is the subtotal with all the options considered, like taxes, shipping costs or discounts.
+ * @property \EnricoNardo\EcommerceLayer\Models\Customer $customer
+ * @property \EnricoNardo\EcommerceLayer\Models\Gateway $gateway
+ * @property \Illuminate\Support\Collection $line_items
  */
 class Order extends Model
 {
@@ -64,9 +69,30 @@ class Order extends Model
         return $this->hasMany(LineItem::class);
     }
 
+    /**
+     * Get the sum of the subtotals of all the line items in the order, in cents.
+     * No tax, discounts or other options are considered.
+     * 
+     * @return int
+     */
+    public function getSubtotalAttribute()
+    {
+        $lineItems = $this->line_items;
+        return $lineItems->sum(function ($lineItem) {
+            /** @var \EnricoNardo\EcommerceLayer\Models\LineItem $lineItem */
+            return $lineItem->subtotal;
+        });
+    }
+
+    /**
+     * Get the total amount of the order, which is the subtotal with all the options 
+     * considered, like taxes, shipping costs or discounts.
+     * 
+     * @return int
+     */
     public function getTotalAttribute()
     {
-        // TODO
-        return 100;
+        // TODO apply taxes, shipping costs, discounts or other stuff.
+        return $this->subtotal;
     }
 }

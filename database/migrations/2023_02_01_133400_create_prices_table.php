@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('currency', 3);
             $table->string('description');
+            $table->integer('unit_amount');
             $table->boolean('active')->default(true);
             $table->boolean('recurring')->default(false);
             $table->boolean('default')->default(false);

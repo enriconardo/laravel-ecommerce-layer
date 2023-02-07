@@ -8,6 +8,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
  * @property Currency $currency
+ * @property int $unit_amount The price of a single unit of product, represented as an integer.
  * @property string $description A brief description of the price, hidden from customers.
  * @property bool $active Whether the price can be used for new purchases. Default `true`.
  * @property bool $recurring Whether the price is for a subscription plan. Default `false`.
@@ -25,6 +26,7 @@ class Price extends Model
      */
     protected $fillable = [
         'currency',
+        'unit_amount',
         'description',
         'active',
         'recurring',
