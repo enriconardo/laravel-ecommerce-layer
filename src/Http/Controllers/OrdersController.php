@@ -121,6 +121,14 @@ class OrdersController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
+        if ($order->status !== OrderStatus::DRAFT) {
+            throw new InvalidOrderException("You cannot place an order that has been already placed");
+        }
+
+        if ($order->line_items->count() === 0) {
+            throw new InvalidOrderException("You cannot place an empty order.");
+        }
+
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists()), 'exists:EnricoNardo\EcommerceLayer\Models\Gateway,id'],
@@ -136,6 +144,7 @@ class OrdersController extends Controller
         ]);
 
         $data = [
+            'status' => OrderStatus::OPEN,
             'gateway_id' => $request->input('gateway_id'),
             'currency' => $request->input('currency'),
         ];
@@ -152,14 +161,10 @@ class OrdersController extends Controller
 
         $order = $builder->end();
 
-        try {
-            /** @var OrderService $service */
-            $service = new OrderService;
+        /** @var OrderService $service */
+        $service = new OrderService;
 
-            $order = $service->place($order, $request->input('confirm', false));
-        } catch (InvalidOrderException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
+        $order = $service->pay($order);
 
         return OrderResource::make($order);
     }
