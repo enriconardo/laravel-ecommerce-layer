@@ -60,4 +60,9 @@ class Price extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function lineItem()
+    {
+        return $this->hasMany(LineItem::class);
+    }
 }

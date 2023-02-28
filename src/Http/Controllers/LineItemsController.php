@@ -44,13 +44,11 @@ class LineItemsController extends Controller
 
         $data = [
             'quantity' => $request->input('quantity'),
+            'price_id' => $request->input('price_id'),
+            'order_id' => $request->input('order_id'),
         ];
 
-        $lineItem = LineItemBuilder::init()
-            ->fill($data)
-            ->withPrice($request->input('price_id'))
-            ->withOrder($request->input('order_id'))
-            ->end();
+        $lineItem = LineItemBuilder::init()->fill($data)->end();
 
         return LineItemResource::make($lineItem);
     }
@@ -68,9 +66,7 @@ class LineItemsController extends Controller
             'quantity' => $request->input('quantity'),
         ];
 
-        $lineItem = LineItemBuilder::init($lineItem)
-            ->fill($data)
-            ->end();
+        $lineItem = LineItemBuilder::init($lineItem)->fill($data)->end();
 
         return LineItemResource::make($lineItem);
     }

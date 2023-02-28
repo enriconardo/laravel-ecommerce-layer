@@ -3,12 +3,14 @@
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
+use EnricoNardo\EcommerceLayer\Exceptions\InvalidOrderException;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
 use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Models\Order;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
+use EnricoNardo\EcommerceLayer\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -43,9 +45,9 @@ class OrdersController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'customer_id' => 'string|required',
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
-            'gateway_id' => 'string',
+            'customer_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Customer,id',
+            'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
@@ -54,21 +56,20 @@ class OrdersController extends Controller
         ]);
 
         $data = [
+            'customer_id' => $request->input('customer_id'),
+            'gateway_id' => $request->input('gateway_id'),
             'status' => OrderStatus::DRAFT,
-            'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address')
-                ? new Address($request->input('billing_address'))
-                : null,
-            'payment_method' => $request->has('payment_method')
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
-                : null,
+            'currency' => $request->input('currency')
         ];
 
         $builder = OrderBuilder::init()->fill($data);
-        $builder->withCustomer($request->input('customer_id'));
 
-        if ($request->has('gateway_id')) {
-            $builder->withGateway($request->input('gateway_id'));
+        if ($request->has('billing_address')) {
+            $builder->withBillingAddress($request->input('billing_address'));
+        }
+
+        if ($request->has('payment_method')) {
+            $builder->withPaymentMethod($request->input('payment_method'));
         }
 
         $order = $builder->end();
@@ -87,7 +88,7 @@ class OrdersController extends Controller
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => 'string',
+            'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
@@ -96,19 +97,18 @@ class OrdersController extends Controller
         ]);
 
         $data = [
-            'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address')
-                ? new Address($request->input('billing_address'))
-                : null,
-            'payment_method' => $request->has('payment_method')
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
-                : null,
+            'gateway_id' => $request->input('gateway_id'),
+            'currency' => $request->input('currency')
         ];
 
         $builder = OrderBuilder::init($order)->fill($data);
 
-        if ($request->has('gateway_id')) {
-            $builder->withGateway($request->input('gateway_id'));
+        if ($request->has('billing_address')) {
+            $builder->withBillingAddress($request->input('billing_address'));
+        }
+
+        if ($request->has('payment_method')) {
+            $builder->withPaymentMethod($request->input('payment_method'));
         }
 
         $order = $builder->end();
@@ -121,49 +121,45 @@ class OrdersController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
-        if ($order->status !== OrderStatus::DRAFT) {
-            throw new BadRequestHttpException("You cannot place an order that has been already placed");
-        }
-
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists())],
-            'billing_address' => ['array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone', Rule::requiredIf($order->billing_address === null)],
+            'gateway_id' => ['string', Rule::requiredIf(!$order->gateway()->exists()), 'exists:EnricoNardo\EcommerceLayer\Models\Gateway,id'],
+            'billing_address' => [
+                'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
+                Rule::requiredIf($order->billing_address === null)
+            ],
             'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => ['array:type,data', Rule::requiredIf($order->payment_method === null)],
             'payment_method.type' => 'string|required_with:payment_method',
-            'payment_method.data' => 'array|required_with:payment_method'
+            'payment_method.data' => 'array|required_with:payment_method',
+            'confirm' => 'boolean'
         ]);
 
         $data = [
-            'status' => OrderStatus::OPEN,
+            'gateway_id' => $request->input('gateway_id'),
             'currency' => $request->input('currency'),
-            'billing_address' => $request->has('billing_address')
-                ? new Address($request->input('billing_address'))
-                : null,
-            'payment_method' => $request->has('payment_method')
-                ? new PaymentMethod($request->input('payment_method.type'), $request->input('payment_method.data', []))
-                : null,
         ];
 
         $builder = OrderBuilder::init($order)->fill($data);
 
-        if ($request->has('gateway_id')) {
-            $builder->withGateway($request->input('gateway_id'));
+        if ($request->has('billing_address')) {
+            $builder->withBillingAddress($request->input('billing_address'));
+        }
+
+        if ($request->has('payment_method')) {
+            $builder->withPaymentMethod($request->input('payment_method'));
         }
 
         $order = $builder->end();
 
-        /** @var GatewayServiceInterface $gatewayService */
-        $gatewayService = gateway($order->gateway->identifier);
+        try {
+            /** @var OrderService $service */
+            $service = new OrderService;
 
-        /** @var \EnricoNardo\EcommerceLayer\Gateways\Models\Payment $payment */
-        $payment = $gatewayService->payments()->create($order->total, $order->currency, $order->payment_method, $order->billing_address);
-
-        $order = OrderBuilder::init($order)->fill([
-            'payment_status' => $payment->status,
-            'gateway_payment_identifier' => $payment->identifier
-        ])->end();
+            $order = $service->place($order, $request->input('confirm', false));
+        } catch (InvalidOrderException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
         return OrderResource::make($order);
     }

@@ -2,10 +2,13 @@
 
 namespace EnricoNardo\EcommerceLayer\ModelBuilders;
 
+use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Models\Order;
 use EnricoNardo\EcommerceLayer\Models\Gateway;
 use EnricoNardo\EcommerceLayer\Models\Customer;
+use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Exception;
+use Illuminate\Support\Arr;
 
 class OrderBuilder extends BaseBuilder
 {
@@ -15,60 +18,52 @@ class OrderBuilder extends BaseBuilder
     }
 
     /**
-     * @param Customer|string|int $customer
+     * @param Address|array $address
      * @return $this
+     * @throws Exception
      */
-    public function withCustomer(Customer|string|int $customer)
+    public function withBillingAddress(Address|array $address)
     {
         try {
-            /** @var Order $model */
-            $model = $this->model;
-
-            if (is_string($customer) || is_int($customer)) {
-                $customer = Customer::find($customer);
+            if (is_array($address)) {
+                $address = new Address($address);
             }
 
-            if ($customer instanceof Customer) {
-                $model->customer()->associate($customer);
+            if (!$address instanceof Address) {
+                throw new Exception('Invalid address');
             }
 
-            $model->save();
-
-            $this->model = $model;
-
-            return $this;
+            $this->model->billing_address = $address;
         } catch (Exception $e) {
             $this->abort();
             throw $e;
         }
+
+        return $this;
     }
 
     /**
-     * @param Gateway|string|int $gateway
+     * @param PaymentMethod|array $method
      * @return $this
+     * @throws Exception
      */
-    public function withGateway(Gateway|string|int $gateway)
+    public function withPaymentMethod(PaymentMethod|array $method)
     {
         try {
-            /** @var Order $model */
-            $model = $this->model;
-
-            if (is_string($gateway) || is_int($gateway)) {
-                $gateway = Gateway::find($gateway);
+            if (is_array($method)) {
+                $method = new PaymentMethod(Arr::get($method, 'type'), Arr::get($method, 'data'));
             }
 
-            if ($gateway instanceof Gateway) {
-                $model->gateway()->associate($gateway);
+            if (!$method instanceof PaymentMethod) {
+                throw new Exception('Invalid payment method');
             }
 
-            $model->save();
-
-            $this->model = $model;
-
-            return $this;
+            $this->model->payment_method = $method;
         } catch (Exception $e) {
             $this->abort();
             throw $e;
         }
+
+        return $this;
     }
 }

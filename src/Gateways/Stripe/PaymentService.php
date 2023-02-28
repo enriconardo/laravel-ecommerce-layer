@@ -8,6 +8,7 @@ use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Stripe\StripeClient;
+use Stripe\PaymentIntent;
 
 class PaymentService implements PaymentServiceInterface
 {
@@ -18,8 +19,11 @@ class PaymentService implements PaymentServiceInterface
         $this->client = $client;
     }
 
-    public function create(int $amount, string $currency, PaymentMethod $paymentMethod, Address $billingAddress = null): Payment
-    {
+    public function create(
+        int $amount,
+        string $currency,
+        PaymentMethod $paymentMethod
+    ): Payment {
         $type = $paymentMethod->type;
 
         $stripePaymentMethod = $this->client->paymentMethods->create([
@@ -30,16 +34,70 @@ class PaymentService implements PaymentServiceInterface
         $stripePymentIntent = $this->client->paymentIntents->create([
             'amount' => $amount,
             'currency' => $currency,
-            'payment_method' => $stripePaymentMethod->id
+            'payment_method' => $stripePaymentMethod->id,
         ]);
 
-        $status = $stripePymentIntent->status === 'requires_payment_method' ? PaymentStatus::REFUSED : PaymentStatus::AUTHORIZED;
-
-        return new Payment($stripePymentIntent->id, $status);
+        return new Payment(
+            $stripePymentIntent->id,
+            $this->getStatus($stripePymentIntent)
+        );
     }
 
-    public function capture()
+    public function createAndConfirm(
+        int $amount,
+        string $currency,
+        PaymentMethod $paymentMethod
+    ): Payment {
+        $type = $paymentMethod->type;
+
+        $stripePaymentMethod = $this->client->paymentMethods->create([
+            'type' => $type,
+            $type => $paymentMethod->data,
+        ]);
+
+        $stripePymentIntent = $this->client->paymentIntents->create([
+            'amount' => $amount,
+            'currency' => $currency,
+            'payment_method' => $stripePaymentMethod->id,
+            'confirm' => true
+        ]);
+
+        return new Payment(
+            $stripePymentIntent->id,
+            $this->getStatus($stripePymentIntent)
+        );
+    }
+
+    public function confirm(Payment $payment): Payment
     {
-        // TODO
+        $stripePymentIntent = $this->client->paymentIntents->retrieve($payment->identifier);
+        $stripePymentIntent = $stripePymentIntent->confirm();
+
+        return new Payment(
+            $stripePymentIntent->id,
+            $this->getStatus($stripePymentIntent)
+        );
+    }
+
+    /**
+     * Transform a Stripe status in a Ecommerce Layer internal payment status.
+     * 
+     * @return PaymentStatus
+     */
+    protected function getStatus(PaymentIntent $stripePymentIntent)
+    {
+        switch ($stripePymentIntent->status) {
+            case 'requires_action':
+            case 'processing':
+                return PaymentStatus::PENDING;
+            case 'requires_confirmation':
+                return PaymentStatus::AUTHORIZED;
+            case 'succeeded':
+                return PaymentStatus::PAID;
+            case 'canceled':
+                return PaymentStatus::VOIDED;
+            default:
+                return PaymentStatus::REFUSED;
+        }
     }
 }

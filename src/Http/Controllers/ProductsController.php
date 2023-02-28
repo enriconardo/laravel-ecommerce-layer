@@ -47,6 +47,7 @@ class ProductsController extends Controller
             'metadata' => 'array',
             'prices' => 'array|required',
             'prices.*.currency' => ['string', 'required_with:prices', new EnumValidation(Currency::class)],
+            'prices.*.unit_amount' => 'integer|required_with:prices',
             'prices.*.description' => 'string|required_with:prices',
             'prices.*.active' => 'boolean',
             'prices.*.default' => 'boolean',
@@ -65,9 +66,7 @@ class ProductsController extends Controller
             'prices' => $request->input('prices', [])
         ];
 
-        $product = ProductBuilder::init()
-            ->fill($data)
-            ->end();
+        $product = ProductBuilder::init()->fill($data)->end();
 
         // Load the necessary relationships to return
         $product->load('prices');

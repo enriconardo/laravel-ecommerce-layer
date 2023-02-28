@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $quantity The quantity of a single product added to the order.
+ * @property int $price_id The id of the related price.
+ * @property int $order_id The id of the related order.
  * @property \EnricoNardo\EcommerceLayer\Models\Order $order The parent order of the line item.
  * @property \EnricoNardo\EcommerceLayer\Models\Price $price This is the price of the product added to the order.
  * @property \EnricoNardo\EcommerceLayer\Models\Product $product
@@ -19,7 +21,9 @@ class LineItem extends Model
      * @var array
      */
     protected $fillable = [
-        'quantity'
+        'quantity',
+        'price_id',
+        'order_id'
     ];
 
     public function order()
@@ -29,7 +33,7 @@ class LineItem extends Model
 
     public function price()
     {
-        return $this->hasOne(Price::class);
+        return $this->belongsTo(Price::class);
     }
 
     /**

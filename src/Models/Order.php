@@ -10,6 +10,8 @@ use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
+ * @property int $customer_id The id of the related customer.
+ * @property int $gateway_id The id of the related payment gateway.
  * @property OrderStatus $status
  * @property PaymentStatus $payment_status
  * @property Currency $currency
@@ -31,6 +33,8 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
+        'customer_id',
+        'gateway_id',
         'status',
         'payment_status',
         'currency',
@@ -67,6 +71,14 @@ class Order extends Model
     public function lineItems()
     {
         return $this->hasMany(LineItem::class);
+    }
+
+    /**
+     * @see lineItems() Alias
+     */
+    public function line_items()
+    {
+        return $this->lineItems();
     }
 
     /**
