@@ -18,8 +18,8 @@
     "require": {
         "php": "^8.2",
         "illuminate/support": "^9.0|^10.0",
-        "stripe/stripe-php": "^10.4",
-        "spatie/laravel-query-builder": "^5.1",
+        "stripe/stripe-php": "^10.7",
+        "spatie/laravel-query-builder": "^5.2",
         "prinsfrank/standards": "^1.5"
     },
     "require-dev": {
