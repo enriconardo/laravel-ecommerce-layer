@@ -13,7 +13,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class LineItemsController extends Controller
+class LineItemController extends Controller
 {
     public function list(Request $request)
     {

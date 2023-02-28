@@ -3,6 +3,7 @@
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
+use EnricoNardo\EcommerceLayer\Events\Order\OrderPlaced;
 use EnricoNardo\EcommerceLayer\Exceptions\InvalidOrderException;
 use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
@@ -21,7 +22,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 use PrinsFrank\Standards\Country\ISO3166_1_Alpha_2 as Country;
 use PrinsFrank\Standards\Http\HttpStatusCode;
 
-class OrdersController extends Controller
+class OrderController extends Controller
 {
     public function list(Request $request)
     {
@@ -48,6 +49,7 @@ class OrdersController extends Controller
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'customer_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Customer,id',
             'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
+            'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
@@ -59,7 +61,8 @@ class OrdersController extends Controller
             'customer_id' => $request->input('customer_id'),
             'gateway_id' => $request->input('gateway_id'),
             'status' => OrderStatus::DRAFT,
-            'currency' => $request->input('currency')
+            'currency' => $request->input('currency'),
+            'metadata' => $request->input('metadata'),
         ];
 
         $builder = OrderBuilder::init()->fill($data);
@@ -89,6 +92,7 @@ class OrdersController extends Controller
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
+            'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'array:type,data',
@@ -98,7 +102,8 @@ class OrdersController extends Controller
 
         $data = [
             'gateway_id' => $request->input('gateway_id'),
-            'currency' => $request->input('currency')
+            'currency' => $request->input('currency'),
+            'metadata' => $request->input('metadata'),
         ];
 
         $builder = OrderBuilder::init($order)->fill($data);
@@ -165,6 +170,8 @@ class OrdersController extends Controller
         $service = new OrderService;
 
         $order = $service->pay($order);
+
+        OrderPlaced::dispatch($order);
 
         return OrderResource::make($order);
     }

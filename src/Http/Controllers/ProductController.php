@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
     public function list(Request $request)
     {

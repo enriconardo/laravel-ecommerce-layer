@@ -12,7 +12,7 @@ use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
 use EnricoNardo\EcommerceLayer\Http\Resources\PriceResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\PriceBuilder;
 
-class PricesController extends Controller
+class PriceController extends Controller
 {
     public function create(Request $request)
     {
