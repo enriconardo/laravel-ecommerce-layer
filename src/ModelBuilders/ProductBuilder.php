@@ -4,6 +4,8 @@ namespace EnricoNardo\EcommerceLayer\ModelBuilders;
 
 use EnricoNardo\EcommerceLayer\Models\Price;
 use EnricoNardo\EcommerceLayer\Models\Product;
+use Exception;
+use Illuminate\Support\Arr;
 
 class ProductBuilder extends BaseBuilder
 {
@@ -13,45 +15,37 @@ class ProductBuilder extends BaseBuilder
     }
 
     /**
-     * @param Price|array $price
+     * @param array $attributes
      * @return $this
+     * @throws Exception
      */
-    public function withPrice(Price|array $price)
+    public function fill(array $attributes)
     {
-        /** @var Product $model */
-        $model = $this->model;
-        $model->save();
+        parent::fill($attributes);
 
-        if (is_array($price)) {
-            $price = PriceBuilder::init(null, false)->fill($price)->getModel();
+        try {
+            $this->savePrices($attributes);
+        } catch (Exception $e) {
+            $this->abort();
+            throw $e;
         }
-
-        if ($price instanceof Price) {
-            $model->prices()->save($price);
-        }
-
-        $this->model = $model;
 
         return $this;
     }
 
-    /**
-     * @param array $prices
-     * @return $this
-     */
-    public function withPrices(array $prices)
+    protected function savePrices($attributes)
     {
         /** @var Product $model */
         $model = $this->model;
         $model->save();
 
-        $pricesToSave = [];
+        $prices = Arr::get($attributes, 'prices', []);
 
         foreach ($prices as $price) {
             if (is_array($price)) {
                 $price = PriceBuilder::init(null, false)->fill($price)->getModel();
             }
-    
+
             if ($price instanceof Price) {
                 $pricesToSave[] = $price;
             }
@@ -62,7 +56,5 @@ class ProductBuilder extends BaseBuilder
         }
 
         $this->model = $model;
-
-        return $this;
     }
 }

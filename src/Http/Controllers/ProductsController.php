@@ -62,11 +62,11 @@ class ProductsController extends Controller
             'active' => $request->input('active'),
             'shippable' => $request->input('shippable'),
             'metadata' => $request->input('metadata'),
+            'prices' => $request->input('prices', [])
         ];
 
         $product = ProductBuilder::init()
             ->fill($data)
-            ->withPrices($request->input('prices', []))
             ->end();
 
         // Load the necessary relationships to return
@@ -84,28 +84,18 @@ class ProductsController extends Controller
             'name' => 'string',
             'active' => 'boolean',
             'shippable' => 'boolean',
-            'metadata' => 'array',
-            'prices' => 'array',
-            'prices.*.currency' => ['string', new EnumValidation(Currency::class)],
-            'prices.*.description' => 'string',
-            'prices.*.active' => 'boolean',
-            'prices.*.default' => 'boolean',
-            'prices.*.recurring' => 'boolean',
-            'prices.*.plan' => 'array:interval,interval_count|required_if:prices.*.recurring,true',
-            'prices.*.plan.interval' => ['required_with:prices.*.plan', new EnumValidation(PlanInterval::class)],
-            'prices.*.plan.interval_count' => 'required_with:prices.*.plan|integer'
+            'metadata' => 'array'
         ]);
 
         $data = [
             'name' => $request->input('name'),
             'active' => $request->input('active'),
             'shippable' => $request->input('shippable'),
-            'metadata' => $request->input('metadata'),
+            'metadata' => $request->input('metadata')
         ];
 
         $product = ProductBuilder::init($product)
             ->fill($data)
-            ->withPrices($request->input('prices', []))
             ->end();
 
         // Load the necessary relationships to return

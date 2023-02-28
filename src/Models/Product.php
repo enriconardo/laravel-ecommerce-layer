@@ -40,11 +40,6 @@ class Product extends Model
         'metadata' => 'array',
     ];
 
-    public function lineItems()
-    {
-        return $this->belongsToMany(LineItem::class);
-    }
-
     public function prices()
     {
         return $this->hasMany(Price::class);
