@@ -10,13 +10,15 @@ interface PaymentServiceInterface
     public function create(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod
+        PaymentMethod $paymentMethod,
+        string $customerIdentifier = null
     ): Payment;
 
     public function createAndConfirm(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod
+        PaymentMethod $paymentMethod,
+        string $customerIdentifier = null
     ): Payment;
 
     public function confirm(Payment $payment): Payment;

@@ -22,7 +22,8 @@ class PaymentService implements PaymentServiceInterface
     public function create(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod
+        PaymentMethod $paymentMethod,
+        string $customerIdentifier = null
     ): Payment {
         $type = $paymentMethod->type;
 
@@ -31,11 +32,12 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePymentIntent = $this->client->paymentIntents->create([
+        $stripePymentIntent = $this->client->paymentIntents->create(attributes_filter([
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
-        ]);
+            'customer' => $customerIdentifier
+        ]));
 
         return new Payment(
             $stripePymentIntent->id,
@@ -46,7 +48,8 @@ class PaymentService implements PaymentServiceInterface
     public function createAndConfirm(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod
+        PaymentMethod $paymentMethod,
+        string $customerIdentifier = null
     ): Payment {
         $type = $paymentMethod->type;
 
@@ -55,12 +58,13 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePymentIntent = $this->client->paymentIntents->create([
+        $stripePymentIntent = $this->client->paymentIntents->create(attributes_filter([
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
+            'customer' => $customerIdentifier,
             'confirm' => true
-        ]);
+        ]));
 
         return new Payment(
             $stripePymentIntent->id,

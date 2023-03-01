@@ -22,7 +22,7 @@ class CustomerService implements CustomerServiceInterface
         $customer = $this->findByEmail($email);
 
         if ($customer instanceof Customer) {
-            return $this->_update($email, $address, $metadata);
+            return $this->_update($customer->identifier, $address, $metadata);
         }
 
         return $this->_create($email, $address, $metadata);
@@ -36,7 +36,7 @@ class CustomerService implements CustomerServiceInterface
             throw new ModelNotFoundException("Customer with email [$email] has not found in the gateway.");
         }
 
-        return $this->_update($email, $address, $metadata);
+        return $this->_update($customer->identifier, $address, $metadata);
     }
 
     public function findByEmail(string $email): Customer|null
@@ -74,9 +74,9 @@ class CustomerService implements CustomerServiceInterface
         return new Customer($gatewayCustomer->id);
     }
 
-    protected function _update(string $email, Address|null $address = null, array|null $metadata = null)
+    protected function _update($id, Address|null $address = null, array|null $metadata = null)
     {
-        $gatewayCustomer = $this->client->customers->update(attributes_filter([
+        $gatewayCustomer = $this->client->customers->update($id, attributes_filter([
             'address' => ($address instanceof Address) ? $this->_getAddressData($address) : null,
             'metadata' => $metadata
         ]));

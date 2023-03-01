@@ -21,25 +21,32 @@ class ProductBuilder extends BaseBuilder
      */
     public function fill(array $attributes)
     {
+        $prices = null;
+        if (Arr::has($attributes, 'prices')) {
+            $prices = Arr::pull($attributes, 'prices');
+        }
+
         parent::fill($attributes);
 
-        try {
-            $this->savePrices($attributes);
-        } catch (Exception $e) {
-            $this->abort();
-            throw $e;
+        if ($prices) {
+            try {
+                $this->savePrices($prices);
+            } catch (Exception $e) {
+                $this->abort();
+                throw $e;
+            }
         }
 
         return $this;
     }
 
-    protected function savePrices($attributes)
+    protected function savePrices($prices)
     {
         /** @var Product $model */
         $model = $this->model;
         $model->save();
 
-        $prices = Arr::get($attributes, 'prices', []);
+        $pricesToSave = [];
 
         foreach ($prices as $price) {
             if (is_array($price)) {
