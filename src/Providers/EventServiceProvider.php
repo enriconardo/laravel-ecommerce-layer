@@ -2,18 +2,21 @@
 
 namespace EnricoNardo\EcommerceLayer\Providers;
 
+use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
+use EnricoNardo\EcommerceLayer\Listeners\SyncCustomerWithGateway;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
-class AuthServiceProvider extends ParentServiceProvider
+class EventServiceProvider extends ParentServiceProvider
 {
     /**
-     * The policy mappings for the application.
+     * The event listener mappings for the application.
      *
      * @var array
      */
-    protected $policies = [
-        \EnricoNardo\EcommerceLayer\Models\Order::class => \EnricoNardo\EcommerceLayer\Policies\OrderPolicy::class,
-        \EnricoNardo\EcommerceLayer\Models\LineItem::class => \EnricoNardo\EcommerceLayer\Policies\LineItemPolicy::class
+    protected $listen = [
+        OrderPlacing::class => [
+            SyncCustomerWithGateway::class,
+        ],
     ];
 
     /**

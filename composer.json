@@ -51,8 +51,8 @@
             "providers": [
                 "EnricoNardo\\EcommerceLayer\\Providers\\ServiceProvider",
                 "EnricoNardo\\EcommerceLayer\\Providers\\RouteServiceProvider",
-                "EnricoNardo\\EcommerceLayer\\Providers\\AuthServiceProvider",
-                "EnricoNardo\\EcommerceLayer\\Providers\\GatewayServiceProvider"
+                "EnricoNardo\\EcommerceLayer\\Providers\\GatewayServiceProvider",
+                "EnricoNardo\\EcommerceLayer\\Providers\\EventServiceProvider"
             ]
         }
     }

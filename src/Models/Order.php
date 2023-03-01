@@ -107,4 +107,35 @@ class Order extends Model
         // TODO apply taxes, shipping costs, discounts or other stuff.
         return $this->subtotal;
     }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === PaymentStatus::PAID;
+    }
+
+    public function canBeUpdated(): bool
+    {
+        // Only cart (draft order) can be updated
+        return $this->status !== OrderStatus::DRAFT ? false : true;
+    }
+
+    public function canBePlaced(): bool
+    {
+        // Only cart (draft order) and non empty order can be placed
+        return $this->status !== OrderStatus::DRAFT || $this->line_items->count() === 0 ? false : true;
+    }
+
+    public function canBeDeleted(): bool
+    {
+        // Only cart (draft orders) can be deleted
+        return $this->status === OrderStatus::DRAFT ? true : false;
+    }
+
+    public function canBePaid(): bool
+    {
+        return ($this->payment_status !== PaymentStatus::UNPAID
+            || ($this->status === OrderStatus::OPEN && $this->payment_status === PaymentStatus::REFUSED)
+            || ($this->status === OrderStatus::OPEN && $this->payment_status === PaymentStatus::EXPIRED)
+        ) ? false : true;
+    }
 }

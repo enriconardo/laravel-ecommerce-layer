@@ -2,7 +2,7 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Events\CustomerDeleted;
+use EnricoNardo\EcommerceLayer\Events\Customer\CustomerDeleted;
 use EnricoNardo\EcommerceLayer\Http\Resources\CustomerResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\CustomerBuilder;
 use EnricoNardo\EcommerceLayer\Models\Customer;

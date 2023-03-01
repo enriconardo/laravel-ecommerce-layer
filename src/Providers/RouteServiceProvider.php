@@ -2,7 +2,6 @@
 
 namespace EnricoNardo\EcommerceLayer\Providers;
 
-
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class RouteServiceProvider extends ParentServiceProvider
