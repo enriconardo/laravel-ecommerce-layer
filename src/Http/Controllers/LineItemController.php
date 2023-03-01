@@ -37,9 +37,16 @@ class LineItemController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'order_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Order,id'
+        ]);
+
+        $order = Order::find($request->input('order_id'));
+
+        $this->authorize('create', [LineItem::class, $order]);
+
+        $request->validate([
             'quantity' => 'integer|required',
             'price_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Price,id',
-            'order_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Order,id'
         ]);
 
         $data = [
@@ -57,6 +64,8 @@ class LineItemController extends Controller
     {
         /** @var LineItem $lineItem */
         $lineItem = LineItem::findOrFail($id);
+
+        $this->authorize('update', $lineItem);
 
         $request->validate([
             'quantity' => 'integer'
@@ -76,12 +85,7 @@ class LineItemController extends Controller
         /** @var LineItem $lineItem */
         $lineItem = LineItem::findOrFail($id);
 
-        /** @var Order $order */
-        $order = $lineItem->order;
-
-        if ($order->status !== OrderStatus::DRAFT) {
-            throw new BadRequestHttpException("You cannot update an order that has been already closed.");
-        }
+        $this->authorize('delete', $lineItem);
 
         $lineItem->delete();
 

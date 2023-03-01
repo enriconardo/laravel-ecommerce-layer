@@ -12,7 +12,6 @@ enum PaymentStatus: string
     /**
      * A status applied when it is necessary time for gateway and/or 
      * manual actions in order to complete the payment.
-     * It is not applied to credit card payment (use authorized instead).
      */
     case PENDING = 'pending';
 
@@ -36,7 +35,7 @@ enum PaymentStatus: string
     case PAID = 'paid';
 
     /**
-     * An unpaid order was manually canceled.
+     * An unpaid payment was manually canceled.
      */
     case VOIDED = 'voided';
 

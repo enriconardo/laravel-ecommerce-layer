@@ -4,17 +4,13 @@ namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Events\Order\OrderPlaced;
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidOrderException;
-use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
 use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
-use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Models\Order;
-use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
+use EnricoNardo\EcommerceLayer\Services\CustomerService;
 use EnricoNardo\EcommerceLayer\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -85,9 +81,7 @@ class OrderController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
-        if ($order->status !== OrderStatus::DRAFT || $order->status !== OrderStatus::OPEN) {
-            throw new BadRequestHttpException("You cannot update an order that has been already closed.");
-        }
+        $this->authorize('update', $order);
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
@@ -126,13 +120,7 @@ class OrderController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
-        if ($order->status !== OrderStatus::DRAFT) {
-            throw new BadRequestHttpException("You cannot place an order that has been already placed");
-        }
-
-        if ($order->line_items->count() === 0) {
-            throw new BadRequestHttpException("You cannot place an empty order.");
-        }
+        $this->authorize('place', $order);
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
@@ -145,7 +133,6 @@ class OrderController extends Controller
             'payment_method' => ['array:type,data', Rule::requiredIf($order->payment_method === null)],
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method',
-            'confirm' => 'boolean'
         ]);
 
         $data = [
@@ -166,10 +153,13 @@ class OrderController extends Controller
 
         $order = $builder->end();
 
-        /** @var OrderService $service */
-        $service = new OrderService;
+        /** @var CustomerService $customerService */
+        $customerService = new CustomerService;
+        $customerService->syncWithGateway($order->customer, $order->gateway);
 
-        $order = $service->pay($order);
+        /** @var OrderService $service */
+        $orderService = new OrderService;
+        $order = $orderService->pay($order);
 
         OrderPlaced::dispatch($order);
 
@@ -181,9 +171,7 @@ class OrderController extends Controller
         /** @var Order $order */
         $order = Order::findOrFail($id);
 
-        if ($order->status !== OrderStatus::DRAFT) {
-            throw new BadRequestHttpException("You cannot delete an open, completed or canceled order.");
-        }
+        $this->authorize('delete', $order);
 
         $order->delete();
 

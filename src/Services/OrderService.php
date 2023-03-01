@@ -18,10 +18,6 @@ class OrderService
         /** @var \EnricoNardo\EcommerceLayer\Models\Gateway $gateway */
         $gateway = $order->gateway;
 
-        /** @var \EnricoNardo\EcommerceLayer\Services\CustomerService $customerService */
-        $customerService = new CustomerService;
-        $customer = $customerService->syncWithGateway($order->customer, $gateway);
-
         /** @var \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
@@ -30,7 +26,7 @@ class OrderService
             $order->total,
             $order->currency->value,
             $order->payment_method,
-            $customer->getGatewayCustomerIdentifier($gateway->identifier)
+            $order->customer->getGatewayCustomerIdentifier($gateway->identifier)
         );
 
         $order = OrderBuilder::init($order)->fill([
