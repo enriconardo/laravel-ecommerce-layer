@@ -127,11 +127,11 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         if ($order->status !== OrderStatus::DRAFT) {
-            throw new InvalidOrderException("You cannot place an order that has been already placed");
+            throw new BadRequestHttpException("You cannot place an order that has been already placed");
         }
 
         if ($order->line_items->count() === 0) {
-            throw new InvalidOrderException("You cannot place an empty order.");
+            throw new BadRequestHttpException("You cannot place an empty order.");
         }
 
         $request->validate([
