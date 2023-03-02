@@ -17,11 +17,11 @@ if (!function_exists('attributes_filter')) {
 /**
  * Get the instance of the gateway based on the identifier
  * 
- * @return \EcommerceLayer\Gateways\GatewayServiceInterface
+ * @return \EcommerceLayer\Gateways\GatewayProviderInterface
  */
 if (!function_exists('gateway')) {
-    function gateway(string $identifier): \EcommerceLayer\Gateways\GatewayServiceInterface
+    function gateway(string $identifier): \EcommerceLayer\Gateways\GatewayProviderInterface
     {
-        return app(\EcommerceLayer\Gateways\GatewayServiceFactory::class)->make($identifier);
+        return app(\EcommerceLayer\Gateways\GatewayProviderFactory::class)->make($identifier);
     }
 }

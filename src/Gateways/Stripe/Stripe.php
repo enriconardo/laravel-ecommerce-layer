@@ -2,12 +2,12 @@
 
 namespace EcommerceLayer\Gateways\Stripe;
 
-use EcommerceLayer\Gateways\GatewayServiceInterface;
+use EcommerceLayer\Gateways\GatewayProviderInterface;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\CustomerServiceInterface;
 use Stripe\StripeClient;
 
-class Stripe implements GatewayServiceInterface
+class Stripe implements GatewayProviderInterface
 {
     private StripeClient $client;
 

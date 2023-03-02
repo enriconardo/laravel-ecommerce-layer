@@ -78,7 +78,7 @@ class OrderService
         /** @var \EcommerceLayer\Models\Gateway $gateway */
         $gateway = $order->gateway;
 
-        /** @var \EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
+        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
         /** @var \EcommerceLayer\Gateways\Models\Payment $payment */

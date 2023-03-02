@@ -48,7 +48,7 @@ class CustomerService
 
     public function syncWithGateway(Customer $customer, Gateway $gateway): Customer
     {
-        /** @var \EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
+        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
         /** @var \EcommerceLayer\Gateways\Models\Customer $gatewayCustomer */

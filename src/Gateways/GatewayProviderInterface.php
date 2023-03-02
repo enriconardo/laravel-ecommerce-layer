@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways;
 
-interface GatewayServiceInterface
+interface GatewayProviderInterface
 {
     public function getIdentifier(): string;
 

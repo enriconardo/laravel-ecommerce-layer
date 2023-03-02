@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Providers;
 
-use EcommerceLayer\Gateways\GatewayServiceFactory;
+use EcommerceLayer\Gateways\GatewayProviderFactory;
 use EcommerceLayer\Gateways\Stripe\Stripe;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
@@ -22,11 +22,11 @@ class GatewayServiceProvider extends ParentServiceProvider
     public function register()
     {
         // Register the singleton GatewayFactory
-        $this->app->singleton(GatewayServiceFactory::class, function () {
-            return new GatewayServiceFactory();
+        $this->app->singleton(GatewayProviderFactory::class, function () {
+            return new GatewayProviderFactory();
         });
 
         // Enable the gateways
-        $this->app->make(GatewayServiceFactory::class)->enableGateway(new Stripe);
+        $this->app->make(GatewayProviderFactory::class)->enableGateway(new Stripe);
     }
 }
