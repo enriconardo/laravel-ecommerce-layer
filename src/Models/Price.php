@@ -65,4 +65,18 @@ class Price extends Model
     {
         return $this->hasMany(LineItem::class);
     }
+
+    public function canBeUpdated(): bool
+    {
+        $subscriptionsCount = $this->subscriptions()->where('active', true)->count();
+
+        return $subscriptionsCount > 0 ? false : true;
+    }
+
+    public function canBeDeleted(): bool
+    {
+        $subscriptionsCount = $this->subscriptions()->where('active', true)->count();
+
+        return $subscriptionsCount > 0 ? false : true;
+    }
 }

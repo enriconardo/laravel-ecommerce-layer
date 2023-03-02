@@ -5,7 +5,7 @@ namespace EnricoNardo\EcommerceLayer\Services;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Events\Order\OrderPlaced;
 use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidOrderException;
+use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
 use EnricoNardo\EcommerceLayer\Models\Order;
 use Illuminate\Support\Arr;
@@ -22,7 +22,7 @@ class OrderService
     public function update(Order $order, array $data): Order
     {
         if (!$order->canBeUpdated()) {
-            throw new InvalidOrderException("Order [{$order->id}] cannot be updated");
+            throw new InvalidEntityException("Order [{$order->id}] cannot be updated");
         }
 
         $order = $this->_createOrUpdate($data, null, $order);
@@ -33,7 +33,7 @@ class OrderService
     public function delete(Order $order)
     {
         if (!$order->canBeDeleted()) {
-            throw new InvalidOrderException("Order [{$order->id}] cannot be deleted");
+            throw new InvalidEntityException("Order [{$order->id}] cannot be deleted");
         }
 
         $order->delete();
@@ -42,7 +42,7 @@ class OrderService
     public function place(Order $order, array $data = [])
     {
         if (!$order->canBePlaced()) {
-            throw new InvalidOrderException("Order [{$order->id}] cannot be placed");
+            throw new InvalidEntityException("Order [{$order->id}] cannot be placed");
         }
 
         $order = $this->_createOrUpdate($data, OrderStatus::OPEN, $order);
@@ -59,7 +59,7 @@ class OrderService
     public function pay(Order $order): Order
     {
         if (!$order->canBePaid()) {
-            throw new InvalidOrderException("Order [{$order->id}] cannot be payed");
+            throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
         }
 
         /** @var \EnricoNardo\EcommerceLayer\Models\Gateway $gateway */

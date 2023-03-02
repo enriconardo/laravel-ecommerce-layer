@@ -8,12 +8,20 @@ use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
 use EnricoNardo\EcommerceLayer\Http\Resources\ProductResource;
 use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
 use EnricoNardo\EcommerceLayer\Models\Product;
+use EnricoNardo\EcommerceLayer\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductController extends Controller
 {
+    protected ProductService $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     public function list(Request $request)
     {
         $products = QueryBuilder::for(Product::class)
@@ -45,7 +53,7 @@ class ProductController extends Controller
             'active' => 'boolean',
             'shippable' => 'boolean',
             'metadata' => 'array',
-            'prices' => 'array|required',
+            'prices' => 'array',
             'prices.*.currency' => ['string', 'required_with:prices', new EnumValidation(Currency::class)],
             'prices.*.unit_amount' => 'integer|required_with:prices',
             'prices.*.description' => 'string|required_with:prices',
@@ -57,16 +65,7 @@ class ProductController extends Controller
             'prices.*.plan.interval_count' => 'required_with:prices.*.plan|integer'
         ]);
 
-        $data = [
-            'code' => $request->input('code'),
-            'name' => $request->input('name'),
-            'active' => $request->input('active'),
-            'shippable' => $request->input('shippable'),
-            'metadata' => $request->input('metadata'),
-            'prices' => $request->input('prices', [])
-        ];
-
-        $product = ProductBuilder::init()->fill($data)->end();
+        $product = $this->productService->create($request->all());
 
         // Load the necessary relationships to return
         $product->load('prices');
@@ -80,22 +79,14 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $request->validate([
+            'code' => 'string|unique:EnricoNardo\EcommerceLayer\Models\Product,code',
             'name' => 'string',
             'active' => 'boolean',
             'shippable' => 'boolean',
             'metadata' => 'array'
         ]);
 
-        $data = [
-            'name' => $request->input('name'),
-            'active' => $request->input('active'),
-            'shippable' => $request->input('shippable'),
-            'metadata' => $request->input('metadata')
-        ];
-
-        $product = ProductBuilder::init($product)
-            ->fill($data)
-            ->end();
+        $product = $this->productService->update($product, $request->all());
 
         // Load the necessary relationships to return
         $product->load('prices');
@@ -108,7 +99,7 @@ class ProductController extends Controller
         /** @var Product $product */
         $product = Product::findOrFail($id);
 
-        $product->delete();
+        $this->productService->delete($product);
 
         return response()->json([], HttpStatusCode::No_Content);
     }

@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use PrinsFrank\Standards\Http\HttpStatusCode;
 
-class InvalidOrderException extends Exception
+class InvalidEntityException extends Exception
 {
     /**
      * Render the exception into an HTTP response.

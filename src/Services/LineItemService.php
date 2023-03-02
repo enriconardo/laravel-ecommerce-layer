@@ -2,7 +2,7 @@
 
 namespace EnricoNardo\EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidOrderException;
+use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
 use EnricoNardo\EcommerceLayer\ModelBuilders\LineItemBuilder;
 use EnricoNardo\EcommerceLayer\Models\LineItem;
 use EnricoNardo\EcommerceLayer\Models\Order;
@@ -13,7 +13,7 @@ class LineItemService
     public function create(array $data, Order $order): LineItem
     {
         if (!$order->canBeUpdated()) {
-            throw new InvalidOrderException("Order [{$order->id}] cannot be updated");
+            throw new InvalidEntityException("Order [{$order->id}] cannot be updated");
         }
 
         $attributes = [
@@ -30,7 +30,7 @@ class LineItemService
     public function update(LineItem $lineItem, array $data): LineItem
     {
         if (!$lineItem->order->canBeUpdated()) {
-            throw new InvalidOrderException("Order [{$lineItem->order->id}] cannot be updated");
+            throw new InvalidEntityException("Order [{$lineItem->order->id}] cannot be updated");
         }
 
         $attributes = [
@@ -45,7 +45,7 @@ class LineItemService
     public function delete(LineItem $lineItem)
     {
         if (!$lineItem->order->canBeUpdated()) {
-            throw new InvalidOrderException("Order [{$lineItem->order->id}] cannot be updated");
+            throw new InvalidEntityException("Order [{$lineItem->order->id}] cannot be updated");
         }
 
         $lineItem->delete();

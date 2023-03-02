@@ -12,23 +12,23 @@ class CustomerService
 {
     public function create(array $data): Customer
     {
-        $data = [
+        $attributes = [
             'email' => Arr::get($data, 'email'),
             'metadata' => Arr::get($data, 'metadata'),
         ];
 
-        $customer = CustomerBuilder::init()->fill($data)->end();
+        $customer = CustomerBuilder::init()->fill($attributes)->end();
 
         return $customer;
     }
 
     public function update(Customer $customer, array $data): Customer
     {
-        $data = [
+        $attributes = [
             'metadata' => Arr::get($data, 'metadata'),
         ];
 
-        $customer = CustomerBuilder::init($customer)->fill($data)->end();
+        $customer = CustomerBuilder::init($customer)->fill($attributes)->end();
 
         return $customer;
     }
