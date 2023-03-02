@@ -4,7 +4,6 @@ namespace EnricoNardo\EcommerceLayer\Gateways\Stripe;
 
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 use EnricoNardo\EcommerceLayer\Gateways\PaymentServiceInterface;
-use EnricoNardo\EcommerceLayer\Models\Address;
 use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
 use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
 use Stripe\StripeClient;

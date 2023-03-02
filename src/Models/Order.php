@@ -5,6 +5,7 @@ namespace EnricoNardo\EcommerceLayer\Models;
 use Illuminate\Database\Eloquent\Model;
 use EnricoNardo\EcommerceLayer\Casts\Address as AddressCast;
 use EnricoNardo\EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
+use EnricoNardo\EcommerceLayer\Enums\FulfillmentStatus;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
 use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
@@ -14,6 +15,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property int $gateway_id The id of the related payment gateway.
  * @property OrderStatus $status
  * @property PaymentStatus $payment_status
+ * @property FulfillmentStatus $fulfillment_status
  * @property Currency $currency
  * @property AddressCast $billing_address
  * @property PaymentMethodCast $payment_method
@@ -37,6 +39,7 @@ class Order extends Model
         'gateway_id',
         'status',
         'payment_status',
+        'fulfillment_status',
         'currency',
         'billing_address',
         'payment_method',
@@ -52,6 +55,7 @@ class Order extends Model
     protected $casts = [
         'status' => OrderStatus::class,
         'payment_status' => PaymentStatus::class,
+        'fulfillment_status' => FulfillmentStatus::class,
         'currency' => Currency::class,
         'billing_address' => AddressCast::class,
         'payment_method' => PaymentMethodCast::class,
@@ -133,9 +137,28 @@ class Order extends Model
 
     public function canBePaid(): bool
     {
-        return ($this->payment_status !== PaymentStatus::UNPAID
-            || ($this->status === OrderStatus::OPEN && $this->payment_status === PaymentStatus::REFUSED)
-            || ($this->status === OrderStatus::OPEN && $this->payment_status === PaymentStatus::EXPIRED)
-        ) ? false : true;
+        $isOpen = $this->status === OrderStatus::OPEN;
+
+        $repeatablePaymentStatus = $this->payment_status === PaymentStatus::UNPAID 
+            || $this->payment_status === PaymentStatus::REFUSED 
+            || $this->payment_status === PaymentStatus::EXPIRED;
+
+        return ($isOpen && $repeatablePaymentStatus) ? true : false;
+    }
+
+    public function needFulfillment(): bool
+    {
+        if ($this->fulfillment_status === FulfillmentStatus::FULFILLED) {
+            return false;
+        }
+
+        $needFulfillment = false;
+        foreach ($this->line_items as $lineItem) {
+            if ($lineItem->product->shippable) {
+                $needFulfillment = true;
+            }
+        }
+
+        return $needFulfillment;
     }
 }

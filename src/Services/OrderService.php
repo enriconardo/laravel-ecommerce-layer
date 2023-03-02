@@ -2,7 +2,9 @@
 
 namespace EnricoNardo\EcommerceLayer\Services;
 
+use EnricoNardo\EcommerceLayer\Enums\FulfillmentStatus;
 use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
+use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
 use EnricoNardo\EcommerceLayer\Events\Order\OrderPlaced;
 use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
 use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
@@ -14,7 +16,8 @@ class OrderService
 {
     public function create(array $data): Order
     {
-        $order = $this->_createOrUpdate($data, OrderStatus::DRAFT);
+        $data['status'] = OrderStatus::DRAFT;
+        $order = $this->_createOrUpdate($data);
 
         return $order;
     }
@@ -25,7 +28,7 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be updated");
         }
 
-        $order = $this->_createOrUpdate($data, null, $order);
+        $order = $this->_createOrUpdate($data, $order);
 
         return $order;
     }
@@ -45,7 +48,8 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be placed");
         }
 
-        $order = $this->_createOrUpdate($data, OrderStatus::OPEN, $order);
+        $data['status'] = OrderStatus::OPEN;
+        $order = $this->_createOrUpdate($data, $order);
 
         OrderPlacing::dispatch($order);
 
@@ -76,20 +80,44 @@ class OrderService
             $order->customer->getGatewayCustomerIdentifier($gateway->identifier)
         );
 
-        $order = OrderBuilder::init($order)->fill([
+        // Manage statuses
+        $newOrderStatus = $order->status;
+        $newFulfillmentStatus = $order->fulfillment_status;
+
+        switch ($payment->status) {
+            case PaymentStatus::VOIDED:
+                $newOrderStatus = OrderStatus::CANCELED;
+                break;
+            case PaymentStatus::PAID:
+                if (!$order->needFulfillment()) {
+                    $newOrderStatus = OrderStatus::COMPLETED;
+                }
+
+                if ($newOrderStatus === OrderStatus::COMPLETED) {
+                    $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
+                }
+                break;
+            default:
+                // Do nothing
+        }
+        // End of status management
+
+        $order = $this->_createOrUpdate([
+            'status' => $newOrderStatus,
+            'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $payment->status,
             'gateway_payment_identifier' => $payment->identifier
-        ])->end();
+        ], OrderStatus::OPEN, $order);
 
         return $order;
     }
 
-    protected function _createOrUpdate(array $data, $status = null, Order|null $order = null): Order
+    protected function _createOrUpdate(array $data, Order|null $order = null): Order
     {
         $attributes = [
             'customer_id' => Arr::get($data, 'customer_id'),
             'gateway_id' => Arr::get($data, 'gateway_id'),
-            'status' => $status,
+            'status' => Arr::get($data, 'status'),
             'currency' => Arr::get($data, 'currency'),
             'metadata' => Arr::get($data, 'metadata'),
         ];
@@ -97,7 +125,7 @@ class OrderService
         $builder = $order !== null ? OrderBuilder::init($order) : OrderBuilder::init();
 
         $builder = $builder->fill($attributes);
-        
+
         if (Arr::has($data, 'billing_address')) {
             $builder->withBillingAddress(Arr::get($data, 'billing_address'));
         }
