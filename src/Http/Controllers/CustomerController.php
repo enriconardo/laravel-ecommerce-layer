@@ -2,10 +2,9 @@
 
 namespace EnricoNardo\EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Events\Customer\CustomerDeleted;
 use EnricoNardo\EcommerceLayer\Http\Resources\CustomerResource;
-use EnricoNardo\EcommerceLayer\ModelBuilders\CustomerBuilder;
 use EnricoNardo\EcommerceLayer\Models\Customer;
+use EnricoNardo\EcommerceLayer\Services\CustomerService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
@@ -13,6 +12,13 @@ use PrinsFrank\Standards\Http\HttpStatusCode;
 
 class CustomerController extends Controller
 {
+    protected CustomerService $customerService;
+
+    public function __construct(CustomerService $customerService)
+    {
+        $this->customerService = $customerService;
+    }
+
     public function list(Request $request)
     {
         $customers = QueryBuilder::for(Customer::class)
@@ -38,12 +44,7 @@ class CustomerController extends Controller
             'metadata' => 'array',
         ]);
 
-        $data = [
-            'email' => $request->input('email'),
-            'metadata' => $request->input('metadata'),
-        ];
-
-        $customer = CustomerBuilder::init()->fill($data)->end();
+        $customer = $this->customerService->create($request->all());
 
         return CustomerResource::make($customer);
     }
@@ -56,11 +57,7 @@ class CustomerController extends Controller
             'metadata' => 'array',
         ]);
 
-        $data = [
-            'metadata' => $request->input('metadata'),
-        ];
-
-        $customer = CustomerBuilder::init($customer)->fill($data)->end();
+        $customer = $this->customerService->create($customer, $request->all());
 
         return CustomerResource::make($customer);
     }
@@ -69,9 +66,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        $customer->delete();
-
-        CustomerDeleted::dispatch($customer);
+        $this->customerService->delete($customer);
 
         return response()->json([], HttpStatusCode::No_Content);
     }

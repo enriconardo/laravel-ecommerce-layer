@@ -27,7 +27,7 @@ class LineItemService
         return $lineItem;
     }
 
-    public function update(LineItem $lineItem, array $data)
+    public function update(LineItem $lineItem, array $data): LineItem
     {
         if (!$lineItem->order->canBeUpdated()) {
             throw new InvalidOrderException("Order [{$lineItem->order->id}] cannot be updated");
