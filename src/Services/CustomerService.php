@@ -2,7 +2,9 @@
 
 namespace EnricoNardo\EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Events\Customer\CustomerDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
 use EnricoNardo\EcommerceLayer\ModelBuilders\CustomerBuilder;
 use EnricoNardo\EcommerceLayer\Models\Customer;
 use EnricoNardo\EcommerceLayer\Models\Gateway;
@@ -19,6 +21,8 @@ class CustomerService
 
         $customer = CustomerBuilder::init()->fill($attributes)->end();
 
+        EntityCreated::dispatch($customer);
+
         return $customer;
     }
 
@@ -30,6 +34,8 @@ class CustomerService
 
         $customer = CustomerBuilder::init($customer)->fill($attributes)->end();
 
+        EntityUpdated::dispatch($customer);
+
         return $customer;
     }
 
@@ -37,7 +43,7 @@ class CustomerService
     {
         $customer->delete();
 
-        CustomerDeleted::dispatch($customer);
+        EntityDeleted::dispatch($customer);
     }
 
     public function syncWithGateway(Customer $customer, Gateway $gateway): Customer

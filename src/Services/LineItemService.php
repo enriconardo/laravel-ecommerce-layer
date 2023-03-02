@@ -2,6 +2,9 @@
 
 namespace EnricoNardo\EcommerceLayer\Services;
 
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
 use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
 use EnricoNardo\EcommerceLayer\ModelBuilders\LineItemBuilder;
 use EnricoNardo\EcommerceLayer\Models\LineItem;
@@ -24,6 +27,8 @@ class LineItemService
 
         $lineItem = LineItemBuilder::init()->fill($attributes)->end();
 
+        EntityCreated::dispatch($lineItem);
+
         return $lineItem;
     }
 
@@ -39,6 +44,8 @@ class LineItemService
 
         $lineItem = LineItemBuilder::init($lineItem)->fill($attributes)->end();
 
+        EntityUpdated::dispatch($lineItem);
+
         return $lineItem;
     }
 
@@ -49,5 +56,7 @@ class LineItemService
         }
 
         $lineItem->delete();
+
+        EntityDeleted::dispatch($lineItem);
     }
 }

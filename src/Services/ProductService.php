@@ -4,6 +4,9 @@ namespace EnricoNardo\EcommerceLayer\Services;
 
 use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
 use EnricoNardo\EcommerceLayer\Models\Product;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
 use Illuminate\Support\Arr;
 
 class ProductService
@@ -21,6 +24,12 @@ class ProductService
 
         $product = ProductBuilder::init()->fill($attributes)->end();
 
+        EntityCreated::dispatch($product);
+
+        foreach ($product->prices as $price) {
+            EntityCreated::dispatch($price);
+        }
+
         return $product;
     }
 
@@ -36,11 +45,15 @@ class ProductService
 
         $product = ProductBuilder::init($product)->fill($attributes)->end();
 
+        EntityUpdated::dispatch($product);
+
         return $product;
     }
 
     public function delete(Product $product)
     {
         $product->delete();
+
+        EntityDeleted::dispatch($product);
     }
 }

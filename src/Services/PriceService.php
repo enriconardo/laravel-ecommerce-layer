@@ -5,6 +5,9 @@ namespace EnricoNardo\EcommerceLayer\Services;
 use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
 use EnricoNardo\EcommerceLayer\ModelBuilders\PriceBuilder;
 use EnricoNardo\EcommerceLayer\Models\Price;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
 use Illuminate\Support\Arr;
 
 class PriceService
@@ -23,6 +26,8 @@ class PriceService
         ];
 
         $price = PriceBuilder::init()->fill($attributes)->end();
+
+        EntityCreated::dispatch($price);
 
         return $price;
     }
@@ -45,6 +50,8 @@ class PriceService
 
         $price = PriceBuilder::init($price)->fill($attributes)->end();
 
+        EntityUpdated::dispatch($price);
+
         return $price;
     }
 
@@ -55,5 +62,7 @@ class PriceService
         }
 
         $price->delete();
+
+        EntityDeleted::dispatch($price);
     }
 }

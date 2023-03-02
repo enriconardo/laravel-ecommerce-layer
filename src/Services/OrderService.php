@@ -11,6 +11,9 @@ use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
 use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
 use EnricoNardo\EcommerceLayer\Models\Order;
 use Illuminate\Support\Arr;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
+use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
 
 class OrderService
 {
@@ -18,6 +21,8 @@ class OrderService
     {
         $data['status'] = OrderStatus::DRAFT;
         $order = $this->_createOrUpdate($data);
+
+        EntityCreated::dispatch($order);
 
         return $order;
     }
@@ -30,6 +35,8 @@ class OrderService
 
         $order = $this->_createOrUpdate($data, $order);
 
+        EntityUpdated::dispatch($order);
+
         return $order;
     }
 
@@ -40,6 +47,8 @@ class OrderService
         }
 
         $order->delete();
+
+        EntityDeleted::dispatch($order);
     }
 
     public function place(Order $order, array $data = [])
