@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Casts;
+namespace EcommerceLayer\Casts;
 
-use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
+use EcommerceLayer\Enums\PlanInterval;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EnricoNardo\EcommerceLayer\Models\Plan as PlanValueObject;
+use EcommerceLayer\Models\Plan as PlanValueObject;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 

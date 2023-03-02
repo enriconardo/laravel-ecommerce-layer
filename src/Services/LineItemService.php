@@ -1,14 +1,14 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Services;
+namespace EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
-use EnricoNardo\EcommerceLayer\ModelBuilders\LineItemBuilder;
-use EnricoNardo\EcommerceLayer\Models\LineItem;
-use EnricoNardo\EcommerceLayer\Models\Order;
+use EcommerceLayer\Events\Entity\EntityCreated;
+use EcommerceLayer\Events\Entity\EntityDeleted;
+use EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Exceptions\InvalidEntityException;
+use EcommerceLayer\ModelBuilders\LineItemBuilder;
+use EcommerceLayer\Models\LineItem;
+use EcommerceLayer\Models\Order;
 use Illuminate\Support\Arr;
 
 class LineItemService

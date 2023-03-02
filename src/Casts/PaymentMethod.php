@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Casts;
+namespace EcommerceLayer\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EnricoNardo\EcommerceLayer\Models\PaymentMethod as PaymentMethodValueObject;
+use EcommerceLayer\Models\PaymentMethod as PaymentMethodValueObject;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Controllers;
+namespace EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Http\Resources\LineItemResource;
-use EnricoNardo\EcommerceLayer\Models\LineItem;
-use EnricoNardo\EcommerceLayer\Models\Order;
-use EnricoNardo\EcommerceLayer\Services\LineItemService;
+use EcommerceLayer\Http\Resources\LineItemResource;
+use EcommerceLayer\Models\LineItem;
+use EcommerceLayer\Models\Order;
+use EcommerceLayer\Services\LineItemService;
 use Illuminate\Http\Request;
 use PrinsFrank\Standards\Http\HttpStatusCode;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -45,8 +45,8 @@ class LineItemController extends Controller
 
         $request->validate([
             'quantity' => 'integer|required',
-            'price_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Price,id',
-            'order_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Order,id'
+            'price_id' => 'string|required|exists:EcommerceLayer\Models\Price,id',
+            'order_id' => 'string|required|exists:EcommerceLayer\Models\Order,id'
         ]);
 
         $lineItem = $this->lineItemService->create($request->all(), $order);

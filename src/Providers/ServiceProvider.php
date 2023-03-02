@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Providers;
+namespace EcommerceLayer\Providers;
 
-use EnricoNardo\EcommerceLayer\Console\Commands\Prova;
+use EcommerceLayer\Console\Commands\Prova;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class ServiceProvider extends ParentServiceProvider

@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Resources;
+namespace EcommerceLayer\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

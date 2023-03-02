@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Providers;
+namespace EcommerceLayer\Providers;
 
-use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceFactory;
-use EnricoNardo\EcommerceLayer\Gateways\Stripe\Stripe;
+use EcommerceLayer\Gateways\GatewayServiceFactory;
+use EcommerceLayer\Gateways\Stripe\Stripe;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class GatewayServiceProvider extends ParentServiceProvider

@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\ModelBuilders;
+namespace EcommerceLayer\ModelBuilders;
 
-use EnricoNardo\EcommerceLayer\Models\Customer;
+use EcommerceLayer\Models\Customer;
 
 class CustomerBuilder extends BaseBuilder
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
-use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
+use EcommerceLayer\Enums\PlanInterval;
 
 /**
  * @property PlanInterval $interval The frequency at which a subscription is billed. One of day, week, month or year.

@@ -1,13 +1,13 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Services;
+namespace EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
-use EnricoNardo\EcommerceLayer\ModelBuilders\PriceBuilder;
-use EnricoNardo\EcommerceLayer\Models\Price;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Exceptions\InvalidEntityException;
+use EcommerceLayer\ModelBuilders\PriceBuilder;
+use EcommerceLayer\Models\Price;
+use EcommerceLayer\Events\Entity\EntityCreated;
+use EcommerceLayer\Events\Entity\EntityDeleted;
+use EcommerceLayer\Events\Entity\EntityUpdated;
 use Illuminate\Support\Arr;
 
 class PriceService

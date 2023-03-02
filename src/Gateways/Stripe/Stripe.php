@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways\Stripe;
+namespace EcommerceLayer\Gateways\Stripe;
 
-use EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface;
-use EnricoNardo\EcommerceLayer\Gateways\PaymentServiceInterface;
-use EnricoNardo\EcommerceLayer\Gateways\CustomerServiceInterface;
+use EcommerceLayer\Gateways\GatewayServiceInterface;
+use EcommerceLayer\Gateways\PaymentServiceInterface;
+use EcommerceLayer\Gateways\CustomerServiceInterface;
 use Stripe\StripeClient;
 
 class Stripe implements GatewayServiceInterface

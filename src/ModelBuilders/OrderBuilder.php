@@ -1,12 +1,12 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\ModelBuilders;
+namespace EcommerceLayer\ModelBuilders;
 
-use EnricoNardo\EcommerceLayer\Models\Address;
-use EnricoNardo\EcommerceLayer\Models\Order;
-use EnricoNardo\EcommerceLayer\Models\Gateway;
-use EnricoNardo\EcommerceLayer\Models\Customer;
-use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\Models\Address;
+use EcommerceLayer\Models\Order;
+use EcommerceLayer\Models\Gateway;
+use EcommerceLayer\Models\Customer;
+use EcommerceLayer\Models\PaymentMethod;
 use Exception;
 use Illuminate\Support\Arr;
 

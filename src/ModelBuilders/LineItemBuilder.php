@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\ModelBuilders;
+namespace EcommerceLayer\ModelBuilders;
 
-use EnricoNardo\EcommerceLayer\Models\LineItem;
-use EnricoNardo\EcommerceLayer\Models\Order;
-use EnricoNardo\EcommerceLayer\Models\Price;
+use EcommerceLayer\Models\LineItem;
+use EcommerceLayer\Models\Order;
+use EcommerceLayer\Models\Price;
 use Exception;
 
 class LineItemBuilder extends BaseBuilder

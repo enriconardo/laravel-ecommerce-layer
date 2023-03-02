@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('ecommerce-layer/subscriptions')
     ->middleware('api')
-    ->namespace('EnricoNardo\EcommerceLayer\Http\Controllers')
+    ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
         Route::get('/', 'SubscriptionController@list')->name('ecommerce-layer.subscriptions.list');

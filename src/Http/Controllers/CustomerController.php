@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Controllers;
+namespace EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Http\Resources\CustomerResource;
-use EnricoNardo\EcommerceLayer\Models\Customer;
-use EnricoNardo\EcommerceLayer\Services\CustomerService;
+use EcommerceLayer\Http\Resources\CustomerResource;
+use EcommerceLayer\Models\Customer;
+use EcommerceLayer\Services\CustomerService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;

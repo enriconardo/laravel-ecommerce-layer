@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
 /**
  * @property string $type The type of the payment method, could by something like stripe, sofort...

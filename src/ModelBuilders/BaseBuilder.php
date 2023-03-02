@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\ModelBuilders;
+namespace EcommerceLayer\ModelBuilders;
 
 use Exception;
 use Illuminate\Support\Facades\DB;

@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Controllers;
+namespace EcommerceLayer\Http\Controllers;
 
-use EnricoNardo\EcommerceLayer\Http\Resources\OrderResource;
-use EnricoNardo\EcommerceLayer\Models\Order;
-use EnricoNardo\EcommerceLayer\Services\OrderService;
+use EcommerceLayer\Http\Resources\OrderResource;
+use EcommerceLayer\Models\Order;
+use EcommerceLayer\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
@@ -47,8 +47,8 @@ class OrderController extends Controller
     {
         $request->validate([
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
-            'customer_id' => 'string|required|exists:EnricoNardo\EcommerceLayer\Models\Customer,id',
-            'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
+            'customer_id' => 'string|required|exists:EcommerceLayer\Models\Customer,id',
+            'gateway_id' => 'string|exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
@@ -69,7 +69,7 @@ class OrderController extends Controller
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => 'string|exists:EnricoNardo\EcommerceLayer\Models\Gateway,id',
+            'gateway_id' => 'string|exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
@@ -93,7 +93,7 @@ class OrderController extends Controller
             'gateway_id' => [
                 'string', 
                 Rule::requiredIf(!$order->gateway()->exists()), 
-                'exists:EnricoNardo\EcommerceLayer\Models\Gateway,id'
+                'exists:EcommerceLayer\Models\Gateway,id'
             ],
             'billing_address' => [
                 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',

@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways;
+namespace EcommerceLayer\Gateways;
 
-use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
-use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Models\PaymentMethod;
 
 interface PaymentServiceInterface
 {

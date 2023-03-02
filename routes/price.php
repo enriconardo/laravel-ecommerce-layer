@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('ecommerce-layer/prices')
     ->middleware('api')
-    ->namespace('EnricoNardo\EcommerceLayer\Http\Controllers')
+    ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
         Route::get('/', 'PriceController@list')->name('ecommerce-layer.prices.list');

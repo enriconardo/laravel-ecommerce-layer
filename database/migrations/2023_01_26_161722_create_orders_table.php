@@ -1,8 +1,8 @@
 <?php
 
-use EnricoNardo\EcommerceLayer\Enums\FulfillmentStatus;
-use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
-use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Enums\FulfillmentStatus;
+use EcommerceLayer\Enums\OrderStatus;
+use EcommerceLayer\Enums\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,13 +1,13 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use EnricoNardo\EcommerceLayer\Casts\Address as AddressCast;
-use EnricoNardo\EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
-use EnricoNardo\EcommerceLayer\Enums\FulfillmentStatus;
-use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
-use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Casts\Address as AddressCast;
+use EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
+use EcommerceLayer\Enums\FulfillmentStatus;
+use EcommerceLayer\Enums\OrderStatus;
+use EcommerceLayer\Enums\PaymentStatus;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
@@ -23,8 +23,8 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property string|null $gateway_payment_identifier The id of the payment related object returned by the payment gateway API.
  * @property int $subtotal The sum of the subtotals of all the line items in the order, in cents. No tax, discounts or other options are considered.
  * @property int $total Total amount of the order, which is the subtotal with all the options considered, like taxes, shipping costs or discounts.
- * @property \EnricoNardo\EcommerceLayer\Models\Customer $customer
- * @property \EnricoNardo\EcommerceLayer\Models\Gateway $gateway
+ * @property \EcommerceLayer\Models\Customer $customer
+ * @property \EcommerceLayer\Models\Gateway $gateway
  * @property \Illuminate\Support\Collection $line_items
  */
 class Order extends Model
@@ -95,7 +95,7 @@ class Order extends Model
     {
         $lineItems = $this->line_items;
         return $lineItems->sum(function ($lineItem) {
-            /** @var \EnricoNardo\EcommerceLayer\Models\LineItem $lineItem */
+            /** @var \EcommerceLayer\Models\LineItem $lineItem */
             return $lineItem->subtotal;
         });
     }

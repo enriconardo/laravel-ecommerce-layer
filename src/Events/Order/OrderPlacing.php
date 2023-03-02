@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Events\Order;
+namespace EcommerceLayer\Events\Order;
 
-use EnricoNardo\EcommerceLayer\Models\Order;
+use EcommerceLayer\Models\Order;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

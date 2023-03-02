@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Events\Entity;
+namespace EcommerceLayer\Events\Entity;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;

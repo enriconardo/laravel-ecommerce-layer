@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
-use EnricoNardo\EcommerceLayer\Enums\SubscriptionStatus;
+use EcommerceLayer\Enums\SubscriptionStatus;
 use Illuminate\Database\Eloquent\Model;
 
 /**

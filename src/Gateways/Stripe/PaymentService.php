@@ -1,11 +1,11 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways\Stripe;
+namespace EcommerceLayer\Gateways\Stripe;
 
-use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
-use EnricoNardo\EcommerceLayer\Gateways\PaymentServiceInterface;
-use EnricoNardo\EcommerceLayer\Gateways\Models\Payment;
-use EnricoNardo\EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Gateways\PaymentServiceInterface;
+use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Models\PaymentMethod;
 use Stripe\StripeClient;
 use Stripe\PaymentIntent;
 

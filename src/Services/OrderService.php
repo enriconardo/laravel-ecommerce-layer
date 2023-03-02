@@ -1,19 +1,19 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Services;
+namespace EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Enums\FulfillmentStatus;
-use EnricoNardo\EcommerceLayer\Enums\OrderStatus;
-use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
-use EnricoNardo\EcommerceLayer\Events\Order\OrderPlaced;
-use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
-use EnricoNardo\EcommerceLayer\Exceptions\InvalidEntityException;
-use EnricoNardo\EcommerceLayer\ModelBuilders\OrderBuilder;
-use EnricoNardo\EcommerceLayer\Models\Order;
+use EcommerceLayer\Enums\FulfillmentStatus;
+use EcommerceLayer\Enums\OrderStatus;
+use EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Events\Order\OrderPlaced;
+use EcommerceLayer\Events\Order\OrderPlacing;
+use EcommerceLayer\Exceptions\InvalidEntityException;
+use EcommerceLayer\ModelBuilders\OrderBuilder;
+use EcommerceLayer\Models\Order;
 use Illuminate\Support\Arr;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Events\Entity\EntityCreated;
+use EcommerceLayer\Events\Entity\EntityDeleted;
+use EcommerceLayer\Events\Entity\EntityUpdated;
 
 class OrderService
 {
@@ -75,13 +75,13 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
         }
 
-        /** @var \EnricoNardo\EcommerceLayer\Models\Gateway $gateway */
+        /** @var \EcommerceLayer\Models\Gateway $gateway */
         $gateway = $order->gateway;
 
-        /** @var \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
+        /** @var \EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
-        /** @var \EnricoNardo\EcommerceLayer\Gateways\Models\Payment $payment */
+        /** @var \EcommerceLayer\Gateways\Models\Payment $payment */
         $payment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,

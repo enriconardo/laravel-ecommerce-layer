@@ -1,13 +1,13 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Services;
+namespace EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
-use EnricoNardo\EcommerceLayer\ModelBuilders\CustomerBuilder;
-use EnricoNardo\EcommerceLayer\Models\Customer;
-use EnricoNardo\EcommerceLayer\Models\Gateway;
+use EcommerceLayer\Events\Entity\EntityCreated;
+use EcommerceLayer\Events\Entity\EntityDeleted;
+use EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\ModelBuilders\CustomerBuilder;
+use EcommerceLayer\Models\Customer;
+use EcommerceLayer\Models\Gateway;
 use Illuminate\Support\Arr;
 
 class CustomerService
@@ -48,10 +48,10 @@ class CustomerService
 
     public function syncWithGateway(Customer $customer, Gateway $gateway): Customer
     {
-        /** @var \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
+        /** @var \EcommerceLayer\Gateways\GatewayServiceInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
-        /** @var \EnricoNardo\EcommerceLayer\Gateways\Models\Customer $gatewayCustomer */
+        /** @var \EcommerceLayer\Gateways\Models\Customer $gatewayCustomer */
         $gatewayCustomer = $gatewayService->customers()->create($customer->email);
 
         $currentIdentifiers = $customer->gateway_customer_identifiers;

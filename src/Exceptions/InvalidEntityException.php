@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Exceptions;
+namespace EcommerceLayer\Exceptions;
 
 use Exception;
 use Illuminate\Http\Request;

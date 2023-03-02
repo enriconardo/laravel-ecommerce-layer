@@ -1,8 +1,8 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways\Models;
+namespace EcommerceLayer\Gateways\Models;
 
-use EnricoNardo\EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Enums\PaymentStatus;
 
 /**
  * @property string $identifier The id of the payment related object returned by the payment gateway API.

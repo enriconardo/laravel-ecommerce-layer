@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Providers;
+namespace EcommerceLayer\Providers;
 
-use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
-use EnricoNardo\EcommerceLayer\Listeners\SyncCustomerWithGateway;
+use EcommerceLayer\Events\Order\OrderPlacing;
+use EcommerceLayer\Listeners\SyncCustomerWithGateway;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class EventServiceProvider extends ParentServiceProvider

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('ecommerce-layer/orders')
     ->middleware('api')
-    ->namespace('EnricoNardo\EcommerceLayer\Http\Controllers')
+    ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
         Route::get('/', 'OrderController@list')->name('ecommerce-layer.orders.list');

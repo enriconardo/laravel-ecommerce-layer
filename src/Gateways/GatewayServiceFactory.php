@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways;
+namespace EcommerceLayer\Gateways;
 
 use Illuminate\Support\Arr;
 

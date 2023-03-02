@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('ecommerce-layer')
     ->middleware('api')
-    ->namespace('EnricoNardo\EcommerceLayer\Http\Controllers')
+    ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
         Route::get('line-items', 'LineItemController@list')->name('ecommerce-layer.line-items.list');

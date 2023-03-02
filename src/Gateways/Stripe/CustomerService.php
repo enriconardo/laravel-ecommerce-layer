@@ -1,10 +1,10 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways\Stripe;
+namespace EcommerceLayer\Gateways\Stripe;
 
-use EnricoNardo\EcommerceLayer\Gateways\CustomerServiceInterface;
-use EnricoNardo\EcommerceLayer\Gateways\Models\Customer;
-use EnricoNardo\EcommerceLayer\Models\Address;
+use EcommerceLayer\Gateways\CustomerServiceInterface;
+use EcommerceLayer\Gateways\Models\Customer;
+use EcommerceLayer\Models\Address;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Stripe\StripeClient;
 

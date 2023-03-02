@@ -1,14 +1,14 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Controllers;
+namespace EcommerceLayer\Http\Controllers;
 
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 use PrinsFrank\Standards\Http\HttpStatusCode;
-use EnricoNardo\EcommerceLayer\Enums\PlanInterval;
-use EnricoNardo\EcommerceLayer\Http\Resources\ProductResource;
-use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
-use EnricoNardo\EcommerceLayer\Models\Product;
-use EnricoNardo\EcommerceLayer\Services\ProductService;
+use EcommerceLayer\Enums\PlanInterval;
+use EcommerceLayer\Http\Resources\ProductResource;
+use EcommerceLayer\ModelBuilders\ProductBuilder;
+use EcommerceLayer\Models\Product;
+use EcommerceLayer\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -48,7 +48,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|unique:EnricoNardo\EcommerceLayer\Models\Product,code',
+            'code' => 'required|string|unique:EcommerceLayer\Models\Product,code',
             'name' => 'required|string',
             'active' => 'boolean',
             'shippable' => 'boolean',
@@ -79,7 +79,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $request->validate([
-            'code' => 'string|unique:EnricoNardo\EcommerceLayer\Models\Product,code',
+            'code' => 'string|unique:EcommerceLayer\Models\Product,code',
             'name' => 'string',
             'active' => 'boolean',
             'shippable' => 'boolean',

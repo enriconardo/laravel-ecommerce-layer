@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Providers;
+namespace EcommerceLayer\Providers;
 
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 

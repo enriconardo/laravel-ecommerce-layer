@@ -28,7 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "EnricoNardo\\EcommerceLayer\\": "src"
+            "EcommerceLayer\\": "src"
         },
         "files": [
             "src/helpers.php"
@@ -36,7 +36,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "EnricoNardo\\EcommerceLayer\\Tests\\": "tests"
+            "EcommerceLayer\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -49,10 +49,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "EnricoNardo\\EcommerceLayer\\Providers\\ServiceProvider",
-                "EnricoNardo\\EcommerceLayer\\Providers\\RouteServiceProvider",
-                "EnricoNardo\\EcommerceLayer\\Providers\\GatewayServiceProvider",
-                "EnricoNardo\\EcommerceLayer\\Providers\\EventServiceProvider"
+                "EcommerceLayer\\Providers\\ServiceProvider",
+                "EcommerceLayer\\Providers\\RouteServiceProvider",
+                "EcommerceLayer\\Providers\\GatewayServiceProvider",
+                "EcommerceLayer\\Providers\\EventServiceProvider"
             ]
         }
     }

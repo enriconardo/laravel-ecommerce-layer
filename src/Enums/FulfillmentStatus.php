@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Enums;
+namespace EcommerceLayer\Enums;
 
 enum FulfillmentStatus: string
 {

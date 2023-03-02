@@ -15,7 +15,7 @@ composer require enriconardo/laravel-ecommerce-layer
 ### Using a payment gateway in your code
 
 ``` php
-/** @var \EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface $gateway */
+/** @var \EcommerceLayer\Gateways\GatewayServiceInterface $gateway */
 $gateway = gateway('your_gateway_identifier');
 ```
 
@@ -23,9 +23,9 @@ $gateway = gateway('your_gateway_identifier');
 
 A gateway package is composed by a set of classes:
 
-- A *Main class* which extends `\EnricoNardo\EcommerceLayer\Gateways\GatewayServiceInterface`
-- A *Payment service* class which extends `\EnricoNardo\EcommerceLayer\Gateways\PaymentServiceInterface`
-- A *Customer service* class which extends `\EnricoNardo\EcommerceLayer\Gateways\CustomerServiceInterface`
+- A *Main class* which extends `\EcommerceLayer\Gateways\GatewayServiceInterface`
+- A *Payment service* class which extends `\EcommerceLayer\Gateways\PaymentServiceInterface`
+- A *Customer service* class which extends `\EcommerceLayer\Gateways\CustomerServiceInterface`
 
 In order to enable the gateway, just add the following line of code in the `register` function of one of your service provider:
 
@@ -58,3 +58,7 @@ In the *Laravel Ecommerce Layer*, the ISO standards used are:
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## To Do
+
+- [ ] Handle subscriptions

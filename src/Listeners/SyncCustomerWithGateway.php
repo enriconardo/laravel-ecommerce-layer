@@ -1,9 +1,9 @@
 <?php
  
-namespace EnricoNardo\EcommerceLayer\Listeners;
+namespace EcommerceLayer\Listeners;
 
-use EnricoNardo\EcommerceLayer\Events\Order\OrderPlacing;
-use EnricoNardo\EcommerceLayer\Gateways\Stripe\CustomerService;
+use EcommerceLayer\Events\Order\OrderPlacing;
+use EcommerceLayer\Gateways\Stripe\CustomerService;
 
 class SyncCustomerWithGateway
 {

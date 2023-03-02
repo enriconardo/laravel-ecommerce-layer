@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use EnricoNardo\EcommerceLayer\Casts\Plan as PlanCast;
+use EcommerceLayer\Casts\Plan as PlanCast;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**

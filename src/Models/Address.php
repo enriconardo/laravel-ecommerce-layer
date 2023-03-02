@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Models;
+namespace EcommerceLayer\Models;
 
 use Illuminate\Support\Arr;
 use PrinsFrank\Standards\Country\ISO3166_1_Alpha_2 as Country;

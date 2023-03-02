@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Casts;
+namespace EcommerceLayer\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EnricoNardo\EcommerceLayer\Models\Address as AddressValueObject;
+use EcommerceLayer\Models\Address as AddressValueObject;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 

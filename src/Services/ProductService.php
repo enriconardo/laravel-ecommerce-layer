@@ -1,12 +1,12 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Services;
+namespace EcommerceLayer\Services;
 
-use EnricoNardo\EcommerceLayer\ModelBuilders\ProductBuilder;
-use EnricoNardo\EcommerceLayer\Models\Product;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityCreated;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityDeleted;
-use EnricoNardo\EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\ModelBuilders\ProductBuilder;
+use EcommerceLayer\Models\Product;
+use EcommerceLayer\Events\Entity\EntityCreated;
+use EcommerceLayer\Events\Entity\EntityDeleted;
+use EcommerceLayer\Events\Entity\EntityUpdated;
 use Illuminate\Support\Arr;
 
 class ProductService

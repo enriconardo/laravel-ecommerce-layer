@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways\Models;
+namespace EcommerceLayer\Gateways\Models;
 
 /**
  * @property string $identifier The id of the customer related object returned by the gateway API.

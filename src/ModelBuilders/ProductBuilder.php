@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\ModelBuilders;
+namespace EcommerceLayer\ModelBuilders;
 
-use EnricoNardo\EcommerceLayer\Models\Price;
-use EnricoNardo\EcommerceLayer\Models\Product;
+use EcommerceLayer\Models\Price;
+use EcommerceLayer\Models\Product;
 use Exception;
 use Illuminate\Support\Arr;
 

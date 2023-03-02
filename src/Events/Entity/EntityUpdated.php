@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Events\Entity;
+namespace EcommerceLayer\Events\Entity;
 
 class EntityUpdated extends EntityEvent
 {

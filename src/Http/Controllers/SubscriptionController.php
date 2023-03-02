@@ -1,6 +1,6 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Http\Controllers;
+namespace EcommerceLayer\Http\Controllers;
 
 use Illuminate\Http\Request;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace EnricoNardo\EcommerceLayer\Gateways;
+namespace EcommerceLayer\Gateways;
 
-use EnricoNardo\EcommerceLayer\Models\Address;
-use EnricoNardo\EcommerceLayer\Gateways\Models\Customer;
+use EcommerceLayer\Models\Address;
+use EcommerceLayer\Gateways\Models\Customer;
 
 interface CustomerServiceInterface
 {
