@@ -7,7 +7,7 @@ This is a work in progress project.
 You can install the package via composer:
 
 ```bash
-composer require enriconardo/laravel-ecommerce-layer
+composer require enriconardo/laravel-ecommerce-layer:0.1.0-alpha@alpha
 ```
 
 ## Usage
