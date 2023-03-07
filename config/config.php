@@ -1,19 +1,21 @@
 <?php
 
 return [
-    'auth' => [
+    'http' => [
 
         /*
         |--------------------------------------------------------------------------
-        | Authentication Guard
+        | Routes middlewares
         |--------------------------------------------------------------------------
         |
-        | The auth configuration is managed in the base auth.php config file
-        | in your Laravel application.
+        | Set here the list of the middlewares you want to attach to the Laravel
+        | Ecommerce Layer roues.
         |
         */
-        'guard' => env('ECOMMERCE_LAYER_AUTH_GUARD', 'web')
-
+        'middlewares' => [
+            'api'
+            // ...
+        ]
     ],
 
     'gateways' => [

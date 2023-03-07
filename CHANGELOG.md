@@ -6,7 +6,7 @@ All notable changes to `laravel-ecommerce-layer` will be documented in this file
 
 ### Changed
 
-- Routes are now procted by an auth guard
+- Routes middlewares are now configurable
 
 ## [0.1.0-alpha] - 2023-07-03
 

@@ -12,6 +12,12 @@ composer require enriconardo/laravel-ecommerce-layer:0.2.0-alpha@alpha
 
 ## Usage
 
+### Publish configuration
+
+``` bash
+php artisan vendor:publish --provider="EcommerceLayer\Providers\ServiceProvider" --tag=config
+```
+
 ### Using a payment gateway in your code
 
 ``` php
@@ -23,16 +29,18 @@ $gateway = gateway('your_gateway_identifier');
 
 Laravel Ecommerce Layer doesn't implement an authentication flow, this should be a responsability of the main application where it is installed.
 
-### Set a custom authentication guard
+In order to set an authentication guard, add the right middleware to the group of middlewares attached to the Laravel Ecommerce Layer routes by updating the configuration file. First of all publish the configuration file, like reported [here](#publish-configuration), then change the following attribute:
 
-By default the Laravel Ecommerce Layer routes are protected by the `web` guard, but you can set your cutom auth guard thanks to the `ECOMMERCE_LAYER_AUTH_GUARD` environment variable. For instance:
+``` php
+# File config/ecommerce-layer.php
 
+'http' => [
+    'middlewares' => [
+        'api', // Don't remove this unless it is really necessary
+        'your-custom-middleware' // E.g: auth:api
+    ]
+],
 ```
-# .env file
-
-ECOMMERCE_LAYER_AUTH_GUARD=jwt
-```
-
 
 ## Adding custom payment gateway
 

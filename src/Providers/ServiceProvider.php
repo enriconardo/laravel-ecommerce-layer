@@ -2,7 +2,6 @@
 
 namespace EcommerceLayer\Providers;
 
-use EcommerceLayer\Console\Commands\Prova;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class ServiceProvider extends ParentServiceProvider
