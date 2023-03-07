@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+$guard = config('ecommerce-layer.auth.guard');
+
 Route::prefix('ecommerce-layer/prices')
-    ->middleware('api')
+    ->middleware(["api", "auth:$guard"])
     ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 

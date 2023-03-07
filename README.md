@@ -19,6 +19,21 @@ composer require enriconardo/laravel-ecommerce-layer:0.1.0-alpha@alpha
 $gateway = gateway('your_gateway_identifier');
 ```
 
+## Authentication
+
+Laravel Ecommerce Layer doesn't implement an authentication flow, this should be a responsability of the main application where it is installed.
+
+### Set a custom authentication guard
+
+By default the Laravel Ecommerce Layer routes are protected by the `web` guard, but you can set your cutom auth guard thanks to the `ECOMMERCE_LAYER_AUTH_GUARD` environment variable. For instance:
+
+```
+# .env file
+
+ECOMMERCE_LAYER_AUTH_GUARD=jwt
+```
+
+
 ## Adding custom payment gateway
 
 A gateway package is composed by a set of classes:
@@ -62,3 +77,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ## To Do
 
 - [ ] Handle subscriptions
+- [ ] Adding discounts management
