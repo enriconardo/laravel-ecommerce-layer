@@ -2,6 +2,8 @@
 
 All notable changes to `laravel-ecommerce-layer` will be documented in this file
 
-## 1.0.0 - 201X-XX-XX
+## [0.1.0-alpha] - 2023-07-03
 
-- initial release
+### Added
+
+- Initial release
