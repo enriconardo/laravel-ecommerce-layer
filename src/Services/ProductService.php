@@ -7,6 +7,7 @@ use EcommerceLayer\Models\Product;
 use EcommerceLayer\Events\Entity\EntityCreated;
 use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Exceptions\InvalidEntityException;
 use Illuminate\Support\Arr;
 
 class ProductService
@@ -52,6 +53,10 @@ class ProductService
 
     public function delete(Product $product)
     {
+        if (!$product->canBeUpdated()) {
+            throw new InvalidEntityException("Product [{$product->id} cannot be deleted]");
+        }
+
         $product->delete();
 
         EntityDeleted::dispatch($product);

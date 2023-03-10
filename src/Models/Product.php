@@ -44,4 +44,19 @@ class Product extends Model
     {
         return $this->hasMany(Price::class);
     }
+
+    public function canBeDeleted(): bool
+    {
+        $canBeDeleted = true;
+        $prices = $this->prices;
+
+        foreach ($prices as $price) {
+            /** @var \EcommerceLayer\Models\Price $price */
+            if (!$price->canBeDeleted()) {
+                $canBeDeleted = false;
+            }
+        }
+
+        return $canBeDeleted;
+    }
 }

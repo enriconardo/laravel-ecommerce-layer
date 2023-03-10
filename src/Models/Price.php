@@ -3,10 +3,13 @@
 namespace EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use EcommerceLayer\Casts\Plan as PlanCast;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
+ * @property int $product_id The id of the product that the current price is associated.
+ * @property Product $product The product that the current price is associated. 
  * @property Currency $currency
  * @property int $unit_amount The price of a single unit of product, represented as an integer.
  * @property string $description A brief description of the price, hidden from customers.
@@ -25,6 +28,7 @@ class Price extends Model
      * @var array
      */
     protected $fillable = [
+        'product_id',
         'currency',
         'unit_amount',
         'description',
@@ -50,6 +54,14 @@ class Price extends Model
         'start_at' => 'datetime',
         'end_at' => 'datetime'
     ];
+
+    /**
+     * Scope a query to only include default prices.
+     */
+    public function scopeDefault(Builder $query): void
+    {
+        $query->where('default', true);
+    }
 
     public function product()
     {
