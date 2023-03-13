@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-ecommerce-layer` will be documented in this file
 
+## [0.4.0-alpha] - 2023-13-03
+
+### Changed
+
+- Metadata are now managed by a proper trait
+
 ## [0.3.0-alpha] - 2023-10-03
 
 ### Changed
