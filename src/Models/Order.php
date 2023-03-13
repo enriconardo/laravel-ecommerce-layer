@@ -8,6 +8,7 @@ use EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
 use EcommerceLayer\Enums\FulfillmentStatus;
 use EcommerceLayer\Enums\OrderStatus;
 use EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Traits\HasMetadata;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**
@@ -29,6 +30,8 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  */
 class Order extends Model
 {
+    use HasMetadata;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,7 +46,6 @@ class Order extends Model
         'currency',
         'billing_address',
         'payment_method',
-        'metadata',
         'gateway_payment_identifier'
     ];
 
@@ -59,7 +61,6 @@ class Order extends Model
         'currency' => Currency::class,
         'billing_address' => AddressCast::class,
         'payment_method' => PaymentMethodCast::class,
-        'metadata' => 'array',
     ];
 
     public function customer()

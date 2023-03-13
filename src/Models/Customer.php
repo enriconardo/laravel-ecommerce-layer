@@ -2,6 +2,7 @@
 
 namespace EcommerceLayer\Models;
 
+use EcommerceLayer\Traits\HasMetadata;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -12,6 +13,8 @@ use Illuminate\Support\Arr;
  */
 class Customer extends Model
 {
+    use HasMetadata;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -19,7 +22,6 @@ class Customer extends Model
      */
     protected $fillable = [
         'email',
-        'metadata',
         'gateway_customer_identifiers'
     ];
 
@@ -29,7 +31,6 @@ class Customer extends Model
      * @var array
      */
     protected $casts = [
-        'metadata' => 'array',
         'gateway_customer_identifiers' => 'array'
     ];
 

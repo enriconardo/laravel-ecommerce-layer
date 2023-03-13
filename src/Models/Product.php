@@ -2,6 +2,7 @@
 
 namespace EcommerceLayer\Models;
 
+use EcommerceLayer\Traits\HasMetadata;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Product extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasMetadata;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +26,7 @@ class Product extends Model
         'code',
         'name',
         'active',
-        'shippable',
-        'metadata'
+        'shippable'
     ];
 
     /**
@@ -36,8 +36,7 @@ class Product extends Model
      */
     protected $casts = [
         'active' => 'boolean',
-        'shippable' => 'boolean',
-        'metadata' => 'array',
+        'shippable' => 'boolean'
     ];
 
     public function prices()
