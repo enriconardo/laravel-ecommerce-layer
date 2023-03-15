@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreign('price_id')
                 ->references('id')
                 ->on('prices')
-                ->onDelete('restrict')
+                ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
     }

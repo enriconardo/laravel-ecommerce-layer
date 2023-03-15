@@ -43,4 +43,11 @@ class Subscription extends Model
     {
         return $this->belongsTo(Price::class);
     }
+
+    public function canBeDeleted()
+    {
+        return $this->status === SubscriptionStatus::ACTIVE || $this->status === SubscriptionStatus::PENDING 
+            ? false 
+            : true;
+    }
 }

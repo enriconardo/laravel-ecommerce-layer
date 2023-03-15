@@ -80,15 +80,21 @@ class Price extends Model
 
     public function canBeUpdated(): bool
     {
-        $subscriptionsCount = $this->subscriptions()->where('active', true)->count();
-
-        return $subscriptionsCount > 0 ? false : true;
+        return true;
     }
 
     public function canBeDeleted(): bool
     {
-        $subscriptionsCount = $this->subscriptions()->where('active', true)->count();
+        $canBeDeleted = true;
+        $subscriptions = $this->subscriptions;
 
-        return $subscriptionsCount > 0 ? false : true;
+        foreach ($subscriptions as $subscription) {
+            /** @var \EcommerceLayer\Models\Subscription $subscription */
+            if (!$subscription->canBeDeleted()) {
+                $canBeDeleted = false;
+            }
+        }
+
+        return $canBeDeleted;
     }
 }
