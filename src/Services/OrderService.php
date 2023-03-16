@@ -6,7 +6,6 @@ use EcommerceLayer\Enums\FulfillmentStatus;
 use EcommerceLayer\Enums\OrderStatus;
 use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Events\Order\OrderPlaced;
-use EcommerceLayer\Events\Order\OrderPlacing;
 use EcommerceLayer\Exceptions\InvalidEntityException;
 use EcommerceLayer\ModelBuilders\OrderBuilder;
 use EcommerceLayer\Models\Order;
@@ -14,6 +13,8 @@ use Illuminate\Support\Arr;
 use EcommerceLayer\Events\Entity\EntityCreated;
 use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Events\Order\OrderCanceled;
+use EcommerceLayer\Events\Order\OrderCompleted;
 
 class OrderService
 {
@@ -64,11 +65,9 @@ class OrderService
 
         $order = $this->_createOrUpdate($data, $order);
 
-        OrderPlacing::dispatch($order);
+        OrderPlaced::dispatch($order);
 
         $order = $this->pay($order);
-
-        OrderPlaced::dispatch($order);
 
         return $order;
     }
@@ -100,11 +99,13 @@ class OrderService
         switch ($payment->status) {
             case PaymentStatus::VOIDED:
                 $newOrderStatus = OrderStatus::CANCELED;
+                OrderCanceled::dispatch($order);
                 break;
             case PaymentStatus::PAID:
                 if (!$order->needFulfillment()) {
                     $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
                     $newOrderStatus = OrderStatus::COMPLETED;
+                    OrderCompleted::dispatch($order);
                 }
                 break;
             default:

@@ -2,8 +2,8 @@
  
 namespace EcommerceLayer\Listeners;
 
-use EcommerceLayer\Events\Order\OrderPlacing;
-use EcommerceLayer\Gateways\Stripe\CustomerService;
+use EcommerceLayer\Events\Order\OrderPlaced;
+use EcommerceLayer\Services\CustomerService;
 
 class SyncCustomerWithGateway
 {
@@ -18,7 +18,7 @@ class SyncCustomerWithGateway
     /**
      * Handle the event.
      */
-    public function handle(OrderPlacing $event): void
+    public function handle(OrderPlaced $event): void
     {
         $customerService = resolve(CustomerService::class);
         $customerService->syncWithGateway($event->order->customer, $event->order->gateway);
