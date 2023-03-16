@@ -19,7 +19,9 @@ class OrderService
 {
     public function create(array $data): Order
     {
+        // When you create a new order it is a cart (status = DRAFT)
         $data['status'] = OrderStatus::DRAFT;
+
         $order = $this->_createOrUpdate($data);
 
         EntityCreated::dispatch($order);
@@ -57,7 +59,9 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be placed");
         }
 
+        // When you place an order it is transformed to an OPEN order from a cart (DRAFT order)
         $data['status'] = OrderStatus::OPEN;
+
         $order = $this->_createOrUpdate($data, $order);
 
         OrderPlacing::dispatch($order);
@@ -99,15 +103,12 @@ class OrderService
                 break;
             case PaymentStatus::PAID:
                 if (!$order->needFulfillment()) {
-                    $newOrderStatus = OrderStatus::COMPLETED;
-                }
-
-                if ($newOrderStatus === OrderStatus::COMPLETED) {
                     $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
+                    $newOrderStatus = OrderStatus::COMPLETED;
                 }
                 break;
             default:
-                // Do nothing
+                // Do nothing: since the payment is not completed nor manually canceled, order status doesn't change
         }
         // End of status management
 
@@ -116,7 +117,7 @@ class OrderService
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $payment->status,
             'gateway_payment_identifier' => $payment->identifier
-        ], OrderStatus::OPEN, $order);
+        ], $order);
 
         return $order;
     }
