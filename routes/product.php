@@ -3,20 +3,21 @@
 use Illuminate\Support\Facades\Route;
 
 $middlewares = config('ecommerce-layer.http.middlewares');
+$prefix = config('ecommerce-layer.http.routes.prefix');
 
-Route::prefix('ecommerce-layer/products')
+Route::prefix($prefix)
     ->middleware($middlewares)
     ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
-        Route::get('/', 'ProductController@list')->name('ecommerce-layer.products.list');
+        Route::get('products', 'ProductController@list')->name('ecommerce-layer.products.list');
 
-        Route::get('{id}', 'ProductController@find')->name('ecommerce-layer.products.find');
+        Route::get('products/{id}', 'ProductController@find')->name('ecommerce-layer.products.find');
 
-        Route::post('/', 'ProductController@create')->name('ecommerce-layer.products.create');
+        Route::post('products', 'ProductController@create')->name('ecommerce-layer.products.create');
 
-        Route::patch('{id}', 'ProductController@update')->name('ecommerce-layer.products.update');
+        Route::patch('products/{id}', 'ProductController@update')->name('ecommerce-layer.products.update');
 
-        Route::delete('{id}', 'ProductController@delete')->name('ecommerce-layer.products.delete');
+        Route::delete('products/{id}', 'ProductController@delete')->name('ecommerce-layer.products.delete');
 
     });

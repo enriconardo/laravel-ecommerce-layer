@@ -3,20 +3,21 @@
 use Illuminate\Support\Facades\Route;
 
 $middlewares = config('ecommerce-layer.http.middlewares');
+$prefix = config('ecommerce-layer.http.routes.prefix');
 
-Route::prefix('ecommerce-layer/subscriptions')
+Route::prefix($prefix)
     ->middleware($middlewares)
     ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
-        Route::get('/', 'SubscriptionController@list')->name('ecommerce-layer.subscriptions.list');
+        Route::get('subscriptions', 'SubscriptionController@list')->name('ecommerce-layer.subscriptions.list');
 
-        Route::get('{id}', 'SubscriptionController@find')->name('ecommerce-layer.subscriptions.find');
+        Route::get('subscriptions/{id}', 'SubscriptionController@find')->name('ecommerce-layer.subscriptions.find');
 
-        Route::post('/', 'SubscriptionController@create')->name('ecommerce-layer.subscriptions.create');
+        Route::post('subscriptions', 'SubscriptionController@create')->name('ecommerce-layer.subscriptions.create');
 
-        Route::patch('{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
+        Route::patch('subscriptions/{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
 
-        Route::delete('{id}', 'SubscriptionController@delete')->name('ecommerce-layer.subscriptions.delete');
+        Route::delete('subscriptions/{id}', 'SubscriptionController@delete')->name('ecommerce-layer.subscriptions.delete');
 
     });

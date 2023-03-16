@@ -3,20 +3,21 @@
 use Illuminate\Support\Facades\Route;
 
 $middlewares = config('ecommerce-layer.http.middlewares');
+$prefix = config('ecommerce-layer.http.routes.prefix');
 
-Route::prefix('ecommerce-layer/customers')
+Route::prefix("$prefix")
     ->middleware($middlewares)
     ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
 
-        Route::get('/', 'CustomerController@list')->name('ecommerce-layer.customers.list');
+        Route::get('customers', 'CustomerController@list')->name('ecommerce-layer.customers.list');
 
-        Route::get('{id}', 'CustomerController@find')->name('ecommerce-layer.customers.find');
+        Route::get('customers/{id}', 'CustomerController@find')->name('ecommerce-layer.customers.find');
 
-        Route::post('/', 'CustomerController@create')->name('ecommerce-layer.customers.create');
+        Route::post('customers', 'CustomerController@create')->name('ecommerce-layer.customers.create');
 
-        Route::patch('{id}', 'CustomerController@update')->name('ecommerce-layer.customers.update');
+        Route::patch('customers/{id}', 'CustomerController@update')->name('ecommerce-layer.customers.update');
 
-        Route::delete('{id}', 'CustomerController@delete')->name('ecommerce-layer.customers.delete');
+        Route::delete('customers/{id}', 'CustomerController@delete')->name('ecommerce-layer.customers.delete');
 
     });

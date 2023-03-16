@@ -15,6 +15,12 @@ return [
         'middlewares' => [
             'api'
             // ...
+        ],
+
+        'routes' => [
+
+            'prefix' => env('ECOMMERCE_LAYER_ROUTES_PREFIX', 'ecommerce-layer')
+
         ]
     ],
 
