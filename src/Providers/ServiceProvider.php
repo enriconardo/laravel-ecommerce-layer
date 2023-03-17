@@ -39,7 +39,9 @@ class ServiceProvider extends ParentServiceProvider
             ], 'lang');*/
 
             // Registering package commands.
-            // $this->commands([]);
+            $this->commands([
+                \EcommerceLayer\Commands\CreateGateway::class
+            ]);
         }
     }
 

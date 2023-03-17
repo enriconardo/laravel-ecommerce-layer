@@ -17,6 +17,7 @@ class RouteServiceProvider extends ParentServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../routes/price.php');
         $this->loadRoutesFrom(__DIR__.'/../../routes/product.php');
         $this->loadRoutesFrom(__DIR__.'/../../routes/subscription.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/gateways.php');
     }
 
     /**

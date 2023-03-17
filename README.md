@@ -69,6 +69,14 @@ public function register()
 
 `YourMainClass` is your actual *Main class* described before.
 
+Then you need to add a proper record in the database, to do this just type the following command:
+
+```bash
+php artisan ecommerce-layer:gateway:create {name} {identifier}
+```
+
+Where `name` is a label for your Gateway (eg: Stripe) and `identifier` is a value for the system to distinguish it from others (eg: your-identifier). Do not use spaces.
+
 ## ISO standards
 
 ISO standards for currencies, countries, languages and HTTP status codes are handled by PHP enums of the `prinsfrank/standards` package. Check it on [Github](https://github.com/PrinsFrank/standards).

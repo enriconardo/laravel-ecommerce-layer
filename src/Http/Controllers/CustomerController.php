@@ -34,7 +34,7 @@ class CustomerController extends Controller
         /** @var Customer $customer */
         $customer = Customer::findOrFail($id);
 
-        return Customer::make($customer);
+        return CustomerResource::make($customer);
     }
 
     public function create(Request $request)

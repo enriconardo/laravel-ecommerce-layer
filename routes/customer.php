@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 $middlewares = config('ecommerce-layer.http.middlewares');
 $prefix = config('ecommerce-layer.http.routes.prefix');
 
-Route::prefix("$prefix")
+Route::prefix($prefix)
     ->middleware($middlewares)
     ->namespace('EcommerceLayer\Http\Controllers')
     ->group(function () {
