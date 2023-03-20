@@ -129,6 +129,9 @@ class OrderService
             'customer_id' => Arr::get($data, 'customer_id'),
             'gateway_id' => Arr::get($data, 'gateway_id'),
             'status' => Arr::get($data, 'status'),
+            'fulfillment_status' => Arr::get($data, 'fulfillment_status'),
+            'payment_status' => Arr::get($data, 'payment_status'),
+            'gateway_payment_identifier' => Arr::get($data, 'gateway_payment_identifier'),
             'currency' => Arr::get($data, 'currency'),
             'metadata' => Arr::get($data, 'metadata'),
         ];

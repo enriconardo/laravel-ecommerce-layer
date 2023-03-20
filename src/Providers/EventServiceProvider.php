@@ -4,7 +4,7 @@ namespace EcommerceLayer\Providers;
 
 use EcommerceLayer\Events\Order\OrderPlaced;
 use EcommerceLayer\Listeners\SyncCustomerWithGateway;
-use Illuminate\Support\ServiceProvider as ParentServiceProvider;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ParentServiceProvider;
 
 class EventServiceProvider extends ParentServiceProvider
 {
@@ -24,7 +24,7 @@ class EventServiceProvider extends ParentServiceProvider
      */
     public function boot()
     {
-        //
+        parent::boot();
     }
 
     /**
@@ -32,6 +32,6 @@ class EventServiceProvider extends ParentServiceProvider
      */
     public function register()
     {
-        //
+        parent::register();
     }
 }
