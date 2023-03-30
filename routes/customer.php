@@ -16,6 +16,8 @@ Route::prefix($prefix)
 
         Route::post('customers', 'CustomerController@create')->name('ecommerce-layer.customers.create');
 
+        Route::put('customers/{id}', 'CustomerController@createOrUpdate')->name('ecommerce-layer.customers.createOrUpdate');
+
         Route::patch('customers/{id}', 'CustomerController@update')->name('ecommerce-layer.customers.update');
 
         Route::delete('customers/{id}', 'CustomerController@delete')->name('ecommerce-layer.customers.delete');

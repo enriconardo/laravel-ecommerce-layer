@@ -57,7 +57,31 @@ class CustomerController extends Controller
             'metadata' => 'array',
         ]);
 
-        $customer = $this->customerService->create($customer, $request->all());
+        $customer = $this->customerService->update($customer, $request->all());
+
+        return CustomerResource::make($customer);
+    }
+
+    public function createOrUpdate($id, Request $request)
+    {
+        $customer = Customer::find($id);
+
+        if ($customer) {
+            // Update
+            $request->validate([
+                'metadata' => 'array',
+            ]);
+
+            $customer = $this->customerService->update($customer, $request->all());
+        } else {
+            // Create
+            $request->validate([
+                'email' => 'email|required',
+                'metadata' => 'array',
+            ]);
+    
+            $customer = $this->customerService->create($request->all());
+        }
 
         return CustomerResource::make($customer);
     }

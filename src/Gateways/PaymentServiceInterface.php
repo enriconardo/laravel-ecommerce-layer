@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways;
 
-use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Gateways\Models\Payment as GatewayPayment;
 use EcommerceLayer\Models\PaymentMethod;
 
 interface PaymentServiceInterface
@@ -12,14 +12,14 @@ interface PaymentServiceInterface
         string $currency,
         PaymentMethod $paymentMethod,
         string $customerIdentifier = null
-    ): Payment;
+    ): GatewayPayment;
 
     public function createAndConfirm(
         int $amount,
         string $currency,
         PaymentMethod $paymentMethod,
         string $customerIdentifier = null
-    ): Payment;
+    ): GatewayPayment;
 
-    public function confirm(Payment $payment): Payment;
+    public function confirm(GatewayPayment $payment): GatewayPayment;
 }

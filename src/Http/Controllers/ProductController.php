@@ -47,6 +47,66 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
+        $this->_validateCreateRequest($request);
+
+        $product = $this->productService->create($request->all());
+
+        // Load the necessary relationships to return
+        $product->load('prices');
+
+        return ProductResource::make($product);
+    }
+
+    public function update($id, Request $request)
+    {
+        /** @var Product $product */
+        $product = Product::findOrFail($id);
+
+        $this->_validateUpdateRequest($request);
+
+        $product = $this->productService->update($product, $request->all());
+
+        // Load the necessary relationships to return
+        $product->load('prices');
+
+        return ProductResource::make($product);
+    }
+
+    public function createOrUpdate($id, Request $request)
+    {
+        /** @var Product $product */
+        $product = Product::find($id);
+
+        if ($product) {
+            // Update
+            $this->_validateUpdateRequest($request);
+
+            $product = $this->productService->update($product, $request->all());
+        } else {
+            // Create
+            $this->_validateCreateRequest($request);
+
+            $product = $this->productService->create($request->all());
+        }
+
+        // Load the necessary relationships to return
+        $product->load('prices');
+
+        return ProductResource::make($product);
+    }
+
+    public function delete($id)
+    {
+        /** @var Product $product */
+        $product = Product::findOrFail($id);
+
+        $this->productService->delete($product);
+
+        return response()->json([], HttpStatusCode::No_Content);
+    }
+
+    protected function _validateCreateRequest(Request $request)
+    {
         $request->validate([
             'code' => 'required|string|unique:EcommerceLayer\Models\Product,code',
             'name' => 'required|string',
@@ -64,20 +124,10 @@ class ProductController extends Controller
             'prices.*.plan.interval' => ['required_with:prices.*.plan', new EnumValidation(PlanInterval::class)],
             'prices.*.plan.interval_count' => 'required_with:prices.*.plan|integer'
         ]);
-
-        $product = $this->productService->create($request->all());
-
-        // Load the necessary relationships to return
-        $product->load('prices');
-
-        return ProductResource::make($product);
     }
 
-    public function update($id, Request $request)
+    protected function _validateUpdateRequest(Request $request)
     {
-        /** @var Product $product */
-        $product = Product::findOrFail($id);
-
         $request->validate([
             'code' => 'string|unique:EcommerceLayer\Models\Product,code',
             'name' => 'string',
@@ -85,22 +135,5 @@ class ProductController extends Controller
             'shippable' => 'boolean',
             'metadata' => 'array'
         ]);
-
-        $product = $this->productService->update($product, $request->all());
-
-        // Load the necessary relationships to return
-        $product->load('prices');
-
-        return ProductResource::make($product);
-    }
-
-    public function delete($id)
-    {
-        /** @var Product $product */
-        $product = Product::findOrFail($id);
-
-        $this->productService->delete($product);
-
-        return response()->json([], HttpStatusCode::No_Content);
     }
 }
