@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-$middlewares = config('ecommerce-layer.http.middlewares');
+$middlewares = config('ecommerce-layer.http.routes.middlewares');
 $prefix = config('ecommerce-layer.http.routes.prefix');
 
 Route::prefix($prefix)

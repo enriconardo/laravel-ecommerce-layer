@@ -3,23 +3,25 @@
 return [
     'http' => [
 
-        /*
-        |--------------------------------------------------------------------------
-        | Routes middlewares
-        |--------------------------------------------------------------------------
-        |
-        | Set here the list of the middlewares you want to attach to the Laravel
-        | Ecommerce Layer roues.
-        |
-        */
-        'middlewares' => [
-            'api'
-            // ...
-        ],
-
         'routes' => [
 
-            'prefix' => env('ECOMMERCE_LAYER_ROUTES_PREFIX', 'ecommerce-layer')
+            'enabled' => env('ECOMMERCE_LAYER_ROUTES_ENABLED', true),
+
+            'prefix' => env('ECOMMERCE_LAYER_ROUTES_PREFIX', 'ecommerce-layer'),
+
+            /*
+            |--------------------------------------------------------------------------
+            | Routes middlewares
+            |--------------------------------------------------------------------------
+            |
+            | Set here the list of the middlewares you want to attach to the Laravel
+            | Ecommerce Layer roues.
+            |
+            */
+            'middlewares' => [
+                'api'
+                // ...
+            ],
 
         ]
     ],
