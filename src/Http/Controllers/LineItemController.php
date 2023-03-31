@@ -75,6 +75,6 @@ class LineItemController extends Controller
 
         $lineItem = $this->lineItemService->delete($lineItem);
 
-        return response()->json([], HttpStatusCode::No_Content);
+        return response()->json([], HttpStatusCode::No_Content->value);
     }
 }

@@ -72,6 +72,6 @@ class CustomerController extends Controller
 
         $this->customerService->delete($customer);
 
-        return response()->json([], HttpStatusCode::No_Content);
+        return response()->json([], HttpStatusCode::No_Content->value);
     }
 }

@@ -69,6 +69,6 @@ class PriceController extends Controller
 
         $this->priceService->delete($price);
 
-        return response()->json([], HttpStatusCode::No_Content);
+        return response()->json([], HttpStatusCode::No_Content->value);
     }
 }

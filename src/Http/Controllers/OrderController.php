@@ -116,6 +116,6 @@ class OrderController extends Controller
 
         $order = $this->orderService->delete($order);
 
-        return response()->json([], HttpStatusCode::No_Content);
+        return response()->json([], HttpStatusCode::No_Content->value);
     }
 }

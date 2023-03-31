@@ -79,7 +79,7 @@ class ProductController extends Controller
 
         $this->productService->delete($product);
 
-        return response()->json([], HttpStatusCode::No_Content);
+        return response()->json([], HttpStatusCode::No_Content->value);
     }
 
     protected function _validateCreateRequest(Request $request)
