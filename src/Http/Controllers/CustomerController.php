@@ -4,6 +4,7 @@ namespace EcommerceLayer\Http\Controllers;
 
 use EcommerceLayer\Http\Resources\CustomerResource;
 use EcommerceLayer\Models\Customer;
+use EcommerceLayer\QueryBuilder\Filters\MetadataFilter;
 use EcommerceLayer\Services\CustomerService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -22,7 +23,10 @@ class CustomerController extends Controller
     public function list(Request $request)
     {
         $customers = QueryBuilder::for(Customer::class)
-            ->allowedFilters([AllowedFilter::exact('email')])
+            ->allowedFilters([
+                AllowedFilter::exact('email'), 
+                AllowedFilter::custom('metadata', new MetadataFilter)
+            ])
             ->paginate()
             ->appends($request->query());
 

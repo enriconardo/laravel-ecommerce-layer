@@ -3,6 +3,7 @@
 namespace EcommerceLayer\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 trait HasMetadata
 {
@@ -17,6 +18,7 @@ trait HasMetadata
      */
     public function scopeWhereMetadata(Builder $query, string $key, $value): void
     {
+        $key = Str::contains($key, '.') ? Str::replace('.', '->', $key) : $key;
         $query->where("metadata->$key", $value);
     }
 }
