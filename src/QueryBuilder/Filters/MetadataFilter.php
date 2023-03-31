@@ -15,9 +15,9 @@ class MetadataFilter implements Filter
         $property = Str::contains($property, '.') ? Str::replace('.', '->', $property) : $property;
 
         if (is_array($value)) {
-            $query->whereJsonContains("metadata->$property", $value);
+            $query->whereJsonContains($property, $value);
         } else {
-            $query->where("metadata->$property", $value);
+            $query->where($property, $value);
         }
     }
 }
