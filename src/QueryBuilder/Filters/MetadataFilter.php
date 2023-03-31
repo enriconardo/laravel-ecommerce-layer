@@ -20,6 +20,6 @@ class MetadataFilter implements Filter
 
         $key = Str::contains($key, '.') ? Str::replace('.', '->', $key) : $key;
 
-        $query->where("metadata->$property", $realValue);
+        $query->where("metadata->$key", $realValue);
     }
 }
