@@ -29,6 +29,7 @@ class CustomerService
     public function update(Customer $customer, array $data): Customer
     {
         $attributes = [
+            'email' => Arr::get($data, 'email'),
             'metadata' => Arr::get($data, 'metadata'),
         ];
 
