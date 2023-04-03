@@ -23,7 +23,7 @@ class PriceController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'product_id' => 'string|required|exists:EcommerceLayer\Models\Product,id',
+            'product_id' => 'required|exists:EcommerceLayer\Models\Product,id',
             'unit_amount' => 'required|integer',
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'description' => 'string',
