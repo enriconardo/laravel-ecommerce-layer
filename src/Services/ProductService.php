@@ -53,7 +53,7 @@ class ProductService
 
     public function delete(Product $product)
     {
-        if (!$product->canBeUpdated()) {
+        if (!$product->canBeDeleted()) {
             throw new InvalidEntityException("Product [{$product->id} cannot be deleted]");
         }
 
