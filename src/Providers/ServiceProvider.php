@@ -2,6 +2,7 @@
 
 namespace EcommerceLayer\Providers;
 
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider as ParentServiceProvider;
 
 class ServiceProvider extends ParentServiceProvider
@@ -43,6 +44,8 @@ class ServiceProvider extends ParentServiceProvider
                 \EcommerceLayer\Commands\CreateGateway::class
             ]);
         }
+
+        JsonResource::withoutWrapping();
     }
 
     /**
