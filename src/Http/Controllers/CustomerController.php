@@ -58,6 +58,7 @@ class CustomerController extends Controller
         $customer = Customer::findOrFail($id);
 
         $request->validate([
+            'email' => 'email',
             'metadata' => 'array',
         ]);
 
