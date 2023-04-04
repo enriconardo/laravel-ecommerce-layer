@@ -15,6 +15,7 @@ use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
 use EcommerceLayer\Events\Order\OrderCanceled;
 use EcommerceLayer\Events\Order\OrderCompleted;
+use EcommerceLayer\Events\Order\OrderPaid;
 
 class OrderService
 {
@@ -102,6 +103,7 @@ class OrderService
                 OrderCanceled::dispatch($order);
                 break;
             case PaymentStatus::PAID:
+                OrderPaid::dispatch($order);
                 if (!$order->needFulfillment()) {
                     $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
                     $newOrderStatus = OrderStatus::COMPLETED;

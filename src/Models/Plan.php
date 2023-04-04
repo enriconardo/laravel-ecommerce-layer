@@ -2,6 +2,7 @@
 
 namespace EcommerceLayer\Models;
 
+use Carbon\Carbon;
 use EcommerceLayer\Enums\PlanInterval;
 
 /**
@@ -18,5 +19,29 @@ class Plan
     {
         $this->interval = $interval;
         $this->interval_count = $interval_count;
+    }
+
+    public function calcExpirationTime(Carbon $startTime = null)
+    {
+        $date = is_null($startTime) ? Carbon::now() : $startTime;
+        
+        switch ($this->interval) {
+            case PlanInterval::DAY->value:
+                $expirationTime = $date->addDays($this->interval_count);
+                break;
+            case PlanInterval::WEEK->value:
+                $expirationTime = $date->addWeeks($this->interval_count);
+                break;
+            case PlanInterval::MONTH->value:
+                $expirationTime = $date->addMonths($this->interval_count);
+                break;
+            case PlanInterval::YEAR->value:
+                $expirationTime = $date->addYears($this->interval_count);
+                break;
+            default:
+                $expirationTime = null;
+        }
+
+        return $expirationTime;
     }
 }

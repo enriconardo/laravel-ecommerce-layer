@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('price_id');
             $table->string('status')->default(SubscriptionStatus::PENDING->value);
             $table->dateTimeTz('started_at')->nullable();
-            $table->dateTimeTz('renewed_at')->nullable();
+            $table->dateTimeTz('expires_at')->nullable();
             $table->timestamps();
 
             $table->foreign('customer_id')
