@@ -45,8 +45,8 @@ class LineItemController extends Controller
 
         $request->validate([
             'quantity' => 'integer|required',
-            'price_id' => 'string|required|exists:EcommerceLayer\Models\Price,id',
-            'order_id' => 'string|required|exists:EcommerceLayer\Models\Order,id'
+            'price_id' => 'required|exists:EcommerceLayer\Models\Price,id',
+            'order_id' => 'required|exists:EcommerceLayer\Models\Order,id'
         ]);
 
         $lineItem = $this->lineItemService->create($request->all(), $order);

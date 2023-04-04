@@ -46,8 +46,8 @@ class OrderController extends Controller
     {
         $request->validate([
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
-            'customer_id' => 'string|required|exists:EcommerceLayer\Models\Customer,id',
-            'gateway_id' => 'string|exists:EcommerceLayer\Models\Gateway,id',
+            'customer_id' => 'required|exists:EcommerceLayer\Models\Customer,id',
+            'gateway_id' => 'exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
@@ -68,7 +68,7 @@ class OrderController extends Controller
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => 'string|exists:EcommerceLayer\Models\Gateway,id',
+            'gateway_id' => 'exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)],
@@ -90,7 +90,6 @@ class OrderController extends Controller
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => [
-                'string', 
                 Rule::requiredIf(!$order->gateway()->exists()), 
                 'exists:EcommerceLayer\Models\Gateway,id'
             ],
