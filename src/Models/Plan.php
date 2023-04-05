@@ -26,16 +26,16 @@ class Plan
         $date = is_null($startTime) ? Carbon::now() : $startTime;
         
         switch ($this->interval) {
-            case PlanInterval::DAY->value:
+            case PlanInterval::DAY:
                 $expirationTime = $date->addDays($this->interval_count);
                 break;
-            case PlanInterval::WEEK->value:
+            case PlanInterval::WEEK:
                 $expirationTime = $date->addWeeks($this->interval_count);
                 break;
-            case PlanInterval::MONTH->value:
+            case PlanInterval::MONTH:
                 $expirationTime = $date->addMonths($this->interval_count);
                 break;
-            case PlanInterval::YEAR->value:
+            case PlanInterval::YEAR:
                 $expirationTime = $date->addYears($this->interval_count);
                 break;
             default:

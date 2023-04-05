@@ -23,7 +23,9 @@ class Plan implements CastsAttributes
     {
         $encodedValue = Arr::get($attributes, $key);
         $value = json_decode($encodedValue, true);
-        return is_null($value) ? null : new PlanValueObject(PlanInterval::from($value['interval']), $value['interval_count']);
+        return is_null($value) 
+            ? null 
+            : new PlanValueObject(PlanInterval::from($value['interval']), $value['interval_count']);
     }
 
     /**

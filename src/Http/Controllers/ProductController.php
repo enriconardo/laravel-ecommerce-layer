@@ -6,7 +6,6 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 use PrinsFrank\Standards\Http\HttpStatusCode;
 use EcommerceLayer\Enums\PlanInterval;
 use EcommerceLayer\Http\Resources\ProductResource;
-use EcommerceLayer\ModelBuilders\ProductBuilder;
 use EcommerceLayer\Models\Product;
 use EcommerceLayer\Services\ProductService;
 use Illuminate\Http\Request;

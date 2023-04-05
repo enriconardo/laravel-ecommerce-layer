@@ -4,9 +4,10 @@ namespace EcommerceLayer\Jobs;
 
 use Carbon\Carbon;
 use EcommerceLayer\Enums\OrderStatus;
+use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Enums\SubscriptionStatus;
-use EcommerceLayer\Models\Order;
 use EcommerceLayer\Models\Subscription;
+use EcommerceLayer\Services\LineItemService;
 use EcommerceLayer\Services\OrderService;
 use EcommerceLayer\Services\SubscriptionService;
 use Illuminate\Bus\Queueable;
@@ -33,7 +34,8 @@ class RenewSubscriptions implements ShouldQueue
      */
     public function handle(
         SubscriptionService $subscriptionService,
-        OrderService $orderService
+        OrderService $orderService,
+        LineItemService $lineItemService,
     ): void {
         $now = Carbon::now();
 
@@ -46,11 +48,23 @@ class RenewSubscriptions implements ShouldQueue
         foreach ($expiredSubs as $sub) {
             /** @var Subscription $sub */
             $sourceOrder = $sub->source_order;
+
             $newOrder = $orderService->create([
-                'status' => OrderStatus::OPEN,
                 'gateway_id' => $sourceOrder->gateway_id,
                 'customer_id' => $sourceOrder->customer_id,
-                'currency' => $sourceOrder->currency
+                'currency' => $sourceOrder->currency,
+                'billing_address' => $sourceOrder->billing_address,
+                'payment_method' => $sourceOrder->payment_method,
+                'payment_status' => PaymentStatus::UNPAID
+            ]);
+
+            $lineItemService->create([
+                'price_id' => $sub->price_id,
+                'quantity' => 1
+            ], $newOrder);
+
+            $newOrder = $orderService->update($newOrder, [
+                'status' => OrderStatus::OPEN,
             ]);
 
             // Set subscription status as pending while the renewal order is waiting for payment.
@@ -61,11 +75,7 @@ class RenewSubscriptions implements ShouldQueue
             ]);
 
             // Pay the order
-            $newOrder->pay();
+            $newOrder = $orderService->pay($newOrder);
         }
-
-        // Cercare le subs scadute in stato attivo e tentare un nuovo pagamento, status = PENDING o WAITING_FOR_RENEW
-        // Se pagamento OK allora aggiorno expires_at e status = ACTIVE
-        // Se pagamento NON ok allora status = UNPAID
     }
 }

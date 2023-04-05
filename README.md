@@ -107,3 +107,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ## To Do
 
 - [ ] Adding discounts management
+- [ ] Tax management

@@ -97,8 +97,6 @@ class OrderService
         $newOrderStatus = $order->status;
         $newFulfillmentStatus = $order->fulfillment_status;
 
-        PaymentUpdated::dispatch($order);
-
         switch ($payment->status) {
             case PaymentStatus::VOIDED:
             case PaymentStatus::REFUSED:
@@ -109,7 +107,6 @@ class OrderService
                 if (!$order->needFulfillment()) {
                     $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
                     $newOrderStatus = OrderStatus::COMPLETED;
-                    OrderCompleted::dispatch($order);
                 }
                 break;
             default:
@@ -117,12 +114,21 @@ class OrderService
         }
         // End of status management
 
+        // Update the order with the new statuses
         $order = $this->_createOrUpdate([
             'status' => $newOrderStatus,
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $payment->status,
             'gateway_payment_identifier' => $payment->identifier
         ], $order);
+
+        // Fire the events
+        PaymentUpdated::dispatch($order);
+
+        if (!$order->needFulfillment()) {
+            OrderCompleted::dispatch($order);
+        }
+        // End fo fire the events
 
         return $order;
     }

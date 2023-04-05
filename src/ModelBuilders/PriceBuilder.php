@@ -2,6 +2,7 @@
 
 namespace EcommerceLayer\ModelBuilders;
 
+use EcommerceLayer\Enums\PlanInterval;
 use EcommerceLayer\Models\Plan;
 use EcommerceLayer\Models\Price;
 use Illuminate\Support\Arr;
@@ -24,7 +25,8 @@ class PriceBuilder extends BaseBuilder
         try {
             $recurring = Arr::get($attributes, 'recurring', null);
             if ($recurring) {
-                $plan = new Plan(Arr::get($attributes, 'plan.interval'), Arr::get($attributes, 'plan.interval_count'));
+                $interval = PlanInterval::from(Arr::get($attributes, 'plan.interval'));
+                $plan = new Plan($interval, Arr::get($attributes, 'plan.interval_count'));
                 $attributes['plan'] = $plan;
             }
         } catch (Exception $e) {

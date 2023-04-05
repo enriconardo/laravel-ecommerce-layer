@@ -7,7 +7,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PaymentUpdated implements PaymentEventInterface
+class PaymentUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
