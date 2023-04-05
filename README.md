@@ -10,6 +10,18 @@ You can install the package via composer:
 composer require enriconardo/laravel-ecommerce-layer:dev-master
 ```
 
+### Enable Subscriptions handler
+
+If you decide to use subscriptions, in order to regularly check the subscriptions status and automatically renew or cancel them, you have to schedule the proper task in the file `app\Console\Kernel.php` of your application:
+
+``` php
+protected function schedule(Schedule $schedule): void
+{
+    // You can schedule with the frequency you like
+    $schedule->job(new \EcommerceLayer\Jobs\RenewSubscriptions)->hourly();
+}
+```
+
 ## Usage
 
 ### Publish configuration
@@ -35,9 +47,11 @@ In order to set an authentication guard, add the right middleware to the group o
 # File config/ecommerce-layer.php
 
 'http' => [
-    'middlewares' => [
-        'api', // Don't remove this unless it is really necessary
-        'your-custom-middleware' // E.g: auth:api
+    'routes' => [
+        'middlewares' => [
+            'api', // Don't remove this unless it is really necessary
+            'your-custom-middleware' // E.g: auth:api
+        ],
     ]
 ],
 ```
@@ -92,5 +106,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## To Do
 
-- [ ] Handle subscriptions
 - [ ] Adding discounts management
