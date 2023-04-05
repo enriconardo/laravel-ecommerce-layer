@@ -31,17 +31,14 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePymentIntent = $this->client->paymentIntents->create(attributes_filter([
+        $stripePaymentIntent = $this->client->paymentIntents->create(attributes_filter([
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
             'customer' => $customerIdentifier
         ]));
 
-        return new Payment(
-            $stripePymentIntent->id,
-            $this->getStatus($stripePymentIntent)
-        );
+        return $this->createPaymentObject($stripePaymentIntent);
     }
 
     public function createAndConfirm(
@@ -57,29 +54,23 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePymentIntent = $this->client->paymentIntents->create(attributes_filter([
+        $stripePaymentIntent = $this->client->paymentIntents->create(attributes_filter([
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
             'customer' => $customerIdentifier,
-            'confirm' => true
+            'confirm' => true,
         ]));
 
-        return new Payment(
-            $stripePymentIntent->id,
-            $this->getStatus($stripePymentIntent)
-        );
+        return $this->createPaymentObject($stripePaymentIntent);
     }
 
     public function confirm(Payment $payment): Payment
     {
-        $stripePymentIntent = $this->client->paymentIntents->retrieve($payment->identifier);
-        $stripePymentIntent = $stripePymentIntent->confirm();
+        $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->identifier);
+        $stripePaymentIntent = $stripePaymentIntent->confirm();
 
-        return new Payment(
-            $stripePymentIntent->id,
-            $this->getStatus($stripePymentIntent)
-        );
+        return $this->createPaymentObject($stripePaymentIntent);
     }
 
     /**
@@ -87,9 +78,9 @@ class PaymentService implements PaymentServiceInterface
      * 
      * @return PaymentStatus
      */
-    protected function getStatus(PaymentIntent $stripePymentIntent)
+    protected function getStatus(PaymentIntent $stripePaymentIntent)
     {
-        switch ($stripePymentIntent->status) {
+        switch ($stripePaymentIntent->status) {
             case 'requires_action':
             case 'processing':
                 return PaymentStatus::PENDING;
@@ -102,5 +93,23 @@ class PaymentService implements PaymentServiceInterface
             default:
                 return PaymentStatus::REFUSED;
         }
+    }
+
+    protected function createPaymentObject(PaymentIntent $paymentIntent)
+    {
+        $additionalData = [];
+
+        // Manage payment intent next action
+        if ($paymentIntent->next_action && $paymentIntent->next_action->use_stripe_sdk->type === 'three_d_secure_redirect') {
+            $additionalData = [
+                'three_d_secure_redirect' => $paymentIntent->next_action->use_stripe_sdk->stripe_js
+            ];
+        }
+
+        return new Payment(
+            $paymentIntent->id,
+            $this->getStatus($paymentIntent),
+            $additionalData
+        );
     }
 }

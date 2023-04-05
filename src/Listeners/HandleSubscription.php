@@ -54,7 +54,7 @@ class HandleSubscription
             /** @var Subscription $sub */
             $subscription = Subscription::where('source_order_id', $order->id)->first();
 
-            if (!$subscription) {
+            if (!$subscription && $order->payment_status === PaymentStatus::PAID) {
                 // Subscription doesn't exists => create it
                 $this->subscriptionService->create([
                     'customer_id' => $order->customer_id,

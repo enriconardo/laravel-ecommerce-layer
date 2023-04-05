@@ -13,7 +13,6 @@ use Illuminate\Support\Arr;
 use EcommerceLayer\Events\Entity\EntityCreated;
 use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
-use EcommerceLayer\Events\Order\OrderCanceled;
 use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
 
@@ -85,8 +84,8 @@ class OrderService
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
-        /** @var \EcommerceLayer\Gateways\Models\Payment $payment */
-        $payment = $gatewayService->payments()->createAndConfirm(
+        /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
+        $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
             $order->payment_method,
@@ -97,7 +96,7 @@ class OrderService
         $newOrderStatus = $order->status;
         $newFulfillmentStatus = $order->fulfillment_status;
 
-        switch ($payment->status) {
+        switch ($gatewayPayment->status) {
             case PaymentStatus::VOIDED:
             case PaymentStatus::REFUSED:
                 // $newOrderStatus = OrderStatus::CANCELED;
@@ -118,14 +117,17 @@ class OrderService
         $order = $this->_createOrUpdate([
             'status' => $newOrderStatus,
             'fulfillment_status' => $newFulfillmentStatus,
-            'payment_status' => $payment->status,
-            'gateway_payment_identifier' => $payment->identifier
+            'payment_status' => $gatewayPayment->status,
+            'payment_data' => [
+                'gateway_identifier' => $gatewayPayment->identifier,
+                ...$gatewayPayment->data
+            ]
         ], $order);
 
         // Fire the events
         PaymentUpdated::dispatch($order);
 
-        if (!$order->needFulfillment()) {
+        if ($order->status === OrderStatus::COMPLETED) {
             OrderCompleted::dispatch($order);
         }
         // End fo fire the events
@@ -141,7 +143,7 @@ class OrderService
             'status' => Arr::get($data, 'status'),
             'fulfillment_status' => Arr::get($data, 'fulfillment_status'),
             'payment_status' => Arr::get($data, 'payment_status'),
-            'gateway_payment_identifier' => Arr::get($data, 'gateway_payment_identifier'),
+            'payment_data' => Arr::get($data, 'payment_data'),
             'currency' => Arr::get($data, 'currency'),
             'metadata' => Arr::get($data, 'metadata'),
         ];

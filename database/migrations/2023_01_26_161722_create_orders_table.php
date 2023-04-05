@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('currency', 3);
             $table->string('status')->default(OrderStatus::DRAFT->value);
             $table->string('fulfillment_status')->default(FulfillmentStatus::UNFULFILLED->value);
-            $table->string('gateway_payment_identifier')->nullable();
             $table->string('payment_status')->default(PaymentStatus::UNPAID->value);
+            $table->text('payment_data')->nullable();
             $table->text('billing_address')->nullable();
             $table->text('payment_method')->nullable();
             $table->text('metadata')->nullable();
