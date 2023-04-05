@@ -1,13 +1,13 @@
 <?php
 
-namespace EcommerceLayer\Events\Order;
+namespace EcommerceLayer\Events\Payment;
 
 use EcommerceLayer\Models\Order;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderPaid
+class PaymentUpdated implements PaymentEventInterface
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

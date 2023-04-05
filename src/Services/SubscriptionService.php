@@ -33,6 +33,7 @@ class SubscriptionService
             'status' => Arr::get($data, 'status', SubscriptionStatus::PENDING),
             'started_at' => $startedAt,
             'expires_at' => Arr::get($data, 'expires_at'),
+            'source_order_id' => Arr::get($data, 'source_order_id')
         ];
 
         $subscription = SubscriptionBuilder::init()->fill($attributes)->end();
@@ -45,9 +46,11 @@ class SubscriptionService
     public function update(Subscription $subscription, array $data): Subscription
     {
         $attributes = [
+            'customer_id' => Arr::get($data, 'customer_id'),
             'status' => Arr::get($data, 'status'),
             'started_at' => Arr::get($data, 'started_at'),
             'expires_at' => Arr::get($data, 'expires_at'),
+            'source_order_id' => Arr::get($data, 'source_order_id')
         ];
 
         $subscription = SubscriptionBuilder::init($subscription)->fill($attributes)->end();

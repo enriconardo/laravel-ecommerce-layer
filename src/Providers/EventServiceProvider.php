@@ -2,8 +2,6 @@
 
 namespace EcommerceLayer\Providers;
 
-use EcommerceLayer\Events\Order\OrderPlaced;
-use EcommerceLayer\Listeners\SyncCustomerWithGateway;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ParentServiceProvider;
 
 class EventServiceProvider extends ParentServiceProvider
@@ -14,8 +12,11 @@ class EventServiceProvider extends ParentServiceProvider
      * @var array
      */
     protected $listen = [
-        OrderPlaced::class => [
-            SyncCustomerWithGateway::class,
+        \EcommerceLayer\Events\Order\OrderPlaced::class => [
+            \EcommerceLayer\Listeners\SyncCustomerWithGateway::class,
+        ],
+        \EcommerceLayer\Events\Payment\PaymentUpdated::class => [
+            \EcommerceLayer\Listeners\HandleSubscription::class
         ],
     ];
 

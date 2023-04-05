@@ -15,14 +15,14 @@ use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
 use EcommerceLayer\Events\Order\OrderCanceled;
 use EcommerceLayer\Events\Order\OrderCompleted;
-use EcommerceLayer\Events\Order\OrderPaid;
+use EcommerceLayer\Events\Payment\PaymentUpdated;
 
 class OrderService
 {
     public function create(array $data): Order
     {
         // When you create a new order it is a cart (status = DRAFT)
-        $data['status'] = OrderStatus::DRAFT;
+        $data['status'] = Arr::get($data, 'status', OrderStatus::DRAFT);
 
         $order = $this->_createOrUpdate($data);
 
@@ -97,13 +97,15 @@ class OrderService
         $newOrderStatus = $order->status;
         $newFulfillmentStatus = $order->fulfillment_status;
 
+        PaymentUpdated::dispatch($order);
+
         switch ($payment->status) {
             case PaymentStatus::VOIDED:
-                $newOrderStatus = OrderStatus::CANCELED;
-                OrderCanceled::dispatch($order);
+            case PaymentStatus::REFUSED:
+                // $newOrderStatus = OrderStatus::CANCELED;
+                // OrderCanceled::dispatch($order);
                 break;
             case PaymentStatus::PAID:
-                OrderPaid::dispatch($order);
                 if (!$order->needFulfillment()) {
                     $newFulfillmentStatus = FulfillmentStatus::FULFILLED;
                     $newOrderStatus = OrderStatus::COMPLETED;

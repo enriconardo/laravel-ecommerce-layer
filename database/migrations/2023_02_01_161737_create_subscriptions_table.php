@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('price_id');
+            $table->unsignedBigInteger('source_order_id');
             $table->string('status')->default(SubscriptionStatus::PENDING->value);
             $table->dateTimeTz('started_at')->nullable();
             $table->dateTimeTz('expires_at')->nullable();
