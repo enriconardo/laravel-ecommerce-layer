@@ -31,7 +31,7 @@ class PaymentDataCast implements CastsAttributes
         $gatewayKey = $value['gateway_key'];
         unset($value['gateway_key']);
 
-        return new PaymentData($gatewayKey, ...$value);
+        return new PaymentData($gatewayKey, $value);
     }
 
     /**

@@ -68,12 +68,12 @@ class OrderService
 
         OrderPlaced::dispatch($order);
 
-        $order = $this->pay($order, Arr::get($data, 'return_url'));
+        $order = $this->pay($order, ['return_url' => Arr::get($data, 'return_url')]);
 
         return $order;
     }
 
-    public function pay(Order $order, $returnUrl = null): Order
+    public function pay(Order $order, $args = []): Order
     {
         if (!$order->canBePaid()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
@@ -85,17 +85,24 @@ class OrderService
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
+        $additionalData = [
+            'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
+            ...$args
+        ];
+
         /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
         $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
             $order->payment_method,
-            [
-                'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
-                'return_url' => $returnUrl
-            ]
+            attributes_filter($additionalData)
         );
 
+        return $this->updatePayment($order, $gatewayPayment);
+    }
+
+    public function updatePayment(Order $order, \EcommerceLayer\Gateways\Models\Payment $gatewayPayment): Order
+    {
         // Manage statuses
         $newOrderStatus = $order->status;
         $newFulfillmentStatus = $order->fulfillment_status;

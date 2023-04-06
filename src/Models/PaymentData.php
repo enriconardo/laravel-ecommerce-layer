@@ -2,12 +2,14 @@
 
 namespace EcommerceLayer\Models;
 
+use JsonSerializable;
+
 /**
  * @property string $gateway_key
  * @property array $attributes
  * @property string $three_d_secure_redirect_url
  */
-class PaymentData
+class PaymentData implements JsonSerializable
 {
     public string $gateway_key;
 
@@ -18,6 +20,7 @@ class PaymentData
         array $args = [],
     ) {
         $this->gateway_key = $gatewayKey;
+        $this->attributes = [];
 
         if (array_key_exists('three_d_secure_redirect_url', $args)) {
             $this->attributes['three_d_secure_redirect_url'] = $args['three_d_secure_redirect_url'];
@@ -45,5 +48,23 @@ class PaymentData
     public function attributes()
     {
         return $this->attributes;
+    }
+
+    public function __toArray()
+    {
+        $data = [
+            'gateway_key' => $this->gateway_key,
+        ];
+
+        foreach ($this->attributes as $key => $attribute) {
+            $data[$key] = $attribute;
+        }
+
+        return $data;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toArray();
     }
 }

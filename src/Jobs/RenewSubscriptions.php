@@ -12,7 +12,6 @@ use EcommerceLayer\Services\OrderService;
 use EcommerceLayer\Services\SubscriptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -75,7 +74,7 @@ class RenewSubscriptions implements ShouldQueue
             ]);
 
             // Pay the order
-            $newOrder = $orderService->pay($newOrder);
+            $newOrder = $orderService->pay($newOrder, ['off_session' => true]);
         }
     }
 }

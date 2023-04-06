@@ -108,3 +108,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 - [ ] Adding discounts management
 - [ ] Tax management
+- [ ] Shipping

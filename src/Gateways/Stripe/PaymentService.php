@@ -6,6 +6,7 @@ use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\Payment;
 use EcommerceLayer\Models\PaymentMethod;
+use Stripe\Exception\CardException;
 use Stripe\StripeClient;
 use Stripe\PaymentIntent;
 
@@ -47,7 +48,13 @@ class PaymentService implements PaymentServiceInterface
         }
         // End of attributes setting
 
-        $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
+        try {
+            $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
+        } catch (CardException $e) {
+            $errorBody = $e->getJsonBody();
+            $paymentIntentAsArray = $errorBody['error']['payment_intent'];
+            $stripePaymentIntent = $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
+        }
 
         return $this->createPaymentObject($stripePaymentIntent);
     }
@@ -80,9 +87,19 @@ class PaymentService implements PaymentServiceInterface
         if (array_key_exists('return_url', $data)) {
             $attributes['return_url'] = $data['return_url'];
         }
+
+        if (array_key_exists('off_session', $data)) {
+            $attributes['off_session'] = $data['off_session'];
+        }
         // End of attributes setting
 
-        $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
+        try {
+            $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
+        } catch (CardException $e) {
+            $errorBody = $e->getJsonBody();
+            $paymentIntentAsArray = $errorBody['error']['payment_intent'];
+            $stripePaymentIntent = $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
+        }
 
         return $this->createPaymentObject($stripePaymentIntent);
     }

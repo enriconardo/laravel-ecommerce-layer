@@ -21,6 +21,7 @@ class Payment
     {
         $this->key = $key;
         $this->status = $status;
+        $this->data = [];
     }
 
     public function getData()

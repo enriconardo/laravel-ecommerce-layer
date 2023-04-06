@@ -23,7 +23,7 @@ class Plan
 
     public function calcExpirationTime(Carbon $startTime = null)
     {
-        $date = is_null($startTime) ? Carbon::now() : $startTime;
+        $date = is_null($startTime) ? Carbon::now() : clone $startTime;
         
         switch ($this->interval) {
             case PlanInterval::DAY:

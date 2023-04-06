@@ -27,6 +27,9 @@ class GatewayServiceProvider extends ParentServiceProvider
         });
 
         // Enable the gateways
+
+        // Stripe
         $this->app->make(GatewayProviderFactory::class)->enableGateway(new Stripe);
+        $this->loadRoutesFrom(__DIR__.'/../Gateways/Stripe/routes.php');
     }
 }

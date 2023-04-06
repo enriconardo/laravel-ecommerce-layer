@@ -18,6 +18,9 @@ class EventServiceProvider extends ParentServiceProvider
         \EcommerceLayer\Events\Payment\PaymentUpdated::class => [
             \EcommerceLayer\Listeners\HandleSubscription::class
         ],
+        \EcommerceLayer\Gateways\Events\GatewayPaymentUpdated::class => [
+            \EcommerceLayer\Listeners\Handle3DSecurePayment::class
+        ],
     ];
 
     /**
