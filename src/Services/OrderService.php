@@ -67,12 +67,12 @@ class OrderService
 
         OrderPlaced::dispatch($order);
 
-        $order = $this->pay($order);
+        $order = $this->pay($order, Arr::get($data, 'return_url'));
 
         return $order;
     }
 
-    public function pay(Order $order): Order
+    public function pay(Order $order, $returnUrl = null): Order
     {
         if (!$order->canBePaid()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
@@ -89,7 +89,10 @@ class OrderService
             $order->total,
             $order->currency->value,
             $order->payment_method,
-            $order->customer->getGatewayCustomerIdentifier($gateway->identifier)
+            [
+                'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
+                'return_url' => $returnUrl
+            ]
         );
 
         // Manage statuses
@@ -119,8 +122,8 @@ class OrderService
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $gatewayPayment->status,
             'payment_data' => [
-                'gateway_identifier' => $gatewayPayment->identifier,
-                ...$gatewayPayment->data
+                'gateway_key' => $gatewayPayment->key,
+                ...$gatewayPayment->getData()
             ]
         ], $order);
 

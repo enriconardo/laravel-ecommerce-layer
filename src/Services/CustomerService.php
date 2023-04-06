@@ -55,12 +55,12 @@ class CustomerService
         /** @var \EcommerceLayer\Gateways\Models\Customer $gatewayCustomer */
         $gatewayCustomer = $gatewayService->customers()->create($customer->email);
 
-        $currentIdentifiers = $customer->gateway_customer_identifiers;
+        $currentKeys = $customer->gateway_keys;
 
-        Arr::set($currentIdentifiers, $gateway->identifier, $gatewayCustomer->identifier);
+        Arr::set($currentKeys, $gateway->identifier, $gatewayCustomer->identifier);
 
         return CustomerBuilder::init($customer)->fill([
-            'gateway_customer_identifiers' => $currentIdentifiers
+            'gateway_keys' => $currentKeys
         ])->end();
     }
 }

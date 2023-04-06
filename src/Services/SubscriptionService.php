@@ -10,7 +10,6 @@ use EcommerceLayer\Events\Entity\EntityUpdated;
 use EcommerceLayer\Exceptions\InvalidEntityException;
 use EcommerceLayer\ModelBuilders\SubscriptionBuilder;
 use EcommerceLayer\Models\Price;
-use EcommerceLayer\Models\Plan;
 use EcommerceLayer\Models\Subscription;
 use Illuminate\Support\Arr;
 

@@ -22,7 +22,7 @@ class PaymentService implements PaymentServiceInterface
         int $amount,
         string $currency,
         PaymentMethod $paymentMethod,
-        string $customerIdentifier = null
+        array $data = []
     ): Payment {
         $type = $paymentMethod->type;
 
@@ -31,12 +31,23 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePaymentIntent = $this->client->paymentIntents->create(attributes_filter([
+        // Set attributes
+        $attributes = [
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
-            'customer' => $customerIdentifier
-        ]));
+        ];
+
+        if (array_key_exists('customer_key', $data) && $data['customer_key']) {
+            $attributes['customer'] = $data['customer_key'];
+        }
+
+        if (array_key_exists('return_url', $data) && $data['return_url']) {
+            $attributes['return_url'] = $data['return_url'];
+        }
+        // End of attributes setting
+
+        $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
 
         return $this->createPaymentObject($stripePaymentIntent);
     }
@@ -45,7 +56,7 @@ class PaymentService implements PaymentServiceInterface
         int $amount,
         string $currency,
         PaymentMethod $paymentMethod,
-        string $customerIdentifier = null
+        array $data = []
     ): Payment {
         $type = $paymentMethod->type;
 
@@ -54,20 +65,31 @@ class PaymentService implements PaymentServiceInterface
             $type => $paymentMethod->data,
         ]);
 
-        $stripePaymentIntent = $this->client->paymentIntents->create(attributes_filter([
+        // Set attributes
+        $attributes = [
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
-            'customer' => $customerIdentifier,
             'confirm' => true,
-        ]));
+        ];
+
+        if (array_key_exists('customer_key', $data)) {
+            $attributes['customer'] = $data['customer_key'];
+        }
+
+        if (array_key_exists('return_url', $data)) {
+            $attributes['return_url'] = $data['return_url'];
+        }
+        // End of attributes setting
+
+        $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
 
         return $this->createPaymentObject($stripePaymentIntent);
     }
 
     public function confirm(Payment $payment): Payment
     {
-        $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->identifier);
+        $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->key);
         $stripePaymentIntent = $stripePaymentIntent->confirm();
 
         return $this->createPaymentObject($stripePaymentIntent);
@@ -78,9 +100,9 @@ class PaymentService implements PaymentServiceInterface
      * 
      * @return PaymentStatus
      */
-    protected function getStatus(PaymentIntent $stripePaymentIntent)
+    protected function getStatus(PaymentIntent $paymentIntent)
     {
-        switch ($stripePaymentIntent->status) {
+        switch ($paymentIntent->status) {
             case 'requires_action':
             case 'processing':
                 return PaymentStatus::PENDING;
@@ -97,19 +119,16 @@ class PaymentService implements PaymentServiceInterface
 
     protected function createPaymentObject(PaymentIntent $paymentIntent)
     {
-        $additionalData = [];
+        $payment = new Payment(
+            $paymentIntent->id,
+            $this->getStatus($paymentIntent)
+        );
 
         // Manage payment intent next action
-        if ($paymentIntent->next_action && $paymentIntent->next_action->use_stripe_sdk->type === 'three_d_secure_redirect') {
-            $additionalData = [
-                'three_d_secure_redirect' => $paymentIntent->next_action->use_stripe_sdk->stripe_js
-            ];
+        if ($paymentIntent->next_action && $paymentIntent->next_action->type === 'redirect_to_url') {
+            $payment->setThreeDSecure($paymentIntent->next_action->redirect_to_url->url);
         }
 
-        return new Payment(
-            $paymentIntent->id,
-            $this->getStatus($paymentIntent),
-            $additionalData
-        );
+        return $payment;
     }
 }

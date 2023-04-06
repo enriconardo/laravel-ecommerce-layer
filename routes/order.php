@@ -21,5 +21,4 @@ Route::prefix($prefix)
         Route::delete('orders/{id}', 'OrderController@delete')->name('ecommerce-layer.orders.delete');
 
         Route::post('orders/{id}/place', 'OrderController@place')->name('ecommerce-layer.orders.place');
-
     });

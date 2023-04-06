@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 /**
  * @property string $email
  * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
- * @property array $gateway_customer_identifiers Store the ID of the related customer object for each payment gateway.
+ * @property array $gateway_keys Store the ID of the related customer object for each payment gateway.
  */
 class Customer extends Model
 {
@@ -22,7 +22,7 @@ class Customer extends Model
      */
     protected $fillable = [
         'email',
-        'gateway_customer_identifiers'
+        'gateway_keys'
     ];
 
     /**
@@ -31,7 +31,7 @@ class Customer extends Model
      * @var array
      */
     protected $casts = [
-        'gateway_customer_identifiers' => 'array'
+        'gateway_keys' => 'array'
     ];
 
     public function orders()
@@ -44,8 +44,8 @@ class Customer extends Model
         return $this->hasMany(Subscription::class);
     }
 
-    public function getGatewayCustomerIdentifier($identier) 
+    public function getGatewayKey($key) 
     {
-        return Arr::get($this->gateway_customer_identifiers, $identier, null);
+        return Arr::get($this->gateway_keys, $key, null);
     }
 }

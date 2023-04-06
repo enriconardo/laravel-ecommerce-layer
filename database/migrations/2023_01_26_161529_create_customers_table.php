@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->text('metadata')->nullable();
-            $table->text('gateway_customer_identifiers')->nullable();
+            $table->text('gateway_keys')->nullable();
             $table->timestamps();
         });
     }
