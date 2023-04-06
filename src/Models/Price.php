@@ -4,7 +4,7 @@ namespace EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use EcommerceLayer\Casts\Plan as PlanCast;
+use EcommerceLayer\Casts\PlanCast;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 
 /**

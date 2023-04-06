@@ -15,6 +15,7 @@ use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
 use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
+use EcommerceLayer\Models\PaymentData;
 
 class OrderService
 {
@@ -121,10 +122,7 @@ class OrderService
             'status' => $newOrderStatus,
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $gatewayPayment->status,
-            'payment_data' => [
-                'gateway_key' => $gatewayPayment->key,
-                ...$gatewayPayment->getData()
-            ]
+            'payment_data' => new PaymentData($gatewayPayment->key, $gatewayPayment->getData())
         ], $order);
 
         // Fire the events

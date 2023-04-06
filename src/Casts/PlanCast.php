@@ -2,12 +2,13 @@
 
 namespace EcommerceLayer\Casts;
 
+use EcommerceLayer\Enums\PlanInterval;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EcommerceLayer\Models\PaymentMethod as PaymentMethodValueObject;
+use EcommerceLayer\Models\Plan;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
-class PaymentMethod implements CastsAttributes
+class PlanCast implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -16,13 +17,15 @@ class PaymentMethod implements CastsAttributes
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return PaymentMethodValueObject
+     * @return Plan
      */
     public function get($model, $key, $value, $attributes)
     {
         $encodedValue = Arr::get($attributes, $key);
         $value = json_decode($encodedValue, true);
-        return is_null($value) ? null : new PaymentMethodValueObject($value['type'], Arr::get($value, 'data', []));
+        return is_null($value) 
+            ? null 
+            : new Plan(PlanInterval::from($value['interval']), $value['interval_count']);
     }
 
     /**
@@ -36,13 +39,13 @@ class PaymentMethod implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (!$value instanceof PaymentMethodValueObject) {
-            throw new InvalidArgumentException('The given value is not an PaymentMethod instance.');
+        if (!$value instanceof Plan) {
+            throw new InvalidArgumentException('The given value is not an Plan instance.');
         }
 
         $value = [
-            'type' => $value->type,
-            'data' => $value->data,
+            'interval' => $value->interval->value,
+            'interval_count' => $value->interval_count,
         ];
 
         return json_encode($value);

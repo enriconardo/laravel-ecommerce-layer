@@ -3,11 +3,11 @@
 namespace EcommerceLayer\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EcommerceLayer\Models\Address as AddressValueObject;
+use EcommerceLayer\Models\Address;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
-class Address implements CastsAttributes
+class AddressCast implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -16,13 +16,13 @@ class Address implements CastsAttributes
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return AddressValueObject
+     * @return Address
      */
     public function get($model, $key, $value, $attributes)
     {
         $encodedValue = Arr::get($attributes, $key);
         $value = json_decode($encodedValue, true);
-        return is_null($value) ? null : new AddressValueObject($value);
+        return is_null($value) ? null : new Address($value);
     }
 
     /**
@@ -30,13 +30,13 @@ class Address implements CastsAttributes
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @param string $key
-     * @param AddressValueObject $value
+     * @param Address $value
      * @param array $attributes
      * @return array
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (!$value instanceof AddressValueObject) {
+        if (!$value instanceof Address) {
             throw new InvalidArgumentException('The given value is not an Address instance.');
         }
 

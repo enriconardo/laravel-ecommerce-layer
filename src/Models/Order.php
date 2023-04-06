@@ -3,8 +3,9 @@
 namespace EcommerceLayer\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use EcommerceLayer\Casts\Address as AddressCast;
-use EcommerceLayer\Casts\PaymentMethod as PaymentMethodCast;
+use EcommerceLayer\Casts\AddressCast;
+use EcommerceLayer\Casts\PaymentDataCast;
+use EcommerceLayer\Casts\PaymentMethodCast;
 use EcommerceLayer\Enums\FulfillmentStatus;
 use EcommerceLayer\Enums\OrderStatus;
 use EcommerceLayer\Enums\PaymentStatus;
@@ -20,7 +21,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property Currency $currency
  * @property AddressCast $billing_address
  * @property PaymentMethodCast $payment_method
- * @property array $payment_data Data related to the payment. Could be different based onthe gateway used for the payment.
+ * @property array PaymentDataCast $payment_data Data related to the payment. Could be different based onthe gateway used for the payment.
  * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
  * @property int $subtotal The sum of the subtotals of all the line items in the order, in cents. No tax, discounts or other options are considered.
  * @property int $total Total amount of the order, which is the subtotal with all the options considered, like taxes, shipping costs or discounts.
@@ -61,7 +62,7 @@ class Order extends Model
         'currency' => Currency::class,
         'billing_address' => AddressCast::class,
         'payment_method' => PaymentMethodCast::class,
-        'payment_data' => 'array'
+        'payment_data' => PaymentDataCast::class
     ];
 
     public function customer()

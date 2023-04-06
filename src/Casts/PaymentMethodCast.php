@@ -2,13 +2,12 @@
 
 namespace EcommerceLayer\Casts;
 
-use EcommerceLayer\Enums\PlanInterval;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EcommerceLayer\Models\Plan as PlanValueObject;
+use EcommerceLayer\Models\PaymentMethod;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
-class Plan implements CastsAttributes
+class PaymentMethodCast implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -17,15 +16,13 @@ class Plan implements CastsAttributes
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return PaymentMethodValueObject
+     * @return PaymentMethod
      */
     public function get($model, $key, $value, $attributes)
     {
         $encodedValue = Arr::get($attributes, $key);
         $value = json_decode($encodedValue, true);
-        return is_null($value) 
-            ? null 
-            : new PlanValueObject(PlanInterval::from($value['interval']), $value['interval_count']);
+        return is_null($value) ? null : new PaymentMethod($value['type'], Arr::get($value, 'data', []));
     }
 
     /**
@@ -33,19 +30,19 @@ class Plan implements CastsAttributes
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @param string $key
-     * @param PaymentMethodValueObject $value
+     * @param PaymentMethod $value
      * @param array $attributes
      * @return array
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (!$value instanceof PlanValueObject) {
-            throw new InvalidArgumentException('The given value is not an Plan instance.');
+        if (!$value instanceof PaymentMethod) {
+            throw new InvalidArgumentException('The given value is not an PaymentMethod instance.');
         }
 
         $value = [
-            'interval' => $value->interval->value,
-            'interval_count' => $value->interval_count,
+            'type' => $value->type,
+            'data' => $value->data,
         ];
 
         return json_encode($value);
