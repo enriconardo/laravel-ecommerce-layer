@@ -5,7 +5,7 @@ namespace EcommerceLayer\Gateways\Stripe;
 use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
-use EcommerceLayer\Gateways\Models\PaymentMethod;
+use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
 use Stripe\PaymentIntent;
@@ -22,10 +22,10 @@ class PaymentService implements PaymentServiceInterface
     public function create(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod,
+        GatewayPaymentMethod $paymentMethod,
         array $data = []
     ): GatewayPayment {
-        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
+        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->id);
 
         // Set attributes
         if (array_key_exists('customer_key', $data) && $data['customer_key']) {
@@ -56,10 +56,10 @@ class PaymentService implements PaymentServiceInterface
     public function createAndConfirm(
         int $amount,
         string $currency,
-        PaymentMethod $paymentMethod,
+        GatewayPaymentMethod $paymentMethod,
         array $data = []
     ): GatewayPayment {
-        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
+        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->id);
 
         // Set attributes
         if (array_key_exists('customer_key', $data) && $data['customer_key']) {

@@ -96,7 +96,7 @@ class OrderService
                 $order->payment_method->data
             );
 
-            $order->payment_method->gateway_id = $gatewayPaymentMethod->key;
+            $order->payment_method->gateway_id = $gatewayPaymentMethod->id;
             $this->_createOrUpdate(['payment_method' => $order->payment_method], $order);
         }
         // End of gateway payment method creation

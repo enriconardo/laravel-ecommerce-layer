@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Gateways;
 
 use EcommerceLayer\Gateways\Models\GatewayPayment;
-use EcommerceLayer\Gateways\Models\PaymentMethod as GatewayPaymentMethod;
+use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
 
 interface PaymentServiceInterface
 {
