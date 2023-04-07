@@ -23,7 +23,6 @@ class PaymentMethodService implements PaymentMethodServiceInterface
         ]);
 
         $type = $stripePaymentMethod->type;
-        $data = $stripePaymentMethod->$type->toArray();
         return new PaymentMethod($type, $stripePaymentMethod->$type->toArray(), $stripePaymentMethod->id);
     }
 

@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Gateways\CustomerServiceInterface;
-use EcommerceLayer\Gateways\Models\Customer;
+use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Models\Address;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Stripe\StripeClient;
@@ -17,38 +17,38 @@ class CustomerService implements CustomerServiceInterface
         $this->client = $client;
     }
 
-    public function create(string $email, Address|null $address = null, array|null $metadata = null): Customer
+    public function create(string $email, Address|null $address = null, array|null $metadata = null): GatewayCustomer
     {
-        $customer = $this->findByEmail($email);
+        $gatewayCustomer = $this->findByEmail($email);
 
-        if ($customer instanceof Customer) {
-            return $this->_update($customer->identifier, $address, $metadata);
+        if ($gatewayCustomer instanceof GatewayCustomer) {
+            return $this->_update($gatewayCustomer->id, $address, $metadata);
         }
 
         return $this->_create($email, $address, $metadata);
     }
 
-    public function update(string $email, Address|null $address = null, array|null $metadata = null): Customer
+    public function update(string $email, Address|null $address = null, array|null $metadata = null): GatewayCustomer
     {
-        $customer = $this->findByEmail($email);
+        $gatewayCustomer = $this->findByEmail($email);
 
-        if (!$customer) {
+        if (!$gatewayCustomer) {
             throw new ModelNotFoundException("Customer with email [$email] has not found in the gateway.");
         }
 
-        return $this->_update($customer->identifier, $address, $metadata);
+        return $this->_update($gatewayCustomer->id, $address, $metadata);
     }
 
-    public function findByEmail(string $email): Customer|null
+    public function findByEmail(string $email): GatewayCustomer|null
     {
         $results = $this->client->customers->search([
             'query' => "email:'$email'",
             'limit' => 1
         ]);
 
-        $gatewayCustomer = count($results->data) > 0 ? $results->data[0] : null;
+        $stripeCustomer = count($results->data) > 0 ? $results->data[0] : null;
 
-        return $gatewayCustomer !== null ? new Customer($gatewayCustomer->id) : null;
+        return $stripeCustomer !== null ? new GatewayCustomer($stripeCustomer->id) : null;
     }
 
     protected function _getAddressData(Address $address)
@@ -65,22 +65,22 @@ class CustomerService implements CustomerServiceInterface
 
     protected function _create(string $email, Address|null $address = null, array|null $metadata = null)
     {
-        $gatewayCustomer = $this->client->customers->create(attributes_filter([
+        $stripeCustomer = $this->client->customers->create(attributes_filter([
             'email' => $email,
             'address' => ($address instanceof Address) ? $this->_getAddressData($address) : null,
             'metadata' => $metadata
         ]));
 
-        return new Customer($gatewayCustomer->id);
+        return new GatewayCustomer($stripeCustomer->id);
     }
 
     protected function _update($id, Address|null $address = null, array|null $metadata = null)
     {
-        $gatewayCustomer = $this->client->customers->update($id, attributes_filter([
+        $stripeCustomer = $this->client->customers->update($id, attributes_filter([
             'address' => ($address instanceof Address) ? $this->_getAddressData($address) : null,
             'metadata' => $metadata
         ]));
 
-        return new Customer($gatewayCustomer->id);
+        return new GatewayCustomer($stripeCustomer->id);
     }
 }

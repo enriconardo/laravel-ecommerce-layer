@@ -37,6 +37,7 @@ class PaymentService implements PaymentServiceInterface
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
+            'setup_future_usage' => 'off_session',
             ...$data
         ];
         // End of attributes setting

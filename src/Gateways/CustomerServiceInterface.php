@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Gateways;
 
 use EcommerceLayer\Models\Address;
-use EcommerceLayer\Gateways\Models\Customer as GatewayCustomer;
+use EcommerceLayer\Gateways\Models\GatewayCustomer;
 
 interface CustomerServiceInterface
 {
