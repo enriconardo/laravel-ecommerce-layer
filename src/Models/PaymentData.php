@@ -5,13 +5,13 @@ namespace EcommerceLayer\Models;
 use JsonSerializable;
 
 /**
- * @property string $gateway_key
+ * @property string $gateway_id
  * @property array $attributes
  * @property string $three_d_secure_redirect_url
  */
 class PaymentData implements JsonSerializable
 {
-    public string $gateway_key;
+    public string $gateway_id;
 
     private array $attributes;
 
@@ -19,7 +19,7 @@ class PaymentData implements JsonSerializable
         string $gatewayKey,
         array $args = [],
     ) {
-        $this->gateway_key = $gatewayKey;
+        $this->gateway_id = $gatewayKey;
         $this->attributes = [];
 
         foreach($args as $key => $value) {
@@ -29,8 +29,8 @@ class PaymentData implements JsonSerializable
 
     public function __set(string $name, mixed $value)
     {
-        if ($name === 'gateway_key') {
-            $this->gateway_key = $value;
+        if ($name === 'gateway_id') {
+            $this->gateway_id = $value;
         } else {
             $this->attributes[$name] = $value;
         }
@@ -38,8 +38,8 @@ class PaymentData implements JsonSerializable
 
     public function __get(string $name)
     {
-        if ($name === 'gateway_key') {
-            return $this->gateway_key;
+        if ($name === 'gateway_id') {
+            return $this->gateway_id;
         }
 
         if (array_key_exists($name, $this->attributes)) {
@@ -57,7 +57,7 @@ class PaymentData implements JsonSerializable
     public function __toArray()
     {
         $data = [
-            'gateway_key' => $this->gateway_key,
+            'gateway_id' => $this->gateway_id,
         ];
 
         foreach ($this->attributes as $key => $attribute) {

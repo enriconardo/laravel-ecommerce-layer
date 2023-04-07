@@ -5,41 +5,28 @@ namespace EcommerceLayer\Gateways\Models;
 use EcommerceLayer\Enums\PaymentStatus;
 
 /**
- * @property string $key The id of the payment related object returned by the payment gateway API.
+ * @property string $id The id of the payment related object returned by the payment gateway API.
  * @property PaymentStatus $status
  * @property array $data A set of additional data useful for example to handle redirect urls.
+ * @property string $three_d_secure_redirect_url
  */
-class Payment
+class GatewayPayment
 {
-    public string $key;
+    public string $id;
 
     public PaymentStatus $status;
 
     private array $data;
 
-    public function __construct(string $key, PaymentStatus $status, $args = [])
+    public function __construct(string $id, PaymentStatus $status)
     {
-        $this->key = $key;
+        $this->id = $id;
         $this->status = $status;
-        $this->data = [];
-
-        foreach($args as $key => $value) {
-            $this->data[$key] = $value;
-        }
-    }
-
-    public function __set(string $name, mixed $value)
-    {
-        if ($name === 'key' || $name === 'status') {
-            $this->$name = $value;
-        } else {
-            $this->data[$name] = $value;
-        }
     }
 
     public function __get(string $name)
     {
-        if ($name === 'key' || $name === 'status') {
+        if ($name === 'id' || $name === 'status') {
             return $this->$name;
         }
 

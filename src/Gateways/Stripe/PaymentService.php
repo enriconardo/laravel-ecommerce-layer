@@ -4,7 +4,7 @@ namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
-use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Gateways\Models\GatewayPayment;
 use EcommerceLayer\Gateways\Models\PaymentMethod;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
@@ -24,7 +24,7 @@ class PaymentService implements PaymentServiceInterface
         string $currency,
         PaymentMethod $paymentMethod,
         array $data = []
-    ): Payment {
+    ): GatewayPayment {
         $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
 
         // Set attributes
@@ -58,7 +58,7 @@ class PaymentService implements PaymentServiceInterface
         string $currency,
         PaymentMethod $paymentMethod,
         array $data = []
-    ): Payment {
+    ): GatewayPayment {
         $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
 
         // Set attributes
@@ -88,7 +88,7 @@ class PaymentService implements PaymentServiceInterface
         return $this->createPaymentObject($stripePaymentIntent);
     }
 
-    public function confirm(Payment $payment): Payment
+    public function confirm(GatewayPayment $payment): GatewayPayment
     {
         $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->key);
         $stripePaymentIntent = $stripePaymentIntent->confirm();
@@ -120,18 +120,12 @@ class PaymentService implements PaymentServiceInterface
 
     protected function createPaymentObject(PaymentIntent $paymentIntent)
     {
-        $additionalData = [];
-        if ($paymentIntent->payment_method) {
-            $additionalData['payment_method_key'] = $paymentIntent->payment_method;
-        }
-
-        $payment = new Payment(
+        $payment = new GatewayPayment(
             $paymentIntent->id,
-            $this->getStatus($paymentIntent),
-            $additionalData
+            $this->getStatus($paymentIntent)
         );
 
-        // Manage payment intent next action
+        // Manage payment intent 3DS auth
         if ($paymentIntent->next_action && $paymentIntent->next_action->type === 'redirect_to_url') {
             $payment->setThreeDSecure($paymentIntent->next_action->redirect_to_url->url);
         }

@@ -27,7 +27,7 @@ class PaymentMethodCast implements CastsAttributes
             : new PaymentMethod(
                 $value['type'], 
                 Arr::get($value, 'data', []), 
-                Arr::get($value, 'gateway_key')
+                Arr::get($value, 'gateway_id')
             );
     }
 
@@ -49,7 +49,7 @@ class PaymentMethodCast implements CastsAttributes
         $value = [
             'type' => $value->type,
             'data' => $value->data,
-            'gateway_key' => $value->gateway_key
+            'gateway_id' => $value->gateway_id
         ];
 
         return json_encode($value);

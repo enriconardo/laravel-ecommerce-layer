@@ -86,8 +86,8 @@ class OrderService
         $gatewayService = gateway($gateway->identifier);
 
         // Create Gateway Payment Method instance
-        if ($order->payment_method->gateway_key) {
-            $gatewayPaymentMethod = $gatewayService->paymentMethods()->find($order->payment_method->gateway_key);
+        if ($order->payment_method->gateway_id) {
+            $gatewayPaymentMethod = $gatewayService->paymentMethods()->find($order->payment_method->gateway_id);
         } 
         
         if (!isset($gatewayPaymentMethod) || is_null($gatewayPaymentMethod)) {
@@ -96,12 +96,12 @@ class OrderService
                 $order->payment_method->data
             );
 
-            $order->payment_method->gateway_key = $gatewayPaymentMethod->key;
+            $order->payment_method->gateway_id = $gatewayPaymentMethod->key;
             $this->_createOrUpdate(['payment_method' => $order->payment_method], $order);
         }
         // End of gateway payment method creation
         
-        /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
+        /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
         $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
@@ -115,7 +115,7 @@ class OrderService
         return $this->updatePayment($order, $gatewayPayment);
     }
 
-    public function updatePayment(Order $order, \EcommerceLayer\Gateways\Models\Payment $gatewayPayment): Order
+    public function updatePayment(Order $order, \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment): Order
     {
         // Manage statuses
         $newOrderStatus = $order->status;
@@ -143,7 +143,7 @@ class OrderService
             'status' => $newOrderStatus,
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $gatewayPayment->status,
-            'payment_data' => new PaymentData($gatewayPayment->key, $gatewayPayment->data())
+            'payment_data' => new PaymentData($gatewayPayment->id, $gatewayPayment->data())
         ], $order);
 
         // Fire the events

@@ -28,8 +28,8 @@ class PaymentDataCast implements CastsAttributes
             return null;
         }
 
-        $gatewayKey = $value['gateway_key'];
-        unset($value['gateway_key']);
+        $gatewayKey = $value['gateway_id'];
+        unset($value['gateway_id']);
 
         return new PaymentData($gatewayKey, $value);
     }
@@ -50,7 +50,7 @@ class PaymentDataCast implements CastsAttributes
         }
 
         $value = [
-            'gateway_key' => $value->gateway_key,
+            'gateway_id' => $value->gateway_id,
             ...$value->attributes(),
         ];
 

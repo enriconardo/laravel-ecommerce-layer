@@ -28,7 +28,7 @@ class Handle3DSecurePayment
         /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
         $gatewayPayment = $event->payment;
         /** @var \EcommerceLayer\Models\Order $order */
-        $order = Order::where('payment_data->gateway_key', $gatewayPayment->key)->first();
+        $order = Order::where('payment_data->gateway_id', $gatewayPayment->key)->first();
 
         if ($order && $order->payment_data && $order->payment_data->three_d_secure_redirect_url) {
             // Order exists and it required 3DS auth

@@ -54,7 +54,7 @@ class OrderBuilder extends BaseBuilder
                 $method = new PaymentMethod(
                     Arr::get($method, 'type'), 
                     Arr::get($method, 'data'),
-                    Arr::get($method, 'gateway_key')
+                    Arr::get($method, 'gateway_id')
                 );
             }
 
