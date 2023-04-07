@@ -45,12 +45,10 @@ class PaymentService implements PaymentServiceInterface
         try {
             $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
         } catch (CardException $e) {
-            $errorBody = $e->getJsonBody();
-            $paymentIntentAsArray = $errorBody['error']['payment_intent'];
-            $stripePaymentIntent = $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
+            $stripePaymentIntent = $this->_handleException($e);
         }
 
-        return $this->createPaymentObject($stripePaymentIntent);
+        return $this->_createPaymentObject($stripePaymentIntent);
     }
 
     public function createAndConfirm(
@@ -80,12 +78,10 @@ class PaymentService implements PaymentServiceInterface
         try {
             $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
         } catch (CardException $e) {
-            $errorBody = $e->getJsonBody();
-            $paymentIntentAsArray = $errorBody['error']['payment_intent'];
-            $stripePaymentIntent = $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
+            $stripePaymentIntent = $this->_handleException($e);
         }
 
-        return $this->createPaymentObject($stripePaymentIntent);
+        return $this->_createPaymentObject($stripePaymentIntent);
     }
 
     public function confirm(GatewayPayment $payment): GatewayPayment
@@ -93,7 +89,7 @@ class PaymentService implements PaymentServiceInterface
         $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->key);
         $stripePaymentIntent = $stripePaymentIntent->confirm();
 
-        return $this->createPaymentObject($stripePaymentIntent);
+        return $this->_createPaymentObject($stripePaymentIntent);
     }
 
     /**
@@ -118,7 +114,7 @@ class PaymentService implements PaymentServiceInterface
         }
     }
 
-    protected function createPaymentObject(PaymentIntent $paymentIntent)
+    protected function _createPaymentObject(PaymentIntent $paymentIntent)
     {
         $payment = new GatewayPayment(
             $paymentIntent->id,
@@ -131,5 +127,17 @@ class PaymentService implements PaymentServiceInterface
         }
 
         return $payment;
+    }
+
+    protected function _handleException(CardException $e) 
+    {
+        $errorBody = $e->getJsonBody();
+
+        if (array_key_exists('error', $errorBody) && array_key_exists('payment_intent', $errorBody['error'])) {
+            $paymentIntentAsArray = $errorBody['error']['payment_intent'];
+            return $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
+        } 
+        
+        throw $e;
     }
 }

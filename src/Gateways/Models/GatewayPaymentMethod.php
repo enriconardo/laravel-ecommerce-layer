@@ -15,9 +15,9 @@ class GatewayPaymentMethod
 
     public array $data;
 
-    public function __construct(string $type, array $data = [], string $key = null)
+    public function __construct(string $type, array $data = [], string $id = null)
     {
-        $this->id = $key;
+        $this->id = $id;
         $this->type = $type;
         $this->data = $data;
     }
