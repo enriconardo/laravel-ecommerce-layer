@@ -12,6 +12,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Stripe\PaymentIntent;
 
 class WebhookController extends BaseController
 {
@@ -36,22 +37,36 @@ class WebhookController extends BaseController
             case 'payment_intent.succeeded':
                 http_response_code(200);
 
+                /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
+                
+                $additionalData = [];
+                if ($paymentIntent->payment_method) {
+                    $additionalData['payment_method_key'] = $paymentIntent->payment_method;
+                }
 
                 $payment = new Payment(
                     $paymentIntent->id,
-                    PaymentStatus::PAID
+                    PaymentStatus::PAID,
+                    $additionalData
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);
             case 'payment_intent.payment_failed':
                 http_response_code(200);
 
+                /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
+
+                $additionalData = [];
+                if ($paymentIntent->payment_method) {
+                    $additionalData['payment_method_key'] = $paymentIntent->payment_method;
+                }
 
                 $payment = new Payment(
                     $paymentIntent->id,
-                    PaymentStatus::REFUSED
+                    PaymentStatus::REFUSED,
+                    $additionalData
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);

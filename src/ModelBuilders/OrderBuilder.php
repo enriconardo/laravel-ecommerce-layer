@@ -51,7 +51,11 @@ class OrderBuilder extends BaseBuilder
     {
         try {
             if (is_array($method)) {
-                $method = new PaymentMethod(Arr::get($method, 'type'), Arr::get($method, 'data'));
+                $method = new PaymentMethod(
+                    Arr::get($method, 'type'), 
+                    Arr::get($method, 'data'),
+                    Arr::get($method, 'gateway_key')
+                );
             }
 
             if (!$method instanceof PaymentMethod) {

@@ -5,7 +5,7 @@ namespace EcommerceLayer\Gateways\Stripe;
 use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\Payment;
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\Gateways\Models\PaymentMethod;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
 use Stripe\PaymentIntent;
@@ -25,27 +25,20 @@ class PaymentService implements PaymentServiceInterface
         PaymentMethod $paymentMethod,
         array $data = []
     ): Payment {
-        $type = $paymentMethod->type;
-
-        $stripePaymentMethod = $this->client->paymentMethods->create([
-            'type' => $type,
-            $type => $paymentMethod->data,
-        ]);
+        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
 
         // Set attributes
+        if (array_key_exists('customer_key', $data) && $data['customer_key']) {
+            $data['customer'] = $data['customer_key'];
+            unset($data['customer_key']);
+        }
+
         $attributes = [
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
+            ...$data
         ];
-
-        if (array_key_exists('customer_key', $data) && $data['customer_key']) {
-            $attributes['customer'] = $data['customer_key'];
-        }
-
-        if (array_key_exists('return_url', $data) && $data['return_url']) {
-            $attributes['return_url'] = $data['return_url'];
-        }
         // End of attributes setting
 
         try {
@@ -65,32 +58,22 @@ class PaymentService implements PaymentServiceInterface
         PaymentMethod $paymentMethod,
         array $data = []
     ): Payment {
-        $type = $paymentMethod->type;
-
-        $stripePaymentMethod = $this->client->paymentMethods->create([
-            'type' => $type,
-            $type => $paymentMethod->data,
-        ]);
+        $stripePaymentMethod = $this->client->paymentMethods->retrieve($paymentMethod->key);
 
         // Set attributes
+        if (array_key_exists('customer_key', $data) && $data['customer_key']) {
+            $data['customer'] = $data['customer_key'];
+            unset($data['customer_key']);
+        }
+
         $attributes = [
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $stripePaymentMethod->id,
             'confirm' => true,
+            'setup_future_usage' => 'off_session',
+            ...$data
         ];
-
-        if (array_key_exists('customer_key', $data)) {
-            $attributes['customer'] = $data['customer_key'];
-        }
-
-        if (array_key_exists('return_url', $data)) {
-            $attributes['return_url'] = $data['return_url'];
-        }
-
-        if (array_key_exists('off_session', $data)) {
-            $attributes['off_session'] = $data['off_session'];
-        }
         // End of attributes setting
 
         try {
@@ -136,9 +119,15 @@ class PaymentService implements PaymentServiceInterface
 
     protected function createPaymentObject(PaymentIntent $paymentIntent)
     {
+        $additionalData = [];
+        if ($paymentIntent->payment_method) {
+            $additionalData['payment_method_key'] = $paymentIntent->payment_method;
+        }
+
         $payment = new Payment(
             $paymentIntent->id,
-            $this->getStatus($paymentIntent)
+            $this->getStatus($paymentIntent),
+            $additionalData
         );
 
         // Manage payment intent next action

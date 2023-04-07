@@ -22,14 +22,18 @@ class PaymentData implements JsonSerializable
         $this->gateway_key = $gatewayKey;
         $this->attributes = [];
 
-        if (array_key_exists('three_d_secure_redirect_url', $args)) {
-            $this->attributes['three_d_secure_redirect_url'] = $args['three_d_secure_redirect_url'];
+        foreach($args as $key => $value) {
+            $this->attributes[$key] = $value;
         }
     }
 
     public function __set(string $name, mixed $value)
     {
-        $this->attributes[$name] = $value;
+        if ($name === 'gateway_key') {
+            $this->gateway_key = $value;
+        } else {
+            $this->attributes[$name] = $value;
+        }
     }
 
     public function __get(string $name)
@@ -63,7 +67,7 @@ class PaymentData implements JsonSerializable
         return $data;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->__toArray();
     }

@@ -85,17 +85,31 @@ class OrderService
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
-        $additionalData = [
-            'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
-            ...$args
-        ];
+        // Create Gateway Payment Method instance
+        if ($order->payment_method->gateway_key) {
+            $gatewayPaymentMethod = $gatewayService->paymentMethods()->find($order->payment_method->gateway_key);
+        } 
+        
+        if (!isset($gatewayPaymentMethod) || is_null($gatewayPaymentMethod)) {
+            $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
+                $order->payment_method->type, 
+                $order->payment_method->data
+            );
 
+            $order->payment_method->gateway_key = $gatewayPaymentMethod->key;
+            $this->_createOrUpdate(['payment_method' => $order->payment_method], $order);
+        }
+        // End of gateway payment method creation
+        
         /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
         $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
-            $order->payment_method,
-            attributes_filter($additionalData)
+            $gatewayPaymentMethod,
+            attributes_filter([
+                'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
+                ...$args
+            ])
         );
 
         return $this->updatePayment($order, $gatewayPayment);
@@ -129,7 +143,7 @@ class OrderService
             'status' => $newOrderStatus,
             'fulfillment_status' => $newFulfillmentStatus,
             'payment_status' => $gatewayPayment->status,
-            'payment_data' => new PaymentData($gatewayPayment->key, $gatewayPayment->getData())
+            'payment_data' => new PaymentData($gatewayPayment->key, $gatewayPayment->data())
         ], $order);
 
         // Fire the events

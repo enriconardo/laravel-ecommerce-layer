@@ -5,6 +5,8 @@ namespace EcommerceLayer\Gateways\Stripe;
 use EcommerceLayer\Gateways\GatewayProviderInterface;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\CustomerServiceInterface;
+use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
+use EcommerceLayer\Gateways\Stripe\PaymentMethodService;
 use Stripe\StripeClient;
 
 class Stripe implements GatewayProviderInterface
@@ -14,6 +16,8 @@ class Stripe implements GatewayProviderInterface
     private PaymentServiceInterface $payments;
 
     private CustomerServiceInterface $customers;
+
+    private PaymentMethodServiceInterface $paymentMethods;
 
     public function __construct()
     {
@@ -45,5 +49,15 @@ class Stripe implements GatewayProviderInterface
 
         $this->customers = new CustomerService($this->client);
         return $this->customers;
+    }
+
+    public function paymentMethods(): PaymentMethodServiceInterface
+    {
+        if (isset($this->paymentMethods)) {
+            return $this->paymentMethods;
+        }
+
+        $this->paymentMethods = new PaymentMethodService($this->client);
+        return $this->paymentMethods;
     }
 }

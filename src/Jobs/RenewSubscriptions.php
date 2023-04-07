@@ -74,7 +74,7 @@ class RenewSubscriptions implements ShouldQueue
             ]);
 
             // Pay the order
-            $newOrder = $orderService->pay($newOrder, ['off_session' => true]);
+            $newOrder = $orderService->pay($newOrder);
         }
     }
 }

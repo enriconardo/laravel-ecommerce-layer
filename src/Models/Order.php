@@ -19,9 +19,9 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property PaymentStatus $payment_status
  * @property FulfillmentStatus $fulfillment_status
  * @property Currency $currency
- * @property AddressCast $billing_address
- * @property PaymentMethodCast $payment_method
- * @property array PaymentDataCast $payment_data Data related to the payment. Could be different based onthe gateway used for the payment.
+ * @property Address $billing_address
+ * @property PaymentMethod $payment_method
+ * @property array PaymentData $payment_data Data related to the payment. Could be different based onthe gateway used for the payment.
  * @property array $metadata Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
  * @property int $subtotal The sum of the subtotals of all the line items in the order, in cents. No tax, discounts or other options are considered.
  * @property int $total Total amount of the order, which is the subtotal with all the options considered, like taxes, shipping costs or discounts.

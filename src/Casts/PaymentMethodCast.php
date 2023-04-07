@@ -22,7 +22,13 @@ class PaymentMethodCast implements CastsAttributes
     {
         $encodedValue = Arr::get($attributes, $key);
         $value = json_decode($encodedValue, true);
-        return is_null($value) ? null : new PaymentMethod($value['type'], Arr::get($value, 'data', []));
+        return is_null($value) 
+            ? null 
+            : new PaymentMethod(
+                $value['type'], 
+                Arr::get($value, 'data', []), 
+                Arr::get($value, 'gateway_key')
+            );
     }
 
     /**
@@ -43,6 +49,7 @@ class PaymentMethodCast implements CastsAttributes
         $value = [
             'type' => $value->type,
             'data' => $value->data,
+            'gateway_key' => $value->gateway_key
         ];
 
         return json_encode($value);

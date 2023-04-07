@@ -17,14 +17,40 @@ class Payment
 
     private array $data;
 
-    public function __construct(string $key, PaymentStatus $status)
+    public function __construct(string $key, PaymentStatus $status, $args = [])
     {
         $this->key = $key;
         $this->status = $status;
         $this->data = [];
+
+        foreach($args as $key => $value) {
+            $this->data[$key] = $value;
+        }
     }
 
-    public function getData()
+    public function __set(string $name, mixed $value)
+    {
+        if ($name === 'key' || $name === 'status') {
+            $this->$name = $value;
+        } else {
+            $this->data[$name] = $value;
+        }
+    }
+
+    public function __get(string $name)
+    {
+        if ($name === 'key' || $name === 'status') {
+            return $this->$name;
+        }
+
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        }
+
+        return null;
+    }
+
+    public function data()
     {
         return $this->data;
     }

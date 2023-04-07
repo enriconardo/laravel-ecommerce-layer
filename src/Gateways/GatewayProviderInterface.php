@@ -9,4 +9,6 @@ interface GatewayProviderInterface
     public function payments(): PaymentServiceInterface;
 
     public function customers(): CustomerServiceInterface;
+
+    public function paymentMethods(): PaymentMethodServiceInterface;
 }
