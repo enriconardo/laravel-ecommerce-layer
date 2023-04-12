@@ -2,10 +2,8 @@
 
 namespace EcommerceLayer\Listeners;
 
-use EcommerceLayer\Events\Payment\PaymentUpdated;
 use EcommerceLayer\Gateways\Events\GatewayPaymentUpdated;
 use EcommerceLayer\Models\Order;
-use EcommerceLayer\Models\PaymentData;
 use EcommerceLayer\Services\OrderService;
 
 class Handle3DSecurePayment
@@ -25,10 +23,10 @@ class Handle3DSecurePayment
      */
     public function handle(GatewayPaymentUpdated $event): void
     {
-        /** @var \EcommerceLayer\Gateways\Models\Payment $gatewayPayment */
+        /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
         $gatewayPayment = $event->payment;
         /** @var \EcommerceLayer\Models\Order $order */
-        $order = Order::where('payment_data->gateway_id', $gatewayPayment->key)->first();
+        $order = Order::where('payment_data->gateway_id', $gatewayPayment->id)->first();
 
         if ($order && $order->payment_data && $order->payment_data->three_d_secure_redirect_url) {
             // Order exists and it required 3DS auth

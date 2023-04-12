@@ -24,16 +24,17 @@ class SubscriptionService
             throw new InvalidEntityException("Subscription cannot be created because the chosen Price is not recurring]");
         }
 
-        $startedAt = Arr::get($data, 'started_at', Carbon::now());
+        $data['status'] = Arr::get($data, 'status', SubscriptionStatus::PENDING);
+        $data['started_at'] = Arr::get($data, 'started_at', Carbon::now());
 
-        $attributes = [
-            'customer_id' => Arr::get($data, 'customer_id'),
-            'price_id' => $price->id,
-            'status' => Arr::get($data, 'status', SubscriptionStatus::PENDING),
-            'started_at' => $startedAt,
-            'expires_at' => Arr::get($data, 'expires_at'),
-            'source_order_id' => Arr::get($data, 'source_order_id')
-        ];
+        $attributes = attributes_filter($data, [
+            'customer_id',
+            'price_id',
+            'status',
+            'started_at',
+            'expires_at',
+            'source_order_id',
+        ]);
 
         $subscription = SubscriptionBuilder::init()->fill($attributes)->end();
 
@@ -44,13 +45,13 @@ class SubscriptionService
 
     public function update(Subscription $subscription, array $data): Subscription
     {
-        $attributes = [
-            'customer_id' => Arr::get($data, 'customer_id'),
-            'status' => Arr::get($data, 'status'),
-            'started_at' => Arr::get($data, 'started_at'),
-            'expires_at' => Arr::get($data, 'expires_at'),
-            'source_order_id' => Arr::get($data, 'source_order_id')
-        ];
+        $attributes = attributes_filter($data, [
+            'customer_id',
+            'status',
+            'started_at',
+            'expires_at',
+            'source_order_id'
+        ]);
 
         $subscription = SubscriptionBuilder::init($subscription)->fill($attributes)->end();
 

@@ -22,11 +22,12 @@ class GatewayPayment
     {
         $this->id = $id;
         $this->status = $status;
+        $this->data = [];
     }
 
     public function __get(string $name)
     {
-        if ($name === 'id' || $name === 'status') {
+        if ($name === 'id' || $name === 'status' || $name === 'data') {
             return $this->$name;
         }
 

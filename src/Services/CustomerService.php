@@ -14,10 +14,7 @@ class CustomerService
 {
     public function create(array $data): Customer
     {
-        $attributes = [
-            'email' => Arr::get($data, 'email'),
-            'metadata' => Arr::get($data, 'metadata'),
-        ];
+        $attributes = attributes_filter($data, 'email', 'metadata');
 
         $customer = CustomerBuilder::init()->fill($attributes)->end();
 
@@ -28,10 +25,7 @@ class CustomerService
 
     public function update(Customer $customer, array $data): Customer
     {
-        $attributes = [
-            'email' => Arr::get($data, 'email'),
-            'metadata' => Arr::get($data, 'metadata'),
-        ];
+        $attributes = attributes_filter($data, 'email', 'metadata');
 
         $customer = CustomerBuilder::init($customer)->fill($attributes)->end();
 
@@ -55,12 +49,12 @@ class CustomerService
         /** @var \EcommerceLayer\Gateways\Models\GatewayCustomer $gatewayCustomer */
         $gatewayCustomer = $gatewayService->customers()->create($customer->email);
 
-        $currentKeys = $customer->gateway_keys;
+        $currentKeys = $customer->gateway_ids;
 
         Arr::set($currentKeys, $gateway->identifier, $gatewayCustomer->id);
 
         return CustomerBuilder::init($customer)->fill([
-            'gateway_keys' => $currentKeys
+            'gateway_ids' => $currentKeys
         ])->end();
     }
 }

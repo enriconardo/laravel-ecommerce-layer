@@ -6,11 +6,11 @@
  * @return response()
  */
 if (!function_exists('attributes_filter')) {
-    function attributes_filter($array)
+    function attributes_filter(array $array, array $inArray = [])
     {
-        return array_filter($array, function ($val) {
-            return !is_null($val);
-        });
+        return array_filter($array, function ($val, $key) use ($inArray) {
+            return in_array($key, $inArray);
+        }, ARRAY_FILTER_USE_BOTH);
     }
 }
 

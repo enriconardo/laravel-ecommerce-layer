@@ -59,7 +59,7 @@ abstract class BaseBuilder
     public function fill(array $attributes)
     {
         try {
-            $this->model = $this->model->fill(attributes_filter($attributes));
+            $this->model = $this->model->fill($attributes);
         } catch (Exception $e) {
             $this->abort();
             throw $e;

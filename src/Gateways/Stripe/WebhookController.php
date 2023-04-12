@@ -3,10 +3,8 @@
 namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Enums\PaymentStatus;
-use EcommerceLayer\Gateways\Events\GatewayPaymentRefused;
-use EcommerceLayer\Gateways\Events\GatewayPaymentSucceeded;
 use EcommerceLayer\Gateways\Events\GatewayPaymentUpdated;
-use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Gateways\Models\GatewayPayment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -39,16 +37,10 @@ class WebhookController extends BaseController
 
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
-                
-                $additionalData = [];
-                if ($paymentIntent->payment_method) {
-                    $additionalData['payment_method_key'] = $paymentIntent->payment_method;
-                }
 
-                $payment = new Payment(
+                $payment = new GatewayPayment(
                     $paymentIntent->id,
-                    PaymentStatus::PAID,
-                    $additionalData
+                    PaymentStatus::PAID
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);
@@ -58,15 +50,9 @@ class WebhookController extends BaseController
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
 
-                $additionalData = [];
-                if ($paymentIntent->payment_method) {
-                    $additionalData['payment_method_key'] = $paymentIntent->payment_method;
-                }
-
-                $payment = new Payment(
+                $payment = new GatewayPayment(
                     $paymentIntent->id,
-                    PaymentStatus::REFUSED,
-                    $additionalData
+                    PaymentStatus::REFUSED
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);

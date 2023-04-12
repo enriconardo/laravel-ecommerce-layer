@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways\Events;
 
-use EcommerceLayer\Gateways\Models\Payment;
+use EcommerceLayer\Gateways\Models\GatewayPayment;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -14,12 +14,12 @@ class GatewayPaymentUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Payment $payment;
+    public GatewayPayment $payment;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Payment $payment)
+    public function __construct(GatewayPayment $payment)
     {
         $this->payment = $payment;
     }

@@ -14,14 +14,16 @@ class ProductService
 {
     public function create(array $data): Product
     {
-        $attributes = [
-            'code' => Arr::get($data, 'code'),
-            'name' => Arr::get($data, 'name'),
-            'active' => Arr::get($data, 'active'),
-            'shippable' => Arr::get($data, 'shippable'),
-            'metadata' => Arr::get($data, 'metadata'),
-            'prices' => Arr::get($data, 'prices', [])
-        ];
+        $data['prices'] = Arr::get($data, 'prices', []);
+
+        $attributes = attributes_filter($data, [
+            'code',
+            'name',
+            'active',
+            'shippable',
+            'metadata',
+            'prices',
+        ]);
 
         $product = ProductBuilder::init()->fill($attributes)->end();
 
@@ -36,13 +38,13 @@ class ProductService
 
     public function update(Product $product, array $data): Product
     {
-        $attributes = [
-            'code' => Arr::get($data, 'code'),
-            'name' => Arr::get($data, 'name'),
-            'active' => Arr::get($data, 'active'),
-            'shippable' => Arr::get($data, 'shippable'),
-            'metadata' => Arr::get($data, 'metadata')
-        ];
+        $attributes = attributes_filter($data, [
+            'code',
+            'name',
+            'active',
+            'shippable',
+            'metadata',
+        ]);
 
         $product = ProductBuilder::init($product)->fill($attributes)->end();
 

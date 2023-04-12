@@ -15,7 +15,9 @@ use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
 use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
+use EcommerceLayer\Models\Gateway;
 use EcommerceLayer\Models\PaymentData;
+use EcommerceLayer\Models\PaymentMethod;
 
 class OrderService
 {
@@ -24,7 +26,18 @@ class OrderService
         // When you create a new order it is a cart (status = DRAFT)
         $data['status'] = Arr::get($data, 'status', OrderStatus::DRAFT);
 
-        $order = $this->_createOrUpdate($data);
+        $attributes = attributes_filter($data, [
+            'status',
+            'currency',
+            'customer_id',
+            'metadata',
+            'billing_address',
+            'gateway_id',
+            'payment_method',
+            'payment_status'
+        ]);
+
+        $order = $this->_createOrUpdate($attributes);
 
         EntityCreated::dispatch($order);
 
@@ -37,7 +50,18 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be updated");
         }
 
-        $order = $this->_createOrUpdate($data, $order);
+        $attributes = attributes_filter($data, [
+            'status',
+            'currency',
+            'customer_id',
+            'metadata',
+            'billing_address',
+            'gateway_id',
+            'payment_method',
+            'payment_status'
+        ]);
+
+        $order = $this->_createOrUpdate($attributes, $order);
 
         EntityUpdated::dispatch($order);
 
@@ -64,17 +88,57 @@ class OrderService
         // When you place an order it is transformed to an OPEN order from a cart (DRAFT order)
         $data['status'] = OrderStatus::OPEN;
 
-        $order = $this->_createOrUpdate($data, $order);
+        // Create Gateway Payment Method instance
+        /** @var \EcommerceLayer\Models\Gateway $gateway */
+        $gateway = Gateway::find(Arr::get($data, 'gateway_id'));
+
+        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
+        $gatewayService = gateway($gateway->identifier);
+
+        /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
+        $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
+            Arr::get($data, 'payment_method.type'),
+            Arr::get($data, 'payment_method.data')
+        );
+
+        $data['payment_method'] = new PaymentMethod(
+            $gatewayPaymentMethod->type,
+            in_array($gatewayPaymentMethod->type, config('ecommerce-layer.payment_methods.protected_types', []))
+                ? []
+                : $gatewayPaymentMethod->data,
+            $gatewayPaymentMethod->id ? $gatewayPaymentMethod->id : null
+        );
+        // End of gateway payment method creation
+
+        $attributes = attributes_filter($data, [
+            'status',
+            'currency',
+            'gateway_id',
+            'metadata',
+            'billing_address',
+            'payment_method',
+            'return_url'
+        ]);
+
+        $order = $this->_createOrUpdate($attributes, $order);
 
         OrderPlaced::dispatch($order);
 
-        $order = $this->pay($order, ['return_url' => Arr::get($data, 'return_url')]);
+        $order = $this->pay($order, [
+            'return_url' => Arr::get($data, 'return_url')
+        ]);
 
         return $order;
     }
 
     public function pay(Order $order, $args = []): Order
     {
+        /**
+         * Possible $args values:
+         * - return_url     The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method’s app or site.
+         * - off_session    Set to true to indicate that the customer is not in your checkout flow during this payment attempt
+         */
+
         if (!$order->canBePaid()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
         }
@@ -85,31 +149,23 @@ class OrderService
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
-        // Create Gateway Payment Method instance
-        if ($order->payment_method->gateway_id) {
-            $gatewayPaymentMethod = $gatewayService->paymentMethods()->find($order->payment_method->gateway_id);
-        } 
-        
-        if (!isset($gatewayPaymentMethod) || is_null($gatewayPaymentMethod)) {
-            $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
-                $order->payment_method->type, 
+        /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
+        $gatewayPaymentMethod = $order->payment_method->gateway_id
+            ? $gatewayService->paymentMethods()->find($order->payment_method->gateway_id)
+            : $gatewayService->paymentMethods()->create(
+                $order->payment_method->type,
                 $order->payment_method->data
             );
 
-            $order->payment_method->gateway_id = $gatewayPaymentMethod->id;
-            $this->_createOrUpdate(['payment_method' => $order->payment_method], $order);
-        }
-        // End of gateway payment method creation
-        
         /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
         $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
             $gatewayPaymentMethod,
-            attributes_filter([
-                'customer_key' => $order->customer->getGatewayKey($gateway->identifier),
+            [
+                'customer_id' => $order->customer->getGatewayId($gateway->identifier),
                 ...$args
-            ])
+            ]
         );
 
         return $this->updatePayment($order, $gatewayPayment);
@@ -159,28 +215,19 @@ class OrderService
 
     protected function _createOrUpdate(array $data, Order|null $order = null): Order
     {
-        $attributes = [
-            'customer_id' => Arr::get($data, 'customer_id'),
-            'gateway_id' => Arr::get($data, 'gateway_id'),
-            'status' => Arr::get($data, 'status'),
-            'fulfillment_status' => Arr::get($data, 'fulfillment_status'),
-            'payment_status' => Arr::get($data, 'payment_status'),
-            'payment_data' => Arr::get($data, 'payment_data'),
-            'currency' => Arr::get($data, 'currency'),
-            'metadata' => Arr::get($data, 'metadata'),
-        ];
-
         $builder = $order !== null ? OrderBuilder::init($order) : OrderBuilder::init();
-
-        $builder = $builder->fill($attributes);
 
         if (Arr::has($data, 'billing_address')) {
             $builder->withBillingAddress(Arr::get($data, 'billing_address'));
+            unset($data['billing_address']);
         }
 
         if (Arr::has($data, 'payment_method')) {
             $builder->withPaymentMethod(Arr::get($data, 'payment_method'));
+            unset($data['payment_method']);
         }
+
+        $builder = $builder->fill($data);
 
         return $builder->end();
     }

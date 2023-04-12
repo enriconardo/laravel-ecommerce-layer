@@ -11,14 +11,14 @@ interface PaymentServiceInterface
         int $amount,
         string $currency,
         GatewayPaymentMethod $paymentMethod,
-        array $data = []
+        array $args = []
     ): GatewayPayment;
 
     public function createAndConfirm(
         int $amount,
         string $currency,
         GatewayPaymentMethod $paymentMethod,
-        array $data = []
+        array $args = []
     ): GatewayPayment;
 
     public function confirm(GatewayPayment $payment): GatewayPayment;

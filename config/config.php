@@ -26,6 +26,17 @@ return [
         ]
     ],
 
+    'payment_methods' => [
+
+        'protected_types' => [
+
+            'card',
+            // ...
+
+        ]
+
+    ],
+
     'gateways' => [
 
         'stripe' => [

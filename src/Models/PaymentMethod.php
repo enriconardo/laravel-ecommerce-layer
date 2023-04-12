@@ -4,7 +4,7 @@ namespace EcommerceLayer\Models;
 
 /**
  * @property string $type The type of the payment method, could by something like stripe, sofort...
- * @property array $data The set of data required for the payment method.
+ * @property array|null $data The set of data required for the payment method.
  * @property string|null $gateway_id Store the ID of the related payment method object returned by the gateway.
  */
 class PaymentMethod
@@ -18,10 +18,10 @@ class PaymentMethod
     public function __construct(
         string $type,
         array $data = [],
-        string $gatewayKey = null
+        string $gatewayId = null
     ) {
         $this->type = $type;
         $this->data = $data;
-        $this->gateway_id = $gatewayKey;
+        $this->gateway_id = $gatewayId;
     }
 }

@@ -47,13 +47,9 @@ class OrderController extends Controller
         $request->validate([
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'customer_id' => 'required|exists:EcommerceLayer\Models\Customer,id',
-            'gateway_id' => 'exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => [new EnumValidation(Country::class)],
-            'payment_method' => 'array:type,data',
-            'payment_method.type' => 'string|required_with:payment_method',
-            'payment_method.data' => 'array|required_with:payment_method',
+            'billing_address.country' => [new EnumValidation(Country::class)]
         ]);
 
         $order = $this->orderService->create($request->all());
@@ -68,13 +64,9 @@ class OrderController extends Controller
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => 'exists:EcommerceLayer\Models\Gateway,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => [new EnumValidation(Country::class)],
-            'payment_method' => 'array:type,data',
-            'payment_method.type' => 'string|required_with:payment_method',
-            'payment_method.data' => 'array|required_with:payment_method',
+            'billing_address.country' => [new EnumValidation(Country::class)]
         ]);
 
         $order = $this->orderService->update($order, $request->all());
@@ -89,16 +81,13 @@ class OrderController extends Controller
 
         $request->validate([
             'currency' => ['string', new EnumValidation(Currency::class)],
-            'gateway_id' => [
-                Rule::requiredIf(!$order->gateway()->exists()), 
-                'exists:EcommerceLayer\Models\Gateway,id'
-            ],
+            'gateway_id' => 'required|exists:EcommerceLayer\Models\Gateway,id',
             'billing_address' => [
                 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
                 Rule::requiredIf($order->billing_address === null)
             ],
             'billing_address.country' => [new EnumValidation(Country::class)],
-            'payment_method' => ['array:type,data', Rule::requiredIf($order->payment_method === null)],
+            'payment_method' => 'required|array:type,data',
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method',
             'return_url' => 'string|required' // The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method’s app or site. If you’d prefer to redirect to a mobile application, you can alternatively supply an application URI scheme.

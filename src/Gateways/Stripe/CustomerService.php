@@ -65,21 +65,36 @@ class CustomerService implements CustomerServiceInterface
 
     protected function _create(string $email, Address|null $address = null, array|null $metadata = null)
     {
-        $stripeCustomer = $this->client->customers->create(attributes_filter([
-            'email' => $email,
-            'address' => ($address instanceof Address) ? $this->_getAddressData($address) : null,
-            'metadata' => $metadata
-        ]));
+        $data = [
+            'email' => $email
+        ];
+
+        if ($address instanceof Address) {
+            $data['address'] = $this->_getAddressData($address);
+        }
+
+        if ($metadata) {
+            $data['metadata'] = $metadata;
+        }
+
+        $stripeCustomer = $this->client->customers->create($data);
 
         return new GatewayCustomer($stripeCustomer->id);
     }
 
     protected function _update($id, Address|null $address = null, array|null $metadata = null)
     {
-        $stripeCustomer = $this->client->customers->update($id, attributes_filter([
-            'address' => ($address instanceof Address) ? $this->_getAddressData($address) : null,
-            'metadata' => $metadata
-        ]));
+        $data = [];
+
+        if ($address instanceof Address) {
+            $data['address'] = $this->_getAddressData($address);
+        }
+
+        if ($metadata) {
+            $data['metadata'] = $metadata;
+        }
+
+        $stripeCustomer = $this->client->customers->update($id, $data);
 
         return new GatewayCustomer($stripeCustomer->id);
     }

@@ -13,10 +13,7 @@ class GatewayService
 {
     public function create(array $data): Gateway
     {
-        $attributes = [
-            'name' => Arr::get($data, 'name'),
-            'identifier' => Arr::get($data, 'identifier'),
-        ];
+        $attributes = attributes_filter($data, ['name', 'identifier']);
 
         $gateway = GatewayBuilder::init()->fill($attributes)->end();
 
@@ -27,10 +24,7 @@ class GatewayService
 
     public function update(Gateway $gateway, array $data): Gateway
     {
-        $attributes = [
-            'name' => Arr::get($data, 'name'),
-            'identifier' => Arr::get($data, 'identifier'),
-        ];
+        $attributes = attributes_filter($data, ['name', 'identifier']);
 
         $gateway = GatewayBuilder::init($gateway)->fill($attributes)->end();
 

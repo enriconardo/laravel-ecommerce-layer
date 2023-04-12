@@ -164,4 +164,24 @@ class Order extends Model
 
         return $needFulfillment;
     }
+
+    public function willBeRecurring()
+    {
+        $recurring = false;
+
+        $lineItems = $this->line_items;
+        foreach ($lineItems as $lineItem) {
+            /** 
+             * @var LineItem $lineItem 
+             * @var Price $price
+             */
+            $price = $lineItem->price;
+
+            if ($price->recurring) {
+                $recurring = true;
+            }
+        }
+
+        return $recurring;
+    }
 }
