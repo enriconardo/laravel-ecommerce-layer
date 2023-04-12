@@ -26,18 +26,7 @@ class OrderService
         // When you create a new order it is a cart (status = DRAFT)
         $data['status'] = Arr::get($data, 'status', OrderStatus::DRAFT);
 
-        $attributes = attributes_filter($data, [
-            'status',
-            'currency',
-            'customer_id',
-            'metadata',
-            'billing_address',
-            'gateway_id',
-            'payment_method',
-            'payment_status'
-        ]);
-
-        $order = $this->_createOrUpdate($attributes);
+        $order = $this->_createOrUpdate($data);
 
         EntityCreated::dispatch($order);
 
@@ -50,18 +39,7 @@ class OrderService
             throw new InvalidEntityException("Order [{$order->id}] cannot be updated");
         }
 
-        $attributes = attributes_filter($data, [
-            'status',
-            'currency',
-            'customer_id',
-            'metadata',
-            'billing_address',
-            'gateway_id',
-            'payment_method',
-            'payment_status'
-        ]);
-
-        $order = $this->_createOrUpdate($attributes, $order);
+        $order = $this->_createOrUpdate($data, $order);
 
         EntityUpdated::dispatch($order);
 
@@ -110,17 +88,7 @@ class OrderService
         );
         // End of gateway payment method creation
 
-        $attributes = attributes_filter($data, [
-            'status',
-            'currency',
-            'gateway_id',
-            'metadata',
-            'billing_address',
-            'payment_method',
-            'return_url'
-        ]);
-
-        $order = $this->_createOrUpdate($attributes, $order);
+        $order = $this->_createOrUpdate($data, $order);
 
         OrderPlaced::dispatch($order);
 
@@ -215,19 +183,32 @@ class OrderService
 
     protected function _createOrUpdate(array $data, Order|null $order = null): Order
     {
+        $attributes = attributes_filter($data, [
+            'currency',
+            'metadata',
+            'billing_address',
+            'customer_id',
+            'gateway_id',
+            'status',
+            'payment_method',
+            'fulfillment_status',
+            'payment_status',
+            'payment_data'
+        ]);
+
         $builder = $order !== null ? OrderBuilder::init($order) : OrderBuilder::init();
 
-        if (Arr::has($data, 'billing_address')) {
-            $builder->withBillingAddress(Arr::get($data, 'billing_address'));
-            unset($data['billing_address']);
+        if (Arr::has($attributes, 'billing_address')) {
+            $builder->withBillingAddress(Arr::get($attributes, 'billing_address'));
+            unset($attributes['billing_address']);
         }
 
-        if (Arr::has($data, 'payment_method')) {
-            $builder->withPaymentMethod(Arr::get($data, 'payment_method'));
-            unset($data['payment_method']);
+        if (Arr::has($attributes, 'payment_method')) {
+            $builder->withPaymentMethod(Arr::get($attributes, 'payment_method'));
+            unset($attributes['payment_method']);
         }
 
-        $builder = $builder->fill($data);
+        $builder = $builder->fill($attributes);
 
         return $builder->end();
     }
