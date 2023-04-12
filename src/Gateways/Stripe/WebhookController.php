@@ -18,7 +18,7 @@ class WebhookController extends BaseController
 
     public function handle(Request $request)
     {
-        $endpointSecret = 'whsec_b302ec2f25cc5ce5c41c7894cede30bcebb4eed8e0be4205bd205db314e5ee75';
+        $endpointSecret = config('ecommerce-layer.gateways.stripe.endpoint_secret');
         $signature = $request->server('HTTP_STRIPE_SIGNATURE');
         $payload = $request->getContent();
 

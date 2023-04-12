@@ -49,7 +49,9 @@ return [
 
         'stripe' => [
 
-            'secret_key' => env('STRIPE_SECRET_KEY')
+            'secret_key' => env('STRIPE_SECRET_KEY'),
+
+            'endpoint_secret' => env('STRIPE_ENDPOINT_SECRET')
 
         ]
 
