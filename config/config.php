@@ -28,6 +28,14 @@ return [
 
     'payment_methods' => [
 
+        /*
+        |--------------------------------------------------------------------------
+        | Payment methods: protected types
+        |--------------------------------------------------------------------------
+        |
+        | A list of payment method type that should not be saved in the database.
+        |
+        */
         'protected_types' => [
 
             'card',
