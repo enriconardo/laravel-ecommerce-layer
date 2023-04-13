@@ -55,5 +55,19 @@ return [
 
         ]
 
+        ],
+
+    'webhooks' => [
+
+        /* Example
+        'service-name' => [
+            'url' => 'https://yourservice.com/webhook',
+            'headers' => [
+                'key' => 'value',
+                // ...
+            ]
+        ]
+        */
+        
     ]
 ];
