@@ -14,10 +14,12 @@ Route::prefix($prefix)
 
         Route::get('subscriptions/{id}', 'SubscriptionController@find')->name('ecommerce-layer.subscriptions.find');
 
-        Route::post('subscriptions', 'SubscriptionController@create')->name('ecommerce-layer.subscriptions.create');
+        // Route::post('subscriptions', 'SubscriptionController@create')->name('ecommerce-layer.subscriptions.create');
 
-        Route::patch('subscriptions/{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
+        // Route::patch('subscriptions/{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
 
-        Route::delete('subscriptions/{id}', 'SubscriptionController@delete')->name('ecommerce-layer.subscriptions.delete');
+        // Route::delete('subscriptions/{id}', 'SubscriptionController@delete')->name('ecommerce-layer.subscriptions.delete');
+
+        Route::post('subscriptions/{id}/cancel', 'SubscriptionController@cancel')->name('ecommerce-layer.subscriptions.cancel');
 
     });

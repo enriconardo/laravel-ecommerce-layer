@@ -6,6 +6,10 @@ use Carbon\Carbon;
 use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Enums\SubscriptionStatus;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
+use EcommerceLayer\Events\Subscriptions\SubscriptionActivated;
+use EcommerceLayer\Events\Subscriptions\SubscriptionPending;
+use EcommerceLayer\Events\Subscriptions\SubscriptionRenewed;
+use EcommerceLayer\Events\Subscriptions\SubscriptionUnpaid;
 use EcommerceLayer\Models\Order;
 use EcommerceLayer\Models\LineItem;
 use EcommerceLayer\Models\Price;
@@ -49,21 +53,22 @@ class HandleSubscription
 
             /** @var Plan $plan */
             $plan = $price->plan;
-            $expirationTime = $plan->calcExpirationTime($now);
 
-            /** @var Subscription $sub */
+            /** @var Subscription $subscription */
             $subscription = Subscription::where('source_order_id', $order->id)->first();
 
             if (!$subscription && $order->payment_status === PaymentStatus::PAID) {
                 // Subscription doesn't exists => create it
-                $this->subscriptionService->create([
+                $subscription = $this->subscriptionService->create([
                     'customer_id' => $order->customer_id,
                     'price_id' => $price->id,
                     'status' => SubscriptionStatus::ACTIVE,
                     'started_at' => $now,
-                    'expires_at' => $expirationTime,
+                    'expires_at' => $plan->calcExpirationTime($now),
                     'source_order_id' => $order->id
                 ]);
+
+                SubscriptionActivated::dispatch($subscription);
 
                 return;
             }
@@ -71,20 +76,35 @@ class HandleSubscription
             // If subscription already exists
             switch ($order->payment_status) {
                 case PaymentStatus::PAID:
-                    $this->subscriptionService->update($subscription, [
+                    $subscription = $this->subscriptionService->update($subscription, [
                         'status' => SubscriptionStatus::ACTIVE,
-                        'expires_at' => $expirationTime
+                        'expires_at' => $plan->calcExpirationTime($subscription->expires_at)
                     ]);
+
+                    SubscriptionRenewed::dispatch($subscription);
                     break;
+
                 case PaymentStatus::REFUSED:
                 case PaymentStatus::VOIDED:
-                    $this->subscriptionService->update($subscription, [
+                case PaymentStatus::EXPIRED:
+                    $subscription = $this->subscriptionService->update($subscription, [
                         'status' => SubscriptionStatus::UNPAID
                     ]);
-                    break;
-            }
 
-            // TODO handle other payment status
+                    SubscriptionUnpaid::dispatch($subscription);
+                    break;
+
+                default:
+                    // Valid also for AUTHORIZED and PENDING status
+                    $subscription = $this->subscriptionService->update($subscription, [
+                        'status' => SubscriptionStatus::PENDING,
+                    ]);
+
+                    SubscriptionPending::dispatch($subscription);
+                    break;
+
+                    // TODO handle REFUNDED payment: how the related subscription status should change? CANCELED?
+            }
         }
     }
 }
