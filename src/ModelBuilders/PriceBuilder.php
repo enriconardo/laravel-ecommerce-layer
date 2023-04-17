@@ -28,6 +28,8 @@ class PriceBuilder extends BaseBuilder
                 $interval = PlanInterval::from(Arr::get($attributes, 'plan.interval'));
                 $plan = new Plan($interval, Arr::get($attributes, 'plan.interval_count'));
                 $attributes['plan'] = $plan;
+            } else {
+                $attributes['plan'] = null;
             }
         } catch (Exception $e) {
             $this->abort();

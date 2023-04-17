@@ -39,6 +39,10 @@ class PlanCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
+        if ($value === null) {
+            return null;
+        }
+
         if (!$value instanceof Plan) {
             throw new InvalidArgumentException('The given value is not an Plan instance.');
         }
