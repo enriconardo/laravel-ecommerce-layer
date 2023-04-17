@@ -25,7 +25,9 @@ class CallWebhook
             case \EcommerceLayer\Events\Order\OrderPlaced::class:
                 /** @var \EcommerceLayer\Events\Order\OrderPlaced $event */
                 $eventType = 'order.placed';
-                $data = ['order' => $event->order];
+                $order = $event->order;
+                $order->load('lineItems');
+                $data = ['order' => $order];
                 break;
             case \EcommerceLayer\Events\Order\OrderCompleted::class:
                 /** @var \EcommerceLayer\Events\Order\OrderCompleted $event */

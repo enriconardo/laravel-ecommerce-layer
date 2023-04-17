@@ -30,7 +30,7 @@ class PriceController extends Controller
             'active' => 'boolean',
             'default' => 'boolean',
             'recurring' => 'boolean',
-            'plan' => 'array:interval,interval_count|required_if:recurring,true',
+            'plan' => 'nullable|array:interval,interval_count|required_if:recurring,true',
             'plan.interval' => ['required_with:plan', new EnumValidation(PlanInterval::class)],
             'plan.interval_count' => 'required_with:plan|integer'
         ]);
@@ -52,7 +52,7 @@ class PriceController extends Controller
             'active' => 'boolean',
             'default' => 'boolean',
             'recurring' => 'boolean',
-            'plan' => 'array:interval,interval_count|required_if:recurring,true',
+            'plan' => 'nullable|array:interval,interval_count|required_if:recurring,true',
             'plan.interval' => ['required_with:plan', new EnumValidation(PlanInterval::class)],
             'plan.interval_count' => 'required_with:plan|integer'
         ]);
