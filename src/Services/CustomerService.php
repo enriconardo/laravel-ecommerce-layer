@@ -14,7 +14,7 @@ class CustomerService
 {
     public function create(array $data): Customer
     {
-        $attributes = attributes_filter($data, 'email', 'metadata');
+        $attributes = attributes_filter($data, ['email', 'metadata']);
 
         $customer = CustomerBuilder::init()->fill($attributes)->end();
 
@@ -25,7 +25,7 @@ class CustomerService
 
     public function update(Customer $customer, array $data): Customer
     {
-        $attributes = attributes_filter($data, 'email', 'metadata');
+        $attributes = attributes_filter($data, ['email', 'metadata']);
 
         $customer = CustomerBuilder::init($customer)->fill($attributes)->end();
 
