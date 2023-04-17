@@ -14,28 +14,28 @@ class EventServiceProvider extends ParentServiceProvider
     protected $listen = [
         \EcommerceLayer\Events\Order\OrderPlaced::class => [
             \EcommerceLayer\Listeners\SyncCustomerWithGateway::class,
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Order\OrderCompleted::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Order\OrderCanceled::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Subscriptions\SubscriptionActivated::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Subscriptions\SubscriptionCanceled::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Subscriptions\SubscriptionPending::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Subscriptions\SubscriptionRenewed::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Subscriptions\SubscriptionUnpaid::class => [
-            \EcommerceLayer\Listeners\CallWebhook::class,
+            \EcommerceLayer\Listeners\CallWebhooks::class,
         ],
         \EcommerceLayer\Events\Payment\PaymentUpdated::class => [
             \EcommerceLayer\Listeners\HandleSubscription::class

@@ -4,7 +4,7 @@ namespace EcommerceLayer\Listeners;
 
 use EcommerceLayer\Webhooks;
 
-class CallWebhook
+class CallWebhooks
 {
     /**
      * Create the event listener.
