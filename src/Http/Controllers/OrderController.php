@@ -3,6 +3,7 @@
 namespace EcommerceLayer\Http\Controllers;
 
 use EcommerceLayer\Http\Resources\OrderResource;
+use EcommerceLayer\Models\Gateway;
 use EcommerceLayer\Models\Order;
 use EcommerceLayer\Services\OrderService;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class OrderController extends Controller
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'customer_id' => 'required|exists:EcommerceLayer\Models\Customer,id',
             'metadata' => 'array',
-            'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
+            'billing_address' => 'required|array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
             'billing_address.country' => [new EnumValidation(Country::class)]
         ]);
 
@@ -80,20 +81,22 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $request->validate([
-            'currency' => ['string', new EnumValidation(Currency::class)],
             'gateway_id' => 'required|exists:EcommerceLayer\Models\Gateway,id',
-            'billing_address' => [
-                'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-                Rule::requiredIf($order->billing_address === null)
-            ],
-            'billing_address.country' => [new EnumValidation(Country::class)],
             'payment_method' => 'required|array:type,data',
             'payment_method.type' => 'string|required_with:payment_method',
             'payment_method.data' => 'array|required_with:payment_method',
-            'return_url' => 'string|required' // The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method’s app or site. If you’d prefer to redirect to a mobile application, you can alternatively supply an application URI scheme.
+            'other_payment_data' => 'array' // e.g: return_url, success_url...
         ]);
 
-        $order = $this->orderService->place($order, $request->all());
+        /** @var \EcommerceLayer\Models\Gateway $gateway */
+        $gateway = Gateway::find($request->input('gateway_id'));
+
+        $order = $this->orderService->place(
+            $order, 
+            $gateway, 
+            $request->input('payment_method'), 
+            $request->input('other_payment_data', [])
+        );
 
         return OrderResource::make($order);
     }

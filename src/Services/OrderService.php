@@ -57,44 +57,41 @@ class OrderService
         EntityDeleted::dispatch($order);
     }
 
-    public function place(Order $order, array $data = [])
+    public function place(Order $order, Gateway $gateway, array $paymentMethodData, array $paymentData = [])
     {
         if (!$order->canBePlaced()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be placed");
         }
 
-        // When you place an order it is transformed to an OPEN order from a cart (DRAFT order)
-        $data['status'] = OrderStatus::OPEN;
-
         // Create Gateway Payment Method instance
-        /** @var \EcommerceLayer\Models\Gateway $gateway */
-        $gateway = Gateway::find(Arr::get($data, 'gateway_id'));
-
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
         /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
         $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
-            Arr::get($data, 'payment_method.type'),
-            Arr::get($data, 'payment_method.data')
+            Arr::get($paymentMethodData, 'type'),
+            Arr::get($paymentMethodData, 'data')
         );
 
-        $data['payment_method'] = new PaymentMethod(
+        $paymentMethod = new PaymentMethod(
             $gatewayPaymentMethod->type,
-            in_array($gatewayPaymentMethod->type, config('ecommerce-layer.payment_methods.protected_types', []))
-                ? []
-                : $gatewayPaymentMethod->data,
-            $gatewayPaymentMethod->id ? $gatewayPaymentMethod->id : null
+            $gatewayPaymentMethod->data,
+            $gatewayPaymentMethod->id
         );
         // End of gateway payment method creation
 
-        $order = $this->_createOrUpdate($data, $order);
+        // Update the order's data
+        $order = $this->_createOrUpdate([
+            'status' => OrderStatus::OPEN, // When you place an order it is transformed to an OPEN order from a cart (DRAFT order)
+            'payment_method' => $paymentMethod,
+            'gateway_id' => $gateway->id
+        ], $order);
 
+        // Fire the event
         OrderPlaced::dispatch($order);
 
-        $order = $this->pay($order, [
-            'return_url' => Arr::get($data, 'return_url')
-        ]);
+        // Pay the order
+        $order = $this->pay($order, $paymentData);
 
         return $order;
     }
@@ -105,6 +102,9 @@ class OrderService
          * Possible $args values:
          * - return_url     The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method’s app or site.
          * - off_session    Set to true to indicate that the customer is not in your checkout flow during this payment attempt
+         * - success_url
+         * - cancel_url
+         * ...
          */
 
         if (!$order->canBePaid()) {

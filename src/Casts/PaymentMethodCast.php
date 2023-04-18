@@ -52,7 +52,7 @@ class PaymentMethodCast implements CastsAttributes
 
         $value = [
             'type' => $value->type,
-            'data' => $value->data,
+            'data' => in_array($value->type, config('ecommerce-layer.payment_methods.protected_types', [])) ? [] : $value->data,
             'gateway_id' => $value->gateway_id
         ];
 
