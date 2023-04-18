@@ -2,8 +2,6 @@
 
 namespace EcommerceLayer\Gateways;
 
-use Illuminate\Support\Arr;
-
 class GatewayProviderFactory
 {
     private array $enabledGateways = [];
@@ -15,7 +13,11 @@ class GatewayProviderFactory
 
     public function make(string $identifier): GatewayProviderInterface
     {
-        return Arr::get($this->enabledGateways, $identifier);
+        if (is_array($this->enabledGateways) && array_key_exists($identifier, $this->enabledGateways)) {
+            return $this->enabledGateways[$identifier];
+        }
+
+        return null;
     }
 
     // Call that class this way: app(GatewayProviderFactory::class)->make('stripe')
