@@ -3,9 +3,9 @@
 namespace EcommerceLayer\Gateways\Models;
 
 /**
- * @property string|null $id The id of the payment method returned by the payment gateway API.
  * @property string $type The type of the payment method
  * @property array $data The set of data required for the payment method.
+ * @property string|null $id The id of the payment method returned by the payment gateway API.
  */
 class GatewayPaymentMethod
 {

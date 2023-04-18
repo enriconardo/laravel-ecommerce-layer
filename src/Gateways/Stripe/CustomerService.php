@@ -4,7 +4,6 @@ namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Gateways\CustomerServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayCustomer;
-use EcommerceLayer\Models\Address;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Stripe\StripeClient;
 
@@ -17,18 +16,18 @@ class CustomerService implements CustomerServiceInterface
         $this->client = $client;
     }
 
-    public function create(string $email, Address|null $address = null, array|null $metadata = null): GatewayCustomer
+    public function create(string $email, array $args = []): GatewayCustomer
     {
         $gatewayCustomer = $this->findByEmail($email);
 
         if ($gatewayCustomer instanceof GatewayCustomer) {
-            return $this->_update($gatewayCustomer->id, $address, $metadata);
+            return $this->_update($gatewayCustomer->id, $args);
         }
 
-        return $this->_create($email, $address, $metadata);
+        return $this->_create($email, $args);
     }
 
-    public function update(string $email, Address|null $address = null, array|null $metadata = null): GatewayCustomer
+    public function update(string $email, array $args = []): GatewayCustomer
     {
         $gatewayCustomer = $this->findByEmail($email);
 
@@ -36,7 +35,7 @@ class CustomerService implements CustomerServiceInterface
             throw new ModelNotFoundException("Customer with email [$email] has not found in the gateway.");
         }
 
-        return $this->_update($gatewayCustomer->id, $address, $metadata);
+        return $this->_update($gatewayCustomer->id, $args);
     }
 
     public function findByEmail(string $email): GatewayCustomer|null
@@ -51,30 +50,14 @@ class CustomerService implements CustomerServiceInterface
         return $stripeCustomer !== null ? new GatewayCustomer($stripeCustomer->id) : null;
     }
 
-    protected function _getAddressData(Address $address)
-    {
-        return [
-            'city' => $address->city,
-            'country' => $address->country->value,
-            'line1' => $address->address_line_1,
-            'line2' => $address->address_line_2,
-            'postal_code' => $address->postal_code,
-            'state' => $address->state
-        ];
-    }
-
-    protected function _create(string $email, Address|null $address = null, array|null $metadata = null)
+    protected function _create(string $email, array $args = [])
     {
         $data = [
             'email' => $email
         ];
 
-        if ($address instanceof Address) {
-            $data['address'] = $this->_getAddressData($address);
-        }
-
-        if ($metadata) {
-            $data['metadata'] = $metadata;
+        if (array_key_exists('metadata', $args)) {
+            $data['metadata'] = $args['metadata'];
         }
 
         $stripeCustomer = $this->client->customers->create($data);
@@ -82,16 +65,12 @@ class CustomerService implements CustomerServiceInterface
         return new GatewayCustomer($stripeCustomer->id);
     }
 
-    protected function _update($id, Address|null $address = null, array|null $metadata = null)
+    protected function _update($id, array $args = [])
     {
         $data = [];
 
-        if ($address instanceof Address) {
-            $data['address'] = $this->_getAddressData($address);
-        }
-
-        if ($metadata) {
-            $data['metadata'] = $metadata;
+        if (array_key_exists('metadata', $args)) {
+            $data['metadata'] = $args['metadata'];
         }
 
         $stripeCustomer = $this->client->customers->update($id, $data);
