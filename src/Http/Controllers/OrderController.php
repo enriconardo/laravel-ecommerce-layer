@@ -49,8 +49,8 @@ class OrderController extends Controller
             'currency' => ['string', 'required', new EnumValidation(Currency::class)],
             'customer_id' => 'required|exists:EcommerceLayer\Models\Customer,id',
             'metadata' => 'array',
-            'billing_address' => 'required|array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => [new EnumValidation(Country::class)]
+            'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
+            'billing_address.country' => ['nullable', new EnumValidation(Country::class)]
         ]);
 
         $order = $this->orderService->create($request->all());
@@ -67,7 +67,7 @@ class OrderController extends Controller
             'currency' => ['string', new EnumValidation(Currency::class)],
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => [new EnumValidation(Country::class)]
+            'billing_address.country' => ['nullable', new EnumValidation(Country::class)]
         ]);
 
         $order = $this->orderService->update($order, $request->all());
@@ -84,7 +84,7 @@ class OrderController extends Controller
             'gateway_id' => 'required|exists:EcommerceLayer\Models\Gateway,id',
             'payment_method' => 'required|array:type,data',
             'payment_method.type' => 'string|required_with:payment_method',
-            'payment_method.data' => 'array|required_with:payment_method',
+            'payment_method.data' => 'array|nullable',
             'other_payment_data' => 'array' // e.g: return_url, success_url...
         ]);
 
