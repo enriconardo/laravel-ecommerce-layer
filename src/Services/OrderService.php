@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use EcommerceLayer\Events\Entity\EntityCreated;
 use EcommerceLayer\Events\Entity\EntityDeleted;
 use EcommerceLayer\Events\Entity\EntityUpdated;
+use EcommerceLayer\Events\Order\OrderCanceled;
 use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
 use EcommerceLayer\Models\Gateway;
@@ -148,8 +149,7 @@ class OrderService
         switch ($gatewayPayment->status) {
             case PaymentStatus::VOIDED:
             case PaymentStatus::REFUSED:
-                // $newOrderStatus = OrderStatus::CANCELED;
-                // OrderCanceled::dispatch($order);
+                $newOrderStatus = OrderStatus::CANCELED;
                 break;
             case PaymentStatus::PAID:
                 if (!$order->needFulfillment()) {
@@ -173,8 +173,15 @@ class OrderService
         // Fire the events
         PaymentUpdated::dispatch($order);
 
-        if ($order->status === OrderStatus::COMPLETED) {
-            OrderCompleted::dispatch($order);
+        switch ($order->status) {
+            case OrderStatus::CANCELED:
+                OrderCanceled::dispatch($order);
+                break;
+            case OrderStatus::COMPLETED:
+                OrderCompleted::dispatch($order);
+                break;
+            default:
+                // Do Nothing
         }
         // End fo fire the events
 

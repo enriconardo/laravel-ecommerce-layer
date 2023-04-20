@@ -34,6 +34,11 @@ class CallWebhooks
                 $eventType = 'order.completed';
                 $data = ['order' => $event->order];
                 break;
+            case \EcommerceLayer\Events\Order\OrderCanceled::class:
+                /** @var \EcommerceLayer\Events\Order\OrderCanceled $event */
+                $eventType = 'order.canceled';
+                $data = ['order' => $event->order];
+                break;
             case \EcommerceLayer\Events\Subscriptions\SubscriptionActivated::class:
                 $eventType = 'subscription.activated';
                 $data = ['subscription' => $event->subscription];
