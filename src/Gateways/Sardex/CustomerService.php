@@ -17,6 +17,11 @@ class CustomerService implements CustomerServiceInterface
         return new GatewayCustomer($email);
     }
 
+    public function find($id): GatewayCustomer|null
+    {
+        return null;
+    }
+
     public function findByEmail(string $email): GatewayCustomer|null
     {
         return null;

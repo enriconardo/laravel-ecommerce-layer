@@ -11,7 +11,7 @@ class GatewayProviderFactory
         $this->enabledGateways[$gateway->getIdentifier()] = $gateway;
     }
 
-    public function make(string $identifier): GatewayProviderInterface
+    public function make(string $identifier): GatewayProviderInterface|null
     {
         if (is_array($this->enabledGateways) && array_key_exists($identifier, $this->enabledGateways)) {
             return $this->enabledGateways[$identifier];

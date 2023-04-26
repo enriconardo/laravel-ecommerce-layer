@@ -33,8 +33,6 @@ class WebhookController extends BaseController
         // Handle the event
         switch ($event->type) {
             case 'payment_intent.succeeded':
-                http_response_code(200);
-
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
 
@@ -44,9 +42,9 @@ class WebhookController extends BaseController
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);
-            case 'payment_intent.payment_failed':
-                http_response_code(200);
 
+                http_response_code(200);
+            case 'payment_intent.payment_failed':
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntent = $event->data->object;
 
@@ -56,6 +54,8 @@ class WebhookController extends BaseController
                 );
 
                 GatewayPaymentUpdated::dispatch($payment);
+
+                http_response_code(200);
             default:
                 return response('Received unknown event type ' . $event->type);
         }

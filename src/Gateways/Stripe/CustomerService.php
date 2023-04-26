@@ -4,6 +4,7 @@ namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Gateways\CustomerServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayCustomer;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Stripe\StripeClient;
 
@@ -36,6 +37,17 @@ class CustomerService implements CustomerServiceInterface
         }
 
         return $this->_update($gatewayCustomer->id, $args);
+    }
+
+    public function find($id): GatewayCustomer|null
+    {
+        try {
+            $stripeCustomer = $this->client->customers->retrieve($id);
+
+            return new GatewayCustomer($stripeCustomer->id);
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     public function findByEmail(string $email): GatewayCustomer|null

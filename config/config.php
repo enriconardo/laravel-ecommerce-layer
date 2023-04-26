@@ -53,9 +53,17 @@ return [
 
             'endpoint_secret' => env('STRIPE_ENDPOINT_SECRET')
 
+        ],
+
+        'sardex' => [
+
+            'api_url' => env('SARDEX_API_URL'),
+
+            'api_token' => env('SARDEX_API_TOKEN')
+        
         ]
 
-        ],
+    ],
 
     'webhooks' => [
 

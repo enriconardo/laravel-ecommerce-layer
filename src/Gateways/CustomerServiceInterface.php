@@ -10,5 +10,7 @@ interface CustomerServiceInterface
 
     public function update(string $email, array $args = []): GatewayCustomer;
 
+    public function find($id): GatewayCustomer|null;
+
     public function findByEmail(string $email): GatewayCustomer|null;
 }

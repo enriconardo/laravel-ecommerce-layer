@@ -3,6 +3,7 @@
 namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Enums\PaymentStatus;
+use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
 use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
@@ -23,6 +24,7 @@ class PaymentService implements PaymentServiceInterface
         int $amount,
         string $currency,
         GatewayPaymentMethod $paymentMethod,
+        GatewayCustomer $customer = null,
         array $args = []
     ): GatewayPayment {
         // Set attributes
@@ -60,6 +62,7 @@ class PaymentService implements PaymentServiceInterface
         int $amount,
         string $currency,
         GatewayPaymentMethod $paymentMethod,
+        GatewayCustomer $customer = null,
         array $args = []
     ): GatewayPayment {
         // Set attributes
@@ -70,8 +73,8 @@ class PaymentService implements PaymentServiceInterface
             'confirm' => true
         ];
 
-        if (array_key_exists('customer_id', $args) && $args['customer_id']) {
-            $attributes['customer'] = $args['customer_id'];
+        if ($customer) {
+            $attributes['customer'] = $customer->id;
         }
 
         if (array_key_exists('off_session', $args) && $args['off_session']) {
@@ -94,7 +97,7 @@ class PaymentService implements PaymentServiceInterface
         return $this->_createPaymentObject($stripePaymentIntent);
     }
 
-    public function confirm(GatewayPayment $payment): GatewayPayment
+    public function confirm(GatewayPayment $payment, array $args = []): GatewayPayment
     {
         $stripePaymentIntent = $this->client->paymentIntents->retrieve($payment->key);
         $stripePaymentIntent = $stripePaymentIntent->confirm();
@@ -139,15 +142,15 @@ class PaymentService implements PaymentServiceInterface
         return $payment;
     }
 
-    protected function _handleException(CardException $e) 
+    protected function _handleException(CardException $e)
     {
         $errorBody = $e->getJsonBody();
 
         if (array_key_exists('error', $errorBody) && array_key_exists('payment_intent', $errorBody['error'])) {
             $paymentIntentAsArray = $errorBody['error']['payment_intent'];
             return $this->client->paymentIntents->retrieve($paymentIntentAsArray['id']);
-        } 
-        
+        }
+
         throw $e;
     }
 }

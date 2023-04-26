@@ -19,6 +19,7 @@ use EcommerceLayer\Events\Payment\PaymentUpdated;
 use EcommerceLayer\Models\Gateway;
 use EcommerceLayer\Models\PaymentData;
 use EcommerceLayer\Models\PaymentMethod;
+use Exception;
 
 class OrderService
 {
@@ -68,10 +69,14 @@ class OrderService
         /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
         $gatewayService = gateway($gateway->identifier);
 
+        if (!$gatewayService) {
+            throw new Exception("The gateway [$gateway->identifier] is not enabled");
+        }
+
         /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
         $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
             Arr::get($paymentMethodData, 'type'),
-            Arr::get($paymentMethodData, 'data')
+            Arr::get($paymentMethodData, 'data', [])
         );
 
         $paymentMethod = new PaymentMethod(
@@ -126,13 +131,18 @@ class OrderService
                 $order->payment_method->data
             );
 
+        $customerGatewayId = $order->customer->getGatewayId($gateway->identifier);
+        /** @var \EcommerceLayer\Gateways\Models\GatewayCustomer $gatewayCustomer */
+        $gatewayCustomer = $customerGatewayId ? $gatewayService->customers()->find($customerGatewayId): null;
+
         /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
         $gatewayPayment = $gatewayService->payments()->createAndConfirm(
             $order->total,
             $order->currency->value,
             $gatewayPaymentMethod,
+            $gatewayCustomer,
             [
-                'customer_id' => $order->customer->getGatewayId($gateway->identifier),
+                'order_id' => $order->id,
                 ...$args
             ]
         );
