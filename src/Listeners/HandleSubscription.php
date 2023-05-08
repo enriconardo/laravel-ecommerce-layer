@@ -72,10 +72,10 @@ class HandleSubscription
 
                 SubscriptionActivated::dispatch($subscription);
 
-                return;
+                continue;
             } else if (!$subscription) {
                 // If the payment hasn't been paid yet and the subscription does not exist => do nothing for the moment
-                return;
+                continue;
             }
 
             // If subscription already exists
