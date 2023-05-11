@@ -2,7 +2,6 @@
 
 namespace EcommerceLayer\Casts;
 
-use EcommerceLayer\Enums\PlanInterval;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use EcommerceLayer\Models\PaymentData;
 use Illuminate\Support\Arr;
@@ -39,7 +38,7 @@ class PaymentDataCast implements CastsAttributes
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @param string $key
-     * @param PaymentMethodValueObject $value
+     * @param PaymentData $value
      * @param array $attributes
      * @return array
      */
