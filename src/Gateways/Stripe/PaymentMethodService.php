@@ -15,7 +15,7 @@ class PaymentMethodService implements PaymentMethodServiceInterface
         $this->client = $client;
     }
 
-    public function create(string $type, array $data): GatewayPaymentMethod
+    public function create(string $type = null, array $data = []): GatewayPaymentMethod
     {
         $stripePaymentMethod = $this->client->paymentMethods->create([
             'type' => $type,

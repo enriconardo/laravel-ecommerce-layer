@@ -7,7 +7,7 @@ use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
 
 class PaymentMethodService implements PaymentMethodServiceInterface
 {
-    public function create(string $type, array $data): GatewayPaymentMethod
+    public function create(string $type = null, array $data = []): GatewayPaymentMethod
     {
         return new GatewayPaymentMethod($type, $data);
     }
