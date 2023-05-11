@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Gateways\Sardex;
 
 use EcommerceLayer\Enums\PaymentStatus;
-use EcommerceLayer\Gateways\Events\GatewayPaymentUpdated;
+use EcommerceLayer\Gateways\Events\GatewayWebhookCalled;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;

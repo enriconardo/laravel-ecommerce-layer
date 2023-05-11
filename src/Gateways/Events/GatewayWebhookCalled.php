@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * This event could be useful to notify the application that a 3DS has been succesfully authorized.
  */
-class GatewayPaymentUpdated
+class GatewayWebhookCalled
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

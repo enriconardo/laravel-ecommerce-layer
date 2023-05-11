@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Gateways\Stripe;
 
 use EcommerceLayer\Enums\PaymentStatus;
-use EcommerceLayer\Gateways\Events\GatewayPaymentUpdated;
+use EcommerceLayer\Gateways\Events\GatewayWebhookCalled;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -41,7 +41,7 @@ class WebhookController extends BaseController
                     PaymentStatus::PAID
                 );
 
-                GatewayPaymentUpdated::dispatch($payment);
+                GatewayWebhookCalled::dispatch($payment);
 
                 http_response_code(200);
             case 'payment_intent.payment_failed':
@@ -53,7 +53,7 @@ class WebhookController extends BaseController
                     PaymentStatus::REFUSED
                 );
 
-                GatewayPaymentUpdated::dispatch($payment);
+                GatewayWebhookCalled::dispatch($payment);
 
                 http_response_code(200);
             default:

@@ -57,9 +57,11 @@ return [
 
         'sardex' => [
 
-            'api_url' => env('SARDEX_API_URL'),
+            'api_url' => env('SARDEX_API_URL', 'https://cyclos-sandbox.sardlab.io'),
 
-            'api_token' => env('SARDEX_API_TOKEN')
+            'api_username' => env('SARDEX_API_USERNAME'),
+
+            'api_password' => env('SARDEX_API_PASSWORD'),
         
         ]
 

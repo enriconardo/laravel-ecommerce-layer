@@ -129,17 +129,18 @@ class PaymentService implements PaymentServiceInterface
 
     protected function _createPaymentObject(PaymentIntent $paymentIntent)
     {
-        $payment = new GatewayPayment(
-            $paymentIntent->id,
-            $this->getStatus($paymentIntent)
-        );
+        $data = [];
 
         // Manage payment intent 3DS auth
         if ($paymentIntent->next_action && $paymentIntent->next_action->type === 'redirect_to_url') {
-            $payment->setThreeDSecure($paymentIntent->next_action->redirect_to_url->url);
+            $data['approval_url'] = $paymentIntent->next_action->redirect_to_url->url;
         }
 
-        return $payment;
+        return new GatewayPayment(
+            $paymentIntent->id,
+            $this->getStatus($paymentIntent),
+            $data
+        );
     }
 
     protected function _handleException(CardException $e)

@@ -21,12 +21,11 @@ class PaymentService implements PaymentServiceInterface
     ): GatewayPayment {
         $url = config('ecommerce-layer.gateways.sardex.api_url') . '/api/tickets';
 
-        $apiToken = config('ecommerce-layer.gateways.sardex.api_token');
+        $apiUsername = config('ecommerce-layer.gateways.sardex.api_username');
+        $apiPassword = config('ecommerce-layer.gateways.sardex.api_password');
 
         $response = Http::withOptions(['synchronous' => true])
-            ->withHeaders([
-                'Authorization' => 'Basic ' . $apiToken
-            ])
+            ->withBasicAuth($apiUsername, $apiPassword)
             ->timeout(5)
             ->retry(1)
             ->post($url, [
@@ -45,9 +44,10 @@ class PaymentService implements PaymentServiceInterface
         $body = $response->json();
 
         return new GatewayPayment($body['id'], PaymentStatus::PENDING, [
-            'ticket_number' => $body['ticketNumber'],
-            'transaction_number' => $body['transactionNumber']
+            'approval_url' => $body['approveUrl']
         ]);
+
+        // TODO set approval_url e fare in modo che sia lo stesso campo che utilizza anche il 3ds
     }
 
     public function createAndConfirm(
@@ -66,14 +66,13 @@ class PaymentService implements PaymentServiceInterface
         $ticketNumber = $paymentData['ticket_number'];
         $orderId = $paymentData['order_id'];
 
-        $apiToken = config('ecommerce-layer.gateways.sardex.api_token');
+        $apiUsername = config('ecommerce-layer.gateways.sardex.api_username');
+        $apiPassword = config('ecommerce-layer.gateways.sardex.api_password');
 
         $url = config('ecommerce-layer.gateways.sardex.api_url') . '/api/tickets/' . $ticketNumber . '/process?orderId=' . $orderId;
         
         $response = Http::withOptions(['synchronous' => true])
-            ->withHeaders([
-                'Authorization' => 'Basic ' . $apiToken
-            ])
+            ->withBasicAuth($apiUsername, $apiPassword)
             ->timeout(5)
             ->retry(1)
             ->post($url);

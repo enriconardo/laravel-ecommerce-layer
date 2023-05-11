@@ -8,7 +8,6 @@ use EcommerceLayer\Enums\PaymentStatus;
  * @property string $id The id of the payment related object returned by the payment gateway API.
  * @property PaymentStatus $status
  * @property array $data A set of additional data useful for example to handle redirect urls.
- * @property string $three_d_secure_redirect_url
  */
 class GatewayPayment
 {
@@ -18,11 +17,11 @@ class GatewayPayment
 
     private array $data;
 
-    public function __construct(string $id, PaymentStatus $status)
+    public function __construct(string $id, PaymentStatus $status, $data = [])
     {
         $this->id = $id;
         $this->status = $status;
-        $this->data = [];
+        $this->data = $data;
     }
 
     public function __get(string $name)
@@ -41,13 +40,5 @@ class GatewayPayment
     public function data()
     {
         return $this->data;
-    }
-
-    /**
-     * If the payment requires 3DS authentication, set the 3DS url with this method.
-     */
-    public function setThreeDSecure($redirectUrl)
-    {
-        $this->data['three_d_secure_redirect_url'] = $redirectUrl;
     }
 }

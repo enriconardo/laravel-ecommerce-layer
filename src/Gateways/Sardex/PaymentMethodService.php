@@ -16,5 +16,4 @@ class PaymentMethodService implements PaymentMethodServiceInterface
     {
         return null;
     }
-
 }
