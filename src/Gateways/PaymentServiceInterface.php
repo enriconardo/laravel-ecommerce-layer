@@ -16,13 +16,5 @@ interface PaymentServiceInterface
         array $args = []
     ): GatewayPayment;
 
-    public function createAndConfirm(
-        int $amount,
-        string $currency,
-        GatewayPaymentMethod $paymentMethod,
-        GatewayCustomer $customer = null,
-        array $args = []
-    ): GatewayPayment;
-
     public function confirm(GatewayPayment $payment, array $args = []): GatewayPayment;
 }

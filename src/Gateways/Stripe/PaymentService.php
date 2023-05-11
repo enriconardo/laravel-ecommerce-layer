@@ -32,44 +32,6 @@ class PaymentService implements PaymentServiceInterface
             'amount' => $amount,
             'currency' => $currency,
             'payment_method' => $paymentMethod->id,
-        ];
-
-        if (array_key_exists('customer_id', $args) && $args['customer_id']) {
-            $attributes['customer'] = $args['customer_id'];
-        }
-
-        if (array_key_exists('off_session', $args) && $args['off_session']) {
-            $attributes['off_session'] = $args['off_session'];
-        } else {
-            $attributes['setup_future_usage'] = 'off_session';
-        }
-
-        if (array_key_exists('return_url', $args) && $args['return_url']) {
-            $attributes['return_url'] = $args['return_url'];
-        }
-        // End of attributes setting
-
-        try {
-            $stripePaymentIntent = $this->client->paymentIntents->create($attributes);
-        } catch (CardException $e) {
-            $stripePaymentIntent = $this->_handleException($e);
-        }
-
-        return $this->_createPaymentObject($stripePaymentIntent);
-    }
-
-    public function createAndConfirm(
-        int $amount,
-        string $currency,
-        GatewayPaymentMethod $paymentMethod,
-        GatewayCustomer $customer = null,
-        array $args = []
-    ): GatewayPayment {
-        // Set attributes
-        $attributes = [
-            'amount' => $amount,
-            'currency' => $currency,
-            'payment_method' => $paymentMethod->id,
             'confirm' => true
         ];
 

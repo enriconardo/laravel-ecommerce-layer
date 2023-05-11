@@ -46,18 +46,6 @@ class PaymentService implements PaymentServiceInterface
         return new GatewayPayment($body['id'], PaymentStatus::PENDING, [
             'approval_url' => $body['approveUrl']
         ]);
-
-        // TODO set approval_url e fare in modo che sia lo stesso campo che utilizza anche il 3ds
-    }
-
-    public function createAndConfirm(
-        int $amount,
-        string $currency,
-        GatewayPaymentMethod $paymentMethod,
-        GatewayCustomer $customer = null,
-        array $args = []
-    ): GatewayPayment {
-        return $this->create($amount, $currency, $paymentMethod, $customer, $args);
     }
 
     public function confirm(GatewayPayment $payment, array $args = []): GatewayPayment

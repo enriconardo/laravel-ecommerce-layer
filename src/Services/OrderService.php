@@ -136,7 +136,7 @@ class OrderService
         $gatewayCustomer = $customerGatewayId ? $gatewayService->customers()->find($customerGatewayId): null;
 
         /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
-        $gatewayPayment = $gatewayService->payments()->createAndConfirm(
+        $gatewayPayment = $gatewayService->payments()->create(
             $order->total,
             $order->currency->value,
             $gatewayPaymentMethod,
