@@ -6,7 +6,7 @@ use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
-use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
+use EcommerceLayer\Models\PaymentMethod;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
 use Stripe\PaymentIntent;
@@ -23,7 +23,7 @@ class PaymentService implements PaymentServiceInterface
     public function create(
         int $amount,
         string $currency,
-        GatewayPaymentMethod $paymentMethod,
+        PaymentMethod $paymentMethod,
         GatewayCustomer $customer = null,
         array $args = []
     ): GatewayPayment {
@@ -31,7 +31,7 @@ class PaymentService implements PaymentServiceInterface
         $attributes = [
             'amount' => $amount,
             'currency' => $currency,
-            'payment_method' => $paymentMethod->id,
+            'payment_method' => $paymentMethod->gateway_id,
             'confirm' => true
         ];
 

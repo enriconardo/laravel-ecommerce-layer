@@ -2,11 +2,11 @@
 
 namespace EcommerceLayer\Gateways;
 
-use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
+use EcommerceLayer\Models\PaymentMethod;
 
 interface PaymentMethodServiceInterface
 {
-    public function create(string $type, array $data): GatewayPaymentMethod;
+    public function create(string $type = null, array $data = []): PaymentMethod;
 
-    public function find(string $id): GatewayPaymentMethod|null;
+    public function find(string $id): PaymentMethod|null;
 }

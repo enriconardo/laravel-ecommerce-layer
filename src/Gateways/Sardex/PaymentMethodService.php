@@ -2,17 +2,17 @@
 
 namespace EcommerceLayer\Gateways\Sardex;
 
-use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
+use EcommerceLayer\Models\PaymentMethod;
 use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
 
 class PaymentMethodService implements PaymentMethodServiceInterface
 {
-    public function create(string $type, array $data): GatewayPaymentMethod
+    public function create(string $type = null, array $data = []): PaymentMethod
     {
-        return new GatewayPaymentMethod($type, $data);
+        return new PaymentMethod();
     }
 
-    public function find(string $id): GatewayPaymentMethod|null
+    public function find(string $id): PaymentMethod|null
     {
         return null;
     }

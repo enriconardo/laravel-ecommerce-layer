@@ -6,8 +6,7 @@ use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
-use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
-use Exception;
+use EcommerceLayer\Models\PaymentMethod;
 use Illuminate\Support\Facades\Http;
 
 class PaymentService implements PaymentServiceInterface
@@ -15,7 +14,7 @@ class PaymentService implements PaymentServiceInterface
     public function create(
         int $amount,
         string $currency,
-        GatewayPaymentMethod $paymentMethod,
+        PaymentMethod $paymentMethod,
         GatewayCustomer $customer = null,
         array $args = []
     ): GatewayPayment {

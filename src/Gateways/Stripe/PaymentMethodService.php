@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways\Stripe;
 
-use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
+use EcommerceLayer\Models\PaymentMethod;
 use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
 use Stripe\StripeClient;
 
@@ -15,7 +15,7 @@ class PaymentMethodService implements PaymentMethodServiceInterface
         $this->client = $client;
     }
 
-    public function create(string $type, array $data): GatewayPaymentMethod
+    public function create(string $type = null, array $data = []): PaymentMethod
     {
         $stripePaymentMethod = $this->client->paymentMethods->create([
             'type' => $type,
@@ -23,10 +23,10 @@ class PaymentMethodService implements PaymentMethodServiceInterface
         ]);
 
         $type = $stripePaymentMethod->type;
-        return new GatewayPaymentMethod($type, $stripePaymentMethod->$type->toArray(), $stripePaymentMethod->id);
+        return new PaymentMethod($type, $stripePaymentMethod->$type->toArray(), $stripePaymentMethod->id);
     }
 
-    public function find(string $id): GatewayPaymentMethod|null
+    public function find(string $id): PaymentMethod|null
     {
         $stripePaymentMethod = $this->client->paymentMethods->retrieve($id);
 
@@ -35,7 +35,7 @@ class PaymentMethodService implements PaymentMethodServiceInterface
         }
 
         $type = $stripePaymentMethod->type;
-        return new GatewayPaymentMethod($type, $stripePaymentMethod->$type->toArray(), $stripePaymentMethod->id);
+        return new PaymentMethod($type, $stripePaymentMethod->$type->toArray(), $stripePaymentMethod->id);
     }
 
 }
