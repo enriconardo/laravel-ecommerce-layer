@@ -3,7 +3,7 @@
 namespace EcommerceLayer\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use EcommerceLayer\Models\PaymentData;
+use EcommerceLayer\DomainModels\PaymentData;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 

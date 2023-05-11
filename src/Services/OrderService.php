@@ -17,7 +17,7 @@ use EcommerceLayer\Events\Order\OrderCanceled;
 use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
 use EcommerceLayer\Models\Gateway;
-use EcommerceLayer\Models\PaymentData;
+use EcommerceLayer\DomainModels\PaymentData;
 use EcommerceLayer\DomainModels\PaymentMethod;
 use Exception;
 

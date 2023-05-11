@@ -1,6 +1,6 @@
 <?php
 
-namespace EcommerceLayer\Models;
+namespace EcommerceLayer\DomainModels;
 
 use JsonSerializable;
 
