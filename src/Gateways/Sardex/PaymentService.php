@@ -6,7 +6,7 @@ use EcommerceLayer\Enums\PaymentStatus;
 use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 use Illuminate\Support\Facades\Http;
 
 class PaymentService implements PaymentServiceInterface

@@ -4,9 +4,7 @@ namespace EcommerceLayer\ModelBuilders;
 
 use EcommerceLayer\Models\Address;
 use EcommerceLayer\Models\Order;
-use EcommerceLayer\Models\Gateway;
-use EcommerceLayer\Models\Customer;
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 use Exception;
 use Illuminate\Support\Arr;
 

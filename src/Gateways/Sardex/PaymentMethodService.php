@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways\Sardex;
 
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
 
 class PaymentMethodService implements PaymentMethodServiceInterface

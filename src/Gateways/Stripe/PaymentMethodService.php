@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways\Stripe;
 
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 use EcommerceLayer\Gateways\PaymentMethodServiceInterface;
 use Stripe\StripeClient;
 

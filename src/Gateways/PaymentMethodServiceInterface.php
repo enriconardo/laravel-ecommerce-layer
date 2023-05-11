@@ -2,7 +2,7 @@
 
 namespace EcommerceLayer\Gateways;
 
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 
 interface PaymentMethodServiceInterface
 {

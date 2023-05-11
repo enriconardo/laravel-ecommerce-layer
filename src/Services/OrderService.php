@@ -18,7 +18,7 @@ use EcommerceLayer\Events\Order\OrderCompleted;
 use EcommerceLayer\Events\Payment\PaymentUpdated;
 use EcommerceLayer\Models\Gateway;
 use EcommerceLayer\Models\PaymentData;
-use EcommerceLayer\Models\PaymentMethod;
+use EcommerceLayer\DomainModels\PaymentMethod;
 use Exception;
 
 class OrderService
@@ -73,7 +73,7 @@ class OrderService
             throw new Exception("The gateway [$gateway->identifier] is not enabled");
         }
 
-        /** @var PaymentMethodPaymentMethod $aymentMethod */
+        /** @var PaymentMethod $paymentMethod */
         $paymentMethod = $gatewayService->paymentMethods()->create(
             Arr::get($paymentMethodData, 'type'),
             Arr::get($paymentMethodData, 'data', [])
