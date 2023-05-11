@@ -66,15 +66,15 @@ class OrderService
         }
 
         // Create Gateway Payment Method instance
-        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
-        $gatewayService = gateway($gateway->identifier);
+        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayProviderService */
+        $gatewayProviderService = gateway($gateway->identifier);
 
-        if (!$gatewayService) {
+        if (!$gatewayProviderService) {
             throw new Exception("The gateway [$gateway->identifier] is not enabled");
         }
 
         /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
-        $gatewayPaymentMethod = $gatewayService->paymentMethods()->create(
+        $gatewayPaymentMethod = $gatewayProviderService->paymentMethods()->create(
             Arr::get($paymentMethodData, 'type'),
             Arr::get($paymentMethodData, 'data', [])
         );
@@ -120,23 +120,23 @@ class OrderService
         /** @var \EcommerceLayer\Models\Gateway $gateway */
         $gateway = $order->gateway;
 
-        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayService */
-        $gatewayService = gateway($gateway->identifier);
+        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayProviderService */
+        $gatewayProviderService = gateway($gateway->identifier);
 
         /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
         $gatewayPaymentMethod = $order->payment_method->gateway_id
-            ? $gatewayService->paymentMethods()->find($order->payment_method->gateway_id)
-            : $gatewayService->paymentMethods()->create(
+            ? $gatewayProviderService->paymentMethods()->find($order->payment_method->gateway_id)
+            : $gatewayProviderService->paymentMethods()->create(
                 $order->payment_method->type,
                 $order->payment_method->data
             );
 
         $customerGatewayId = $order->customer->getGatewayId($gateway->identifier);
         /** @var \EcommerceLayer\Gateways\Models\GatewayCustomer $gatewayCustomer */
-        $gatewayCustomer = $customerGatewayId ? $gatewayService->customers()->find($customerGatewayId): null;
+        $gatewayCustomer = $customerGatewayId ? $gatewayProviderService->customers()->find($customerGatewayId): null;
 
         /** @var \EcommerceLayer\Gateways\Models\GatewayPayment $gatewayPayment */
-        $gatewayPayment = $gatewayService->payments()->create(
+        $gatewayPayment = $gatewayProviderService->payments()->create(
             $order->total,
             $order->currency->value,
             $gatewayPaymentMethod,
