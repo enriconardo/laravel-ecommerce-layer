@@ -85,7 +85,7 @@ abstract class BaseBuilder
             DB::commit();
         }
 
-        return $this->model;
+        return $this->model->fresh();
     }
 
     public function abort()

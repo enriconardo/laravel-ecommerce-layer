@@ -17,7 +17,7 @@ class CustomerService implements CustomerServiceInterface
         $this->client = $client;
     }
 
-    public function create(string $email, array $args = []): GatewayCustomer
+    public function create(string $email, array $args = []): GatewayCustomer|null
     {
         $gatewayCustomer = $this->findByEmail($email);
 
@@ -28,7 +28,7 @@ class CustomerService implements CustomerServiceInterface
         return $this->_create($email, $args);
     }
 
-    public function update(string $email, array $args = []): GatewayCustomer
+    public function update(string $email, array $args = []): GatewayCustomer|null
     {
         $gatewayCustomer = $this->findByEmail($email);
 

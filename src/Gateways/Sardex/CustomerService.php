@@ -7,14 +7,14 @@ use EcommerceLayer\Gateways\Models\GatewayCustomer;
 
 class CustomerService implements CustomerServiceInterface
 {
-    public function create(string $email, array $args = []): GatewayCustomer
+    public function create(string $email, array $args = []): GatewayCustomer|null
     {
-        return new GatewayCustomer($email);
+        return null;
     }
 
-    public function update(string $email, array $args = []): GatewayCustomer
+    public function update(string $email, array $args = []): GatewayCustomer|null
     {
-        return new GatewayCustomer($email);
+        return null;
     }
 
     public function find($id): GatewayCustomer|null
