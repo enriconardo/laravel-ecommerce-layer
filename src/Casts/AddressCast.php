@@ -44,7 +44,7 @@ class AddressCast implements CastsAttributes
             throw new InvalidArgumentException('The given value is not an Address instance.');
         }
 
-        $value = [
+        $values = [
             'address_line_1' => $value->address_line_1,
             'address_line_2' => $value->address_line_2,
             'postal_code' => $value->postal_code,
@@ -55,6 +55,8 @@ class AddressCast implements CastsAttributes
             'phone' => $value->phone,
         ];
 
-        return json_encode($value);
+        return json_encode(array_filter($values, function($v) {
+            return $v !== null;
+        }));
     }
 }

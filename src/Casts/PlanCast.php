@@ -47,11 +47,13 @@ class PlanCast implements CastsAttributes
             throw new InvalidArgumentException('The given value is not an Plan instance.');
         }
 
-        $value = [
+        $values = [
             'interval' => $value->interval->value,
             'interval_count' => $value->interval_count,
         ];
 
-        return json_encode($value);
+        return json_encode(array_filter($values, function($v) {
+            return $v !== null;
+        }));
     }
 }

@@ -50,12 +50,14 @@ class PaymentMethodCast implements CastsAttributes
             throw new InvalidArgumentException('The given value is not an PaymentMethod instance.');
         }
 
-        $value = [
+        $values = [
             'type' => $value->type,
             'data' => in_array($value->type, config('ecommerce-layer.payment_methods.protected_types', [])) ? [] : $value->data,
             'gateway_id' => $value->gateway_id
         ];
 
-        return json_encode($value);
+        return json_encode(array_filter($values, function($v) {
+            return $v !== null;
+        }));
     }
 }

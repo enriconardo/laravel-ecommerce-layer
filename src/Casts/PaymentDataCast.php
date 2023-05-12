@@ -52,11 +52,13 @@ class PaymentDataCast implements CastsAttributes
             throw new InvalidArgumentException('The given value is not an PaymentData instance.');
         }
 
-        $value = [
+        $values = [
             'gateway_id' => $value->gateway_id,
             ...$value->attributes(),
         ];
 
-        return json_encode($value);
+        return json_encode(array_filter($values, function($v) {
+            return $v !== null;
+        }));
     }
 }
