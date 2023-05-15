@@ -59,47 +59,21 @@ class OrderService
         EntityDeleted::dispatch($order);
     }
 
-    public function place(Order $order, Gateway $gateway, array $paymentMethodData, array $paymentData = [])
+    public function place(Order $order, $otherPaymentData = []): Order
     {
         if (!$order->canBePlaced()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be placed");
         }
 
-        // Create Gateway Payment Method instance
-        /** @var \EcommerceLayer\Gateways\GatewayProviderInterface $gatewayProviderService */
-        $gatewayProviderService = gateway($gateway->identifier);
-
-        if (!$gatewayProviderService) {
-            throw new Exception("The gateway [$gateway->identifier] is not enabled");
-        }
-
-        /** @var \EcommerceLayer\Gateways\Models\GatewayPaymentMethod $gatewayPaymentMethod */
-        $gatewayPaymentMethod = $gatewayProviderService->paymentMethods()->create(
-            Arr::get($paymentMethodData, 'type'),
-            Arr::get($paymentMethodData, 'data', [])
-        );
-
-        $paymentMethod = new PaymentMethod(
-            $gatewayPaymentMethod->type,
-            $gatewayPaymentMethod->data,
-            $gatewayPaymentMethod->id
-        );
-        // End of gateway payment method creation
-
         // Update the order's data
         $order = $this->_createOrUpdate([
             'status' => OrderStatus::OPEN, // When you place an order it is transformed to an OPEN order from a cart (DRAFT order)
-            'payment_method' => $paymentMethod,
-            'gateway_id' => $gateway->id
         ], $order);
 
         // Fire the event
         OrderPlaced::dispatch($order);
 
-        // Pay the order
-        $order = $this->pay($order, $paymentData);
-
-        return $order;
+        return $this->pay($order, $otherPaymentData);
     }
 
     public function pay(Order $order, $args = []): Order
@@ -218,11 +192,6 @@ class OrderService
         if (Arr::has($attributes, 'billing_address')) {
             $builder->withBillingAddress(Arr::get($attributes, 'billing_address'));
             unset($attributes['billing_address']);
-        }
-
-        if (Arr::has($attributes, 'payment_method')) {
-            $builder->withPaymentMethod(Arr::get($attributes, 'payment_method'));
-            unset($attributes['payment_method']);
         }
 
         $builder = $builder->fill($attributes);

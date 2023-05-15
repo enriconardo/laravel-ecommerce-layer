@@ -2,26 +2,34 @@
 
 namespace EcommerceLayer\Http\Controllers;
 
+use EcommerceLayer\Events\Order\OrderPlaced;
+use EcommerceLayer\Exceptions\InvalidEntityException;
 use EcommerceLayer\Http\Resources\OrderResource;
 use EcommerceLayer\Models\Gateway;
 use EcommerceLayer\Models\Order;
 use EcommerceLayer\Services\OrderService;
+use EcommerceLayer\Services\PaymentMethodService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum as EnumValidation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
 use PrinsFrank\Standards\Country\ISO3166_1_Alpha_2 as Country;
 use PrinsFrank\Standards\Http\HttpStatusCode;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OrderController extends Controller
 {
     protected OrderService $orderService;
 
-    public function __construct(OrderService $orderService)
-    {
+    protected PaymentMethodService $paymentMethodService;
+
+    public function __construct(
+        OrderService $orderService,
+        PaymentMethodService $paymentMethodService
+    ) {
         $this->orderService = $orderService;
+        $this->paymentMethodService = $paymentMethodService;
     }
 
     public function list(Request $request)
@@ -79,7 +87,7 @@ class OrderController extends Controller
     {
         /** @var Order $order */
         $order = Order::findOrFail($id);
-
+        
         $request->validate([
             'gateway_id' => 'required|exists:EcommerceLayer\Models\Gateway,id',
             'payment_method' => 'required|array:type,data',
@@ -88,15 +96,22 @@ class OrderController extends Controller
             'other_payment_data' => 'array' // e.g: return_url, success_url...
         ]);
 
+        $gatewayId = $request->input('gateway_id');
         /** @var \EcommerceLayer\Models\Gateway $gateway */
-        $gateway = Gateway::find($request->input('gateway_id'));
+        $gateway = Gateway::find($gatewayId);
+        if (!$gateway) {
+            throw new BadRequestHttpException("Gateway with id [$gatewayId] does not exists");
+        }
 
-        $order = $this->orderService->place(
-            $order, 
-            $gateway, 
-            $request->input('payment_method'), 
-            $request->input('other_payment_data', [])
-        );
+        /** @var \EcommerceLayer\Models\PaymentMethod $paymentMethod */
+        $paymentMethod = $this->paymentMethodService->create($gateway, $request->input('payment_method'));
+
+        $order = $this->orderService->update($order, [
+            'payment_method' => $paymentMethod,
+            'gateway_id' => $gateway->id
+        ]);
+
+        $order = $this->orderService->place($order, $request->input('other_payment_data', []));
 
         return OrderResource::make($order);
     }
