@@ -5,7 +5,7 @@ namespace EcommerceLayer\Gateways\Models;
 use EcommerceLayer\Enums\PaymentStatus;
 
 /**
- * @property string $id The id of the payment related object returned by the payment gateway API.
+ * @property string $id A unique value needed to identify the payment data of a specific order. Could be an id returned by the gateway.
  * @property PaymentStatus $status
  * @property array $data A set of additional data useful for example to handle redirect urls.
  */

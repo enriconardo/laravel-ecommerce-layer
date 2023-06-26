@@ -7,7 +7,6 @@ use EcommerceLayer\Gateways\Models\GatewayCustomer;
 use EcommerceLayer\Gateways\PaymentServiceInterface;
 use EcommerceLayer\Gateways\Models\GatewayPayment;
 use EcommerceLayer\Gateways\Models\GatewayPaymentMethod;
-use Exception;
 use Illuminate\Support\Facades\Http;
 
 class PaymentService implements PaymentServiceInterface
@@ -43,9 +42,9 @@ class PaymentService implements PaymentServiceInterface
         $response->throw();
 
         $body = $response->json();
-        $ticketNumber = $body['ticketNumber'];
+        $ticketNumber = $body['ticketNumber']; // Used also as ID of the GatewayPayment instance
 
-        return new GatewayPayment($body['id'], PaymentStatus::PENDING, [
+        return new GatewayPayment($ticketNumber, PaymentStatus::PENDING, [
             'approval_url' => str_replace('{ticketNumber}', $ticketNumber, config('ecommerce-layer.gateways.sardex.payment_url'))
         ]);
     }
