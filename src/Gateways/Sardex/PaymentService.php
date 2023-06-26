@@ -62,6 +62,7 @@ class PaymentService implements PaymentServiceInterface
 
         $response = Http::withOptions(['synchronous' => true])
             ->withBasicAuth($apiUsername, $apiPassword)
+            ->withHeaders(['Channel' => 'ecommerce'])
             ->timeout(5)
             ->retry(1)
             ->post($url);
