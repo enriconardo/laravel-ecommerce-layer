@@ -26,6 +26,7 @@ class PaymentService implements PaymentServiceInterface
 
         $response = Http::withOptions(['synchronous' => true])
             ->withBasicAuth($apiUsername, $apiPassword)
+            ->withHeaders(['Channel' => 'ecommerce'])
             ->timeout(5)
             ->retry(1)
             ->post($url, [
@@ -42,9 +43,10 @@ class PaymentService implements PaymentServiceInterface
         $response->throw();
 
         $body = $response->json();
+        $ticketNumber = $body['ticketNumber'];
 
         return new GatewayPayment($body['id'], PaymentStatus::PENDING, [
-            'approval_url' => $body['approveUrl']
+            'approval_url' => str_replace('{ticketNumber}', $ticketNumber, config('ecommerce-layer.gateways.sardex.payment_url'))
         ]);
     }
 
@@ -58,7 +60,7 @@ class PaymentService implements PaymentServiceInterface
         $apiPassword = config('ecommerce-layer.gateways.sardex.api_password');
 
         $url = config('ecommerce-layer.gateways.sardex.api_url') . '/api/tickets/' . $ticketNumber . '/process?orderId=' . $orderId;
-        
+
         $response = Http::withOptions(['synchronous' => true])
             ->withBasicAuth($apiUsername, $apiPassword)
             ->timeout(5)

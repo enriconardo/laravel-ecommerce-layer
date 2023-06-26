@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends BaseController
 {
@@ -18,7 +19,7 @@ class WebhookController extends BaseController
     {
         // Sardex handles only success webhook
         // TODO since I don't know what it returns
-
+        Log::debug('SARDEX WEBHOOK');
         // Call paymentService->confirm()
     }
 }

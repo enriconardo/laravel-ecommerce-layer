@@ -62,6 +62,8 @@ return [
             'api_username' => env('SARDEX_API_USERNAME'),
 
             'api_password' => env('SARDEX_API_PASSWORD'),
+
+            'payment_url' => env('SARDEX_PAYMENT_URL')
         
         ]
 
