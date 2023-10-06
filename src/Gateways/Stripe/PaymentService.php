@@ -39,8 +39,8 @@ class PaymentService implements PaymentServiceInterface
             $attributes['customer'] = $customer->id;
         }
 
-        if (array_key_exists('off_session', $args) && $args['off_session']) {
-            $attributes['off_session'] = $args['off_session'];
+        if (array_key_exists('off_session', $args) && $args['off_session'] === true) {
+            $attributes['off_session'] = true;
         } else {
             $attributes['setup_future_usage'] = 'off_session';
         }
