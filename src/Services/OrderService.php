@@ -87,6 +87,10 @@ class OrderService
          * ...
          */
 
+        if (!array_key_exists('off_session', $args)) {
+            $args['off_session'] = $order;
+        }
+
         if (!$order->canBePaid()) {
             throw new InvalidEntityException("Order [{$order->id}] cannot be payed");
         }

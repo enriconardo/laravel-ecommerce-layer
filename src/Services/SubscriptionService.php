@@ -95,7 +95,8 @@ class SubscriptionService
                 'currency' => $sourceOrder->currency,
                 'billing_address' => $sourceOrder->billing_address,
                 'payment_method' => $sourceOrder->payment_method,
-                'payment_status' => PaymentStatus::UNPAID
+                'payment_status' => PaymentStatus::UNPAID,
+                'off_session' => true
             ]);
 
             // Add the line item to the new order
@@ -115,7 +116,7 @@ class SubscriptionService
             ]);
 
             // Pay the order
-            $newOrder = $orderService->pay($newOrder, ['off_session' => true]);
+            $newOrder = $orderService->pay($newOrder);
 
             // The status of the subscription will be handled based on the status of the payment.
         } catch (Exception $e) {

@@ -28,6 +28,7 @@ use PrinsFrank\Standards\Currency\ISO4217_Alpha_3 as Currency;
  * @property \EcommerceLayer\Models\Customer $customer
  * @property \EcommerceLayer\Models\Gateway $gateway
  * @property \Illuminate\Support\Collection $line_items
+ * @property bool off_session
  */
 class Order extends Model
 {
@@ -48,6 +49,7 @@ class Order extends Model
         'currency',
         'billing_address',
         'payment_method',
+        'off_session'
     ];
 
     /**
@@ -62,7 +64,8 @@ class Order extends Model
         'currency' => Currency::class,
         'billing_address' => AddressCast::class,
         'payment_method' => PaymentMethodCast::class,
-        'payment_data' => PaymentDataCast::class
+        'payment_data' => PaymentDataCast::class,
+        'off_session' => 'boolean'
     ];
 
     public function customer()
