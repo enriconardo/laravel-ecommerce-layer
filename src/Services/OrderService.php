@@ -188,7 +188,8 @@ class OrderService
             'payment_method',
             'fulfillment_status',
             'payment_status',
-            'payment_data'
+            'payment_data',
+            'off_session'
         ]);
 
         $builder = $order !== null ? OrderBuilder::init($order) : OrderBuilder::init();
