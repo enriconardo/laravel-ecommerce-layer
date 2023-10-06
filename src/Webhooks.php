@@ -4,6 +4,7 @@ namespace EcommerceLayer;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Webhooks
 {
@@ -28,6 +29,8 @@ class Webhooks
                     'event' => $eventType,
                     'data' => $data
                 ]);
+            
+            Log::debug("Called webhook: $url - Event: $eventType");
         }
     }
 }
