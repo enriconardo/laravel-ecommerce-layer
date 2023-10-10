@@ -24,7 +24,7 @@ class SubscriptionController extends Controller
     {
         $subs = QueryBuilder::for(Subscription::class)
             ->allowedFilters([
-                AllowedFilter::exact('status'), 
+                AllowedFilter::exact('status'),
                 AllowedFilter::exact('customer.id'),
                 AllowedFilter::exact('price.id'),
                 'expired_at',
@@ -40,7 +40,22 @@ class SubscriptionController extends Controller
     public function find($id)
     {
         $sub = Subscription::findOrFail($id);
-        
+
+        return SubscriptionResource::make($sub);
+    }
+
+    public function update($id, Request $request)
+    {
+        $sub = Subscription::findOrFail($id);
+
+        $request->validate([
+            'status' => 'string',
+            'started_at' => 'date_format:Y-m-d',
+            'expires_at' => 'date_format:Y-m-d|nullable',
+        ]);
+
+        $sub = $this->subscriptionService->update($sub, $request->only(['status', 'started_at', 'expires_at']));
+
         return SubscriptionResource::make($sub);
     }
 

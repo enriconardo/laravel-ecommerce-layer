@@ -16,7 +16,7 @@ Route::prefix($prefix)
 
         // Route::post('subscriptions', 'SubscriptionController@create')->name('ecommerce-layer.subscriptions.create');
 
-        // Route::patch('subscriptions/{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
+        Route::patch('subscriptions/{id}', 'SubscriptionController@update')->name('ecommerce-layer.subscriptions.update');
 
         // Route::delete('subscriptions/{id}', 'SubscriptionController@delete')->name('ecommerce-layer.subscriptions.delete');
 
