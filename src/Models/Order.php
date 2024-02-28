@@ -45,6 +45,7 @@ class Order extends Model
         'status',
         'payment_status',
         'fulfillment_status',
+        'discount_percentage',
         'payment_data',
         'currency',
         'billing_address',
@@ -115,7 +116,15 @@ class Order extends Model
     public function getTotalAttribute()
     {
         // TODO apply taxes, shipping costs, discounts or other stuff.
-        return $this->subtotal;
+        $total = $this->subtotal;
+        
+        // Apply discount percentage
+        if ($this->discount_percentage) {
+            $discount = ($total * $this->discount_percentage) / 100;
+            $total = $total - $discount;
+        }
+
+        return $total;
     }
 
     public function isPaid(): bool

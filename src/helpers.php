@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Removes null values from the given array
+ * Removes from an associative array the values that are not included in a specified list of keys
  *
  * @return response()
  */

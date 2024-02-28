@@ -189,7 +189,8 @@ class OrderService
             'fulfillment_status',
             'payment_status',
             'payment_data',
-            'off_session'
+            'off_session',
+            'discount_percentage'
         ]);
 
         $builder = $order !== null ? OrderBuilder::init($order) : OrderBuilder::init();

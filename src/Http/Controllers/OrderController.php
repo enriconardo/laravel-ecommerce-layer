@@ -58,7 +58,8 @@ class OrderController extends Controller
             'customer_id' => 'required|exists:EcommerceLayer\Models\Customer,id',
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => ['nullable', new EnumValidation(Country::class)]
+            'billing_address.country' => ['nullable', new EnumValidation(Country::class)],
+            'discount_percentage' => 'numeric|nullable'
         ]);
 
         $order = $this->orderService->create($request->all());
@@ -75,7 +76,8 @@ class OrderController extends Controller
             'currency' => ['string', new EnumValidation(Currency::class)],
             'metadata' => 'array',
             'billing_address' => 'array:address_line_1,address_line_2,postal_code,city,state,country,fullname,phone',
-            'billing_address.country' => ['nullable', new EnumValidation(Country::class)]
+            'billing_address.country' => ['nullable', new EnumValidation(Country::class)],
+            'discount_percentage' => 'numeric|nullable'
         ]);
 
         $order = $this->orderService->update($order, $request->all());
